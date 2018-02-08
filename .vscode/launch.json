@@ -1,0 +1,34 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Extension",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/dist/src/**/*.js"
+      ]
+    },
+    {
+      "name": "Launch Tests",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}",
+        "--extensionTestsPath=${workspaceFolder}/dist/test"
+      ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
+      "outFiles": [
+        "${workspaceFolder}/dist/test/**/*.js"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [
+    // Autodetection for Gulp tasks doesn't currently work if the gulpfile is
+    // written in TypeScript. This will be fixed eventually:
+    // https://github.com/Microsoft/vscode/issues/11482
+    //
+    // Until then, we have to actually have gulp-cli available on the shell.
+    {
+      
+      "label": "gulp: clean",
+      "type": "shell",
+      "command": "gulp",
+      "args": [
+        "clean"
+      ],
+      "presentation": {
+        "echo": false,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "gulp: lint",
+      "type": "shell",
+      "command": "gulp",
+      "args": [
+        "lint"
+      ],
+      "presentation": {
+        "echo": false,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "owner": "ts",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*)@\\[(\\d+,\\d+,\\d+,\\d+)\\]\\s+-\\s+(WARNING|ERROR):\\s+(.*)",
+          "file": 1,
+          "location": 2,
+          "severity": 3,
+          "message": 4
+        }
+      }
+    }
+  ]
+}

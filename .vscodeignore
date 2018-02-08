@@ -1,0 +1,9 @@
+.vscode/**
+client/**
+server/**
+test/**
+.gitignore
+gulpfile.ts
+package-lock.json
+tsconfig.json
+tslint.json

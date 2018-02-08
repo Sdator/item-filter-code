@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "outDir": "dist",
+    "lib": [
+      "es2016"
+    ],
+    "sourceMap": true,
+    "rootDir": ".",
+    "strict": true,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true
+  },
+  "include": [
+    "server/**/*",
+    "client/**/*",
+    "test/**/*"
+  ]
+}

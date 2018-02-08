@@ -1,0 +1,44 @@
+{
+  "name": "item-filter-code",
+  "description": "Support for editing Path of Exile item filters within Visual Studio Code.",
+  "displayName": "Item Filter Code",
+  "version": "0.1.0",
+  "author": "Glen Marker",
+  "publisher": "GlenCFL",
+  "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GlenCFL/item-filter-code.git"
+  },
+  "categories": [
+    "Languages"
+  ],
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "vscode": "^1.18.0"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "item-filter",
+        "aliases": [
+          "Item Filter"
+        ],
+        "extensions": [
+          ".filter"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "item-filter",
+        "scopeName": "source.filter",
+        "path": "./syntaxes/ItemFilter.tmLanguage.json"
+      }
+    ]
+  }
+}

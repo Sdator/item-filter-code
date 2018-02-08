@@ -1,0 +1,516 @@
+{
+  "information_for_contributors": [
+    "The goal of this syntax is not to perform thorough error checking on item",
+    "filters, rather the goal is simply to colorize tokens are accurately as  ",
+    "possible while also being as unobtrusive as possible. Item filters are   ",
+    "simple, so we only need contextual knowledge of the line itself in order ",
+    "to properly tokenize each valid entity. This has largely dictated the    ",
+    "structure below."
+  ],
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Item Filter",
+  "scopeName": "source.filter",
+  "fileTypes": [
+    "filter"
+  ],
+  "patterns": [
+    {
+      "include": "#line-comment"
+    },
+    {
+      "include": "#blocks"
+    },
+    {
+      "include": "#filter-rules"
+    },
+    {
+      "include": "#action-rules"
+    }
+  ],
+  "repository": {
+    "line-comment": {
+      "patterns": [
+        {
+          "match": "^\\s*(#.*?)\\s*$",
+          "captures": {
+            "1": {
+              "name": "comment.line.number-sign.filter"
+            }
+          }
+        }
+      ]
+    },
+    "trailing-comment": {
+      "patterns": [
+        {
+          "match": "\\s*(#.*?)\\s*$",
+          "captures": {
+            "1": {
+              "name": "comment.line.number-sign.filter"
+            }
+          }
+        }
+      ]
+    },
+    "boolean": {
+      "patterns": [
+        {
+          "match": "(?i)\\s+(true|false)(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "constant.language.boolean.filter"
+            }
+          }
+        }
+      ]
+    },
+    "quoted-boolean": {
+      "patterns": [
+        {
+          "match": "(?i)\\s+(\"(true|false)\")(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "string.quoted.double.filter"
+            }
+          }
+        }
+      ]
+    },
+    "single-digit-number": {
+      "patterns": [
+        {
+          "match": "\\s+([0-9])(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "constant.numeric.filter"
+            }
+          }
+        }
+      ]
+    },
+    "double-digit-number": {
+      "patterns": [
+        {
+          "match": "\\s+([0-9]{1,2})(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "constant.numeric.filter"
+            }
+          }
+        }
+      ]
+    },
+    "triple-digit-number": {
+      "patterns": [
+        {
+          "match": "\\s+([0-9]{1,3})(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "constant.numeric.filter"
+            }
+          }
+        }
+      ]
+    },
+    "socket-colors": {
+      "patterns": [
+        {
+          "match": "(?i)\\s+([rgbw]{1,6})(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "constant.character.filter"
+            }
+          }
+        }
+      ]
+    },
+    "quoted-socket-colors": {
+      "patterns": [
+        {
+          "match": "(?i)\\s+(\"[rgbw]{1,6}\")(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "string.quoted.double.filter"
+            }
+          }
+        }
+      ]
+    },
+    "word": {
+      "patterns": [
+        {
+          "match": "\\s+([A-Za-z\u00F6\\-]+)(?=\\s)",
+          "captures": {
+            "1": {
+              "name": "constant.character.filter"
+            }
+          }
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "match": "\\s+(\"[^\"]*\")(?=\\s)",
+          "captures": {
+            "1": {
+              "name": "string.quoted.double.filter"
+            }
+          }
+        }
+      ]
+    },
+    "rarity": {
+      "patterns": [
+        {
+          "match": "\\s+(Normal|Magic|Rare|Unique)(?=\\s)",
+          "captures": {
+            "1": {
+              "name": "constant.character.filter"
+            }
+          }
+        }
+      ]
+    },
+    "quoted-rarity": {
+      "patterns": [
+        {
+          "match": "\\s+(\"(Normal|Magic|Rare|Unique)\")(?=\\s)",
+          "captures": {
+            "1": {
+              "name": "string.quoted.double.filter"
+            }
+          }
+        }
+      ]
+    },
+    "operator": {
+      "patterns": [
+        {
+          "match": "\\s+(>=|<=|>|<|=)(?=\\s)",
+          "captures": {
+            "1": {
+              "name": "keyword.operator.filter"
+            }
+          }
+        }
+      ]
+    },
+    "equality-operator": {
+      "patterns": [
+        {
+          "match": "\\s+(=)(?=\\s)",
+          "captures": {
+            "1": {
+              "name": "keyword.operator.filter"
+            }
+          }
+        }
+      ]
+    },
+    "blocks": {
+      "patterns": [
+        {
+          "match": "^\\s*(Show|Hide)(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.block.filter"
+            }
+          }
+        },
+        {
+          "include": "#trailing-comment"
+        }
+      ]
+    },
+    "filter-rules": {
+      "patterns": [
+        {
+          "include": "#single-digit-number-rules"
+        },
+        {
+          "include": "#double-digit-number-rules"
+        },
+        {
+          "include": "#triple-digit-number-rules"
+        },
+        {
+          "include": "#string-rules"
+        },
+        {
+          "include": "#boolean-rules"
+        },
+        {
+          "include": "#color-rules"
+        },
+        {
+          "include": "#sound-rules"
+        },
+        {
+          "include": "#rarity-rule"
+        },
+        {
+          "include": "#linked-sockets-rule"
+        },
+        {
+          "include": "#socket-group-rule"
+        },
+        {
+          "include": "#set-font-size-rule"
+        }
+      ]
+    },
+    "single-digit-number-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(Sockets|Height|Width)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#operator"
+            },
+            {
+              "include": "#single-digit-number"
+            }
+          ]
+        }
+      ]
+    },
+    "double-digit-number-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(Quality)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#operator"
+            },
+            {
+              "include": "#double-digit-number"
+            }
+          ]
+        }
+      ]
+    },
+    "triple-digit-number-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(ItemLevel|DropLevel)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#operator"
+            },
+            {
+              "include": "#triple-digit-number"
+            }
+          ]
+        }
+      ]
+    },
+    "string-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(Class|BaseType)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#equality-operator"
+            },
+            {
+              "include": "#word"
+            },
+            {
+              "include": "#string"
+            }
+          ]
+        }
+      ]
+    },
+    "boolean-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(Identified|Corrupted|ElderItem|ShaperItem|ShapedMap)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#equality-operator"
+            },
+            {
+              "include": "#boolean"
+            },
+            {
+              "include": "#quoted-boolean"
+            }
+          ]
+        }
+      ]
+    },
+    "color-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(SetBorderColor|SetTextColor|SetBackgroundColor)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#equality-operator"
+            },
+            {
+              "include": "#triple-digit-number"
+            },
+            {
+              "include": "#trailing-comment"
+            }
+          ]
+        }
+      ]
+    },
+    "sound-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(PlayAlertSound|PlayAlertSoundPositional)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#double-digit-number"
+            },
+            {
+              "include": "#triple-digit-number"
+            },
+            {
+              "include": "#word"
+            },
+            {
+              "include": "#trailing-comment"
+            }
+          ]
+        }
+      ]
+    },
+    "rarity-rule": {
+      "patterns": [
+        {
+          "begin": "^\\s*(Rarity)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#operator"
+            },
+            {
+              "include": "#rarity"
+            },
+            {
+              "include": "#quoted-rarity"
+            }
+          ]
+        }
+      ]
+    },
+    "linked-sockets-rule": {
+      "patterns": [
+        {
+          "begin": "^\\s*(LinkedSockets)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#operator"
+            },
+            {
+              "include": "#single-digit-number"
+            }
+          ]
+        }
+      ]
+    },
+    "socket-group-rule": {
+      "patterns": [
+        {
+          "begin": "^\\s*(SocketGroup)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#equality-operator"
+            },
+            {
+              "include": "#socket-colors"
+            },
+            {
+              "include": "#quoted-socket-colors"
+            }
+          ]
+        }
+      ]
+    },
+    "set-font-size-rule": {
+      "patterns": [
+        {
+          "begin": "^\\s*(SetFontSize)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#equality-operator"
+            },
+            {
+              "include": "#double-digit-number"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
