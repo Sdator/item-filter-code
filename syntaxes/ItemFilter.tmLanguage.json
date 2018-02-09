@@ -22,9 +22,6 @@
     },
     {
       "include": "#filter-rules"
-    },
-    {
-      "include": "#action-rules"
     }
   ],
   "repository": {
