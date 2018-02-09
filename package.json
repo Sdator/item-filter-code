@@ -17,10 +17,10 @@
   ],
   "main": "./dist/client/main",
   "scripts": {
-    "vscode:prepublish": "tsc -p ./",
-    "compile": "tsc -p ./ && gulp lint",
-    "watch": "tsc -watch -p ./",
-    "test": "",
+    "vscode:prepublish": "tsc -p ./src",
+    "compile": "tsc -p ./src && gulp lint",
+    "watch": "tsc -watch -p ./src",
+    "test": "tsc -p ./test",
     "clean": "gulp clean",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
@@ -30,7 +30,7 @@
     "vscode-nls": "^3.2.1"
   },
   "devDependencies": {
-    "@glencfl/tslint-config": "^1.3.2",
+    "@glencfl/tslint-config": "^1.3.3",
     "@types/gulp": "^4.0.5",
     "gulp": "^3.9.1",
     "gulp-clean": "^0.4.0",

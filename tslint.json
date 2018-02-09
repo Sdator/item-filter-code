@@ -1,9 +1,6 @@
 {
   "extends": "@glencfl/tslint-config",
   "rules": {
-    "file-header": [
-      true,
-      "Copyright © Glen Marker. All rights reserved."
-    ]
+    "no-unsafe-any": false
   }
 }

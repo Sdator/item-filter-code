@@ -1,6 +1,8 @@
-// Copyright © Glen Marker. All rights reserved.
-// Licensed under the MIT License. See the License.md file in the project root
-// for license information.
+/* ============================================================================
+ * Copyright  Glen Marker. All rights reserved.
+ * Licensed under the MIT license. See the LICENSE file in the project root for
+ * license information.
+ * ===========================================================================*/
 
 import gulp = require("gulp");
 import gulpClean = require("gulp-clean");
@@ -14,8 +16,9 @@ gulp.task("clean", () => {
 });
 
 const typeScriptGlobs = [
-  "client/**/*.ts",
-  "server/**/*.ts",
+  "src/core/**/*.ts",
+  "src/client/**/*.ts",
+  "src/server/**/*.ts",
   "test/**/*.ts",
   "!**/*.d.ts",
 ];
@@ -31,7 +34,7 @@ const typeScriptGlobs = [
  */
 class PositionFormatter extends tslint.Formatters.AbstractFormatter {
   format(failures: tslint.RuleFailure[]): string {
-    let result = "\n";
+    let result = "";
 
     let errors = 0;
     let warnings = 0;
@@ -59,7 +62,7 @@ class PositionFormatter extends tslint.Formatters.AbstractFormatter {
 
     const errorText = errors === 1 ? "error" : "errors";
     const warningText = warnings === 1 ? "warning" : "warnings";
-    result += `Found ${errors} ${errorText} and ${warnings} ${warningText}.\n\n`;
+    result += `Result: ${errors} ${errorText} and ${warnings} ${warningText}.\n`;
 
     return result;
   }
@@ -69,7 +72,7 @@ gulp.task("lint", () => {
   return gulp.src(typeScriptGlobs)
     .pipe(gulpTSLint.default({
       tslint,
-      program: require("tslint").Linter.createProgram("./tsconfig.json", "."),
+      program: tslint.Linter.createProgram("./src/tsconfig.json", "./src"),
       configuration: "./tslint.json",
       formatter: PositionFormatter,
     }))

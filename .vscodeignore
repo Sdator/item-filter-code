@@ -1,5 +1,6 @@
 .vscode/**
 client/**
+examples/**
 server/**
 test/**
 .gitignore

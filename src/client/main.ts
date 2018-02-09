@@ -11,7 +11,7 @@ const localize = nls.loadMessageBundle();
 
 import { ExtensionContext } from "vscode";
 import {
-  ServerOptions, TransportKind, LanguageClientOptions, LanguageClient
+  LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
 } from "vscode-languageclient";
 
 export function activate(context: ExtensionContext) {
