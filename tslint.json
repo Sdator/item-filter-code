@@ -1,6 +1,0 @@
-{
-  "extends": "@glencfl/tslint-config",
-  "rules": {
-    "no-unsafe-any": false
-  }
-}

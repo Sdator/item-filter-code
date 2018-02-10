@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2016",
     "module": "commonjs",
-    "outDir": "../dist",
+    "outDir": "./dist",
     "lib": [
       "es2016"
     ],
@@ -14,12 +14,12 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": false,
+    "noUnusedParameters": true,
     "removeComments": true
   },
   "include": [
     "client/**/*.ts",
-    "core/**/*.ts",
-    "server/**/*.ts"
+    "server/**/*.ts",
+    "test/**/*.ts"
   ]
 }

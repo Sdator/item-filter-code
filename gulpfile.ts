@@ -1,5 +1,5 @@
 /* ============================================================================
- * Copyright  Glen Marker. All rights reserved.
+ * Copyright (c) Glen Marker. All rights reserved.
  * Licensed under the MIT license. See the LICENSE file in the project root for
  * license information.
  * ===========================================================================*/
@@ -7,27 +7,21 @@
 import gulp = require("gulp");
 import gulpClean = require("gulp-clean");
 import gulpTSLint = require("gulp-tslint");
+
+import * as fs from "fs";
+import * as yaml from "js-yaml";
 import * as path from "path";
 import * as tslint from "tslint";
 
-gulp.task("clean", () => {
-  return gulp.src("./dist/**/*", { read: false })
-    .pipe(gulpClean());
-});
-
-const typeScriptGlobs = [
-  "src/core/**/*.ts",
-  "src/client/**/*.ts",
-  "src/server/**/*.ts",
-  "test/**/*.ts",
-  "!**/*.d.ts",
-];
+interface ItemData {
+  [itemClass: string]: string[];
+}
 
 /**
  * Formats TSLint output into a format an easier to consume format, which
  * includes both a relative path to a file within this project and the full
  * range of the error within that file.
- * 
+ *
  * While it looks decent from the CLI, it's primarily intended to be used by a
  * problem matcher within a suitable text editor. The output format is:
  * `file@[startY, startX, endY, endX] - severity: message`
@@ -68,12 +62,24 @@ class PositionFormatter extends tslint.Formatters.AbstractFormatter {
   }
 }
 
+gulp.task("clean", () => {
+  return gulp.src("./dist/**/*", { read: false })
+    .pipe(gulpClean());
+});
+
+const typeScriptGlobs = [
+  "client/**/*.ts",
+  "server/**/*.ts",
+  "test/**/*.ts",
+  "!**/*.d.ts",
+];
+
 gulp.task("lint", () => {
   return gulp.src(typeScriptGlobs)
     .pipe(gulpTSLint.default({
       tslint,
-      program: tslint.Linter.createProgram("./src/tsconfig.json", "./src"),
-      configuration: "./tslint.json",
+      program: tslint.Linter.createProgram("./tsconfig.json", "."),
+      configuration: "./tslint.yaml",
       formatter: PositionFormatter,
     }))
 
@@ -86,4 +92,104 @@ gulp.task("lint", () => {
     .on("error", () => {
       process.exit(1);
     });
+});
+
+gulp.task("data", () => {
+  let data: ItemData;
+  try {
+    let configPath = path.join(__dirname, "data", "items.yaml");
+    data = yaml.safeLoad(fs.readFileSync(configPath, "utf8"));
+  } catch (e) {
+    process.exit(1);
+  }
+
+  // The first half of the file is identical to the YAML file, except converted
+  // into JavaScript and stored within a property.
+  let itemBases: string[] = [];
+  let contents: string = `{\n\t"items": {\n`;
+
+  // @ts-ignore
+  const entries = Object.entries(data);
+
+  for (let i = 0; i < entries.length; i++) {
+    let [itemClass, classBases]: [string, string[]] = entries[i];
+    contents += `\t\t"${itemClass}": [\n`;
+
+    for (let j = 0; j < classBases.length; j++) {
+      const itemBase = classBases[j];
+      itemBases.push(itemBase);
+
+      if (j === classBases.length - 1) {
+        contents += `\t\t\t"${itemBase}"\n`
+      } else {
+        contents += `\t\t\t"${itemBase}",\n`
+      }
+    }
+
+    if (i === entries.length - 1) {
+      contents += `\t\t]\n`;
+    } else {
+      contents += `\t\t],\n`;
+    }
+  }
+
+  contents += "\t},\n";
+
+  // The second part of the file is simply an array of the item bases sorted by
+  // length. This part consists of two things: a list of item bases sorted by
+  // their length and then a mapping between each length and the starting index
+  // for that length within the sorted array.
+  itemBases.sort((lha: string, rha: string) => {
+    if (lha.length > rha.length) {
+      return 1;
+    } else if (lha.length === rha.length) {
+      return lha.localeCompare(rha);
+    } else {
+      return -1;
+    }
+  });
+
+  const baseCount = itemBases.length;
+  const minLength = itemBases[0].length;
+  const maxLength = itemBases[itemBases.length - 1].length;
+
+  let indices: number[] = [];
+  let currentIndex = 0;
+  let currentLength = minLength;
+  while (currentLength <= maxLength) {
+    const base = itemBases[currentIndex];
+    if (currentLength <= base.length) {
+      indices.push(currentIndex);
+      currentLength++;
+    } else {
+      currentIndex++;
+    }
+  }
+
+  contents += `\t"indices": [\n\t\t`;
+  for (let i = 0; i < indices.length; i++) {
+    const index = indices[i];
+
+    if (i === indices.length - 1) {
+      contents += `${index}\n\t],\n`;
+    } else {
+      contents += `${index},\n\t\t`;
+    }
+  }
+
+  contents += `\t"bases": [\n\t\t`
+  for (let i = 0; i < itemBases.length; i++) {
+    const base = itemBases[i];
+
+    if (i === itemBases.length - 1) {
+      contents += `"${base}"\n\t]\n}`;
+    } else {
+      contents += `"${base}",\n\t\t`
+    }
+  }
+
+  const outFile = path.join(__dirname, "dist", "items.json");
+  fs.writeFile(outFile, contents, (err) => {
+    if (err) throw err;
+  });
 });
