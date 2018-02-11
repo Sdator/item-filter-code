@@ -4,23 +4,26 @@
  * license information.
  * ===========================================================================*/
 
-// TODO(glen): provide the formatter hook-in here.
-// TODO(glen): provide the color provider hook-in here.
-
 import {
   createConnection, IConnection, IPCMessageReader, IPCMessageWriter, TextDocument,
-  TextDocuments, InitializeResult
+  TextDocuments, InitializeResult, ServerCapabilities
 } from "vscode-languageserver";
+import {
+  ServerCapabilities as CPServerCapabilities, DocumentColorRequest,
+  ColorPresentationRequest
+} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
+import { runSafe } from "./helpers";
 import { ConfigurationValues, ItemFilter } from "./item-filter";
 
 const itemFilters: Map<string, ItemFilter> = new Map();
 
-const config: ConfigurationValues = {
+let config: ConfigurationValues = {
   baseWhitelist: [],
   classWhitelist: [],
-  performanceHints: true,
-  performanceOptimization: false
+  blockWhitelist: [],
+  ruleWhitelist: [],
+  performanceHints: true
 };
 
 const connection: IConnection = createConnection(new IPCMessageReader(process),
@@ -41,33 +44,25 @@ async function processItemFilter(document: TextDocument): Promise<void> {
 documents.listen(connection);
 
 connection.onInitialize((_param): InitializeResult => {
-  return {
-    capabilities: {
-      textDocumentSync: documents.syncKind,
-      completionProvider: {}
-    }
+  const capabilities: ServerCapabilities & CPServerCapabilities = {
+    textDocumentSync: documents.syncKind,
+    completionProvider: {},
+    colorProvider: true
   };
+
+  return { capabilities };
 });
 
 documents.onDidChangeContent(async change => {
   await processItemFilter(change.document);
 });
 
+documents.onDidClose(event => {
+  itemFilters.delete(event.document.uri);
+});
+
 connection.onDidChangeConfiguration(async change => {
-  const newConfig = <ConfigurationValues> change.settings["item-filter"];
-
-  let updating = false;
-  if (config.baseWhitelist !== newConfig.baseWhitelist) {
-    updating = true;
-    config.baseWhitelist = newConfig.baseWhitelist;
-  }
-
-  if (config.classWhitelist !== newConfig.classWhitelist) {
-    updating = true;
-    config.classWhitelist = newConfig.classWhitelist;
-  }
-
-  if (!updating) return [];
+  config = <ConfigurationValues> change.settings["item-filter"];
 
   const openFilters = documents.all();
   const promises: Array<Promise<void>> = [];
@@ -79,14 +74,38 @@ connection.onDidChangeConfiguration(async change => {
 });
 
 connection.onCompletion(async params => {
-  const filter = itemFilters.get(params.textDocument.uri);
+  return runSafe(async () => {
+    const filter = itemFilters.get(params.textDocument.uri);
 
-  if (filter) {
-    return await filter.getCompletionSuggestions(params.textDocument.uri,
-      params.position);
-  } else {
-    return [];
-  }
+    if (filter) {
+      return await filter.getCompletionSuggestions(params.textDocument.uri,
+        params.position);
+    } else {
+      return [];
+    }
+  }, [], `Error while computing completions for ${params.textDocument.uri}`);
+});
+
+connection.onRequest(DocumentColorRequest.type, params => {
+  return runSafe(() => {
+    const filter = itemFilters.get(params.textDocument.uri);
+    if (filter) {
+      return filter.getDocumentColors();
+    } else {
+      return [];
+    }
+  }, [], `Error while computing document colors for ${params.textDocument.uri}`);
+});
+
+connection.onRequest(ColorPresentationRequest.type, params => {
+  return runSafe(() => {
+    const filter = itemFilters.get(params.textDocument.uri);
+    if (filter) {
+      return filter.getColorPresentations();
+    } else {
+      return [];
+    }
+  }, [], `Error while computing color presentations for ${params.textDocument.uri}`);
 });
 
 connection.listen();

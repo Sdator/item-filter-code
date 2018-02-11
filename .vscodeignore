@@ -1,5 +1,7 @@
 .vscode/**
 client/**
+data/**
+docs/**
 examples/**
 server/**
 test/**
@@ -7,4 +9,4 @@ test/**
 gulpfile.ts
 package-lock.json
 tsconfig.json
-tslint.json
+tslint.yaml

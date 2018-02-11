@@ -11,8 +11,9 @@ import {
 export interface ConfigurationValues {
   baseWhitelist: string[];
   classWhitelist: string[];
+  blockWhitelist: string[];
+  ruleWhitelist: string[];
   performanceHints: boolean;
-  performanceOptimization: boolean;
 }
 
 export class ItemFilter {
@@ -36,5 +37,13 @@ export class ItemFilter {
 
   async getDiagnostics(): Promise<Diagnostic[]> {
     return Promise.resolve([]);
+  }
+
+  async getColorPresentations() {
+    return [];
+  }
+
+  async getDocumentColors() {
+    return [];
   }
 }
