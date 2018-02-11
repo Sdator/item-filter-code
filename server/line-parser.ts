@@ -116,7 +116,7 @@ export class LineParser {
       const range = result.range;
       return { value, range };
     } else {
-      return;
+      return undefined;
     }
   }
 
@@ -131,7 +131,7 @@ export class LineParser {
       const range = result.range;
       return { value, range };
     } else {
-      return;
+      return undefined;
     }
   }
 
@@ -160,7 +160,7 @@ export class LineParser {
       if (quotationResult) result.value = quotationResult[2];
       return result;
     } else {
-      return;
+      return undefined;
     }
   }
 

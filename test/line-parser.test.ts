@@ -74,7 +74,6 @@ describe("LineParser.constructor()", () => {
 });
 
 describe("LineParser.empty -> boolean", () => {
-  // Success Cases ============================================================
   it("correctly handles an empty line", () => {
     const p = new LineParser("", 0);
     assert(p.empty);
@@ -172,7 +171,6 @@ describe("LineParser.empty -> boolean", () => {
     assert(p.empty);
   });
 
-  // Failure Cases ============================================================
   it("throws when given multiple lines", () => {
     assert.throws(() => {
       new LineParser("\n", 0);
@@ -181,7 +179,6 @@ describe("LineParser.empty -> boolean", () => {
 });
 
 describe("LineParser.isCommented() -> boolean", () => {
-  // Success Cases ============================================================
   it("correctly detects lone pound characters as comments", () => {
     const p = new LineParser("#", 0);
     assert(p.isCommented());
@@ -240,7 +237,6 @@ describe("LineParser.isCommented() -> boolean", () => {
     assert.isFalse(p.isCommented());
   });
 
-  // Failure Cases ============================================================
   it("throws an expection if given multiple lines", () => {
     assert.throws(() => {
       new LineParser("# Test \n # Test", 0);
@@ -293,7 +289,6 @@ describe("LineParser.isIgnored() -> boolean", () => {
 });
 
 describe("LineParser.nextNumber() -> ParseResult", () => {
-  // Success Cases ============================================================
   it("correctly handles a lone number", () => {
     const p = new LineParser("42", 0);
     const currentResult = p.nextNumber();
@@ -457,7 +452,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(p.currentIndex, 3);
   });
 
-  // Failure Cases ============================================================
   it("throws an error when given multiple lines", () => {
     assert.throws(() => {
       new LineParser("42\ntest", 0);
@@ -466,7 +460,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
 });
 
 describe("LineParser.nextOperator() -> ParseResult", () => {
-  // Success Cases ============================================================
   it("correctly handles the '<' operator", () => {
     const p = new LineParser("<", 0);
     const currentResult = p.nextOperator();
@@ -764,7 +757,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(p.currentIndex, 3);
   });
 
-  // Failure Cases ============================================================
   it("throws an error when given multiple lines", () => {
     assert.throws(() => {
       new LineParser("=\ntest", 0);
@@ -773,7 +765,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
 });
 
 describe("LineParser.nextWord() -> ParseResult", () => {
-  // Success Cases ============================================================
   it("properly handles a lone word", () => {
     const p = new LineParser("test", 0);
     const currentResult = p.nextWord();
@@ -1151,7 +1142,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.isFalse(p.isCommented());
   });
 
-  // Failure Cases ============================================================
   it("throws an error when given multiple lines", () => {
     assert.throws(() => {
       new LineParser("Test\nWord", 0);
@@ -1160,7 +1150,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
 });
 
 describe("LineParser.nextString() -> ParseResult", () => {
-  // Success Cases ============================================================
   it("properly hands a lone word", () => {
     const p = new LineParser("test", 0);
     const currentResult = p.nextString();
@@ -1642,7 +1631,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.isFalse(p.isCommented());
   });
 
-  // Failure Cases ============================================================
   it("throws when given multiple lines", () => {
     assert.throws(() => {
       new LineParser('"Test"\n"Value"', 0);
@@ -1969,7 +1957,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert.isFalse(p.isCommented());
   });
 
-  // Failure Cases ============================================================
   it("throws an expection if given multiple lines", () => {
     assert.throws(() => {
       new LineParser("\n", 0);

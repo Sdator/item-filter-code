@@ -90,7 +90,7 @@ connection.onRequest(DocumentColorRequest.type, params => {
   return runSafe(() => {
     const filter = itemFilters.get(params.textDocument.uri);
     if (filter) {
-      return filter.getDocumentColors();
+      return filter.getColorInformation();
     } else {
       return [];
     }
@@ -101,7 +101,7 @@ connection.onRequest(ColorPresentationRequest.type, params => {
   return runSafe(() => {
     const filter = itemFilters.get(params.textDocument.uri);
     if (filter) {
-      return filter.getColorPresentations();
+      return filter.computeColorEdit(params.color, params.range);
     } else {
       return [];
     }

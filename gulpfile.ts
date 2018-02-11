@@ -103,14 +103,15 @@ gulp.task("data", () => {
     process.exit(1);
   }
 
-  // The first half of the file is identical to the YAML file, except converted
-  // into JavaScript and stored within a property.
+  // The first half of the file consists of two structures: one mapping item
+  // classes to an array of item bases and another mapping each item base to
+  // its item class.
   let itemBases: string[] = [];
-  let contents: string = `{\n\t"items": {\n`;
-
   // @ts-ignore
   const entries = Object.entries(data);
 
+  let contents: string = `{\n\t"classesToBases": {\n`;
+  let basesToClasses = "";
   for (let i = 0; i < entries.length; i++) {
     let [itemClass, classBases]: [string, string[]] = entries[i];
     contents += `\t\t"${itemClass}": [\n`;
@@ -124,6 +125,12 @@ gulp.task("data", () => {
       } else {
         contents += `\t\t\t"${itemBase}",\n`
       }
+
+      if (i === entries.length - 1 && j == classBases.length - 1) {
+        basesToClasses += `\t\t"${itemBase}": "${itemClass}"\n`;
+      } else {
+        basesToClasses += `\t\t"${itemBase}": "${itemClass}",\n`;
+      }
     }
 
     if (i === entries.length - 1) {
@@ -133,7 +140,7 @@ gulp.task("data", () => {
     }
   }
 
-  contents += "\t},\n";
+  contents += `\t},\n\t"basesToClasses": {\n${basesToClasses}\t},\n`;
 
   // The second part of the file is simply an array of the item bases sorted by
   // length. This part consists of two things: a list of item bases sorted by
@@ -166,27 +173,28 @@ gulp.task("data", () => {
     }
   }
 
-  contents += `\t"indices": [\n\t\t`;
-  for (let i = 0; i < indices.length; i++) {
-    const index = indices[i];
-
-    if (i === indices.length - 1) {
-      contents += `${index}\n\t],\n`;
-    } else {
-      contents += `${index},\n\t\t`;
-    }
-  }
-
-  contents += `\t"bases": [\n\t\t`
+  contents += `\t"sortedBases": [\n\t\t`
   for (let i = 0; i < itemBases.length; i++) {
     const base = itemBases[i];
 
     if (i === itemBases.length - 1) {
-      contents += `"${base}"\n\t]\n}`;
+      contents += `"${base}"\n\t],\n`;
     } else {
       contents += `"${base}",\n\t\t`
     }
   }
+
+  contents += `\t"sortedBasesIndices": [\n\t\t`;
+  for (let i = 0; i < indices.length; i++) {
+    const index = indices[i];
+
+    if (i === indices.length - 1) {
+      contents += `${index}\n\t]\n`;
+    } else {
+      contents += `${index},\n\t\t`;
+    }
+  }
+  contents += "}";
 
   const outFile = path.join(__dirname, "dist", "items.json");
   fs.writeFile(outFile, contents, (err) => {
