@@ -299,7 +299,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, 42);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -316,7 +315,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, 42);
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 3);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 3);
     assert(p.empty);
@@ -333,7 +331,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, 42);
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 3);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 3);
     assert(p.empty);
@@ -350,7 +347,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, 42);
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, " test");
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -367,7 +363,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, 42);
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, " # test");
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -385,7 +380,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, 42);
     assert.strictEqual(currentResult.range.start.character, 3);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, " ö");
     assert.strictEqual(p.currentIndex, 5);
     assert.isFalse(p.empty);
@@ -431,7 +425,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
   it("doesn't mutate a following number when removing a number", () => {
     const p = new LineParser("42 42", 0);
     p.nextNumber();
-    // @ts-ignore
     assert.strictEqual(p.text, " 42");
     assert.strictEqual(p.currentIndex, 2);
   });
@@ -439,7 +432,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
   it("doesn't mutate a following word when removing a number", () => {
     const p = new LineParser("42 Test", 0);
     p.nextNumber();
-    // @ts-ignore
     assert.strictEqual(p.text, " Test");
     assert.strictEqual(p.currentIndex, 2);
   });
@@ -447,7 +439,6 @@ describe("LineParser.nextNumber() -> ParseResult", () => {
   it("doesn't mutate a following string when removing a number", () => {
     const p = new LineParser(' 42 "Test"', 0);
     p.nextNumber();
-    // @ts-ignore
     assert.strictEqual(p.text, ' "Test"');
     assert.strictEqual(p.currentIndex, 3);
   });
@@ -470,7 +461,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "<");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 1);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 1);
     assert(p.empty);
@@ -487,7 +477,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, ">");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 1);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 1);
     assert(p.empty);
@@ -504,7 +493,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "=");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 1);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 1);
     assert(p.empty);
@@ -521,7 +509,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "<=");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -538,7 +525,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, ">=");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -555,7 +541,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, ">");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -572,7 +557,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "<");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 1);
-    // @ts-ignore
     assert.strictEqual(p.text, " ");
     assert.strictEqual(p.currentIndex, 1);
     assert(p.empty);
@@ -589,7 +573,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, ">");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, " ");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -606,7 +589,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "<");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, "\t");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -623,7 +605,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "<");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 1);
-    // @ts-ignore
     assert.strictEqual(p.text, " ö");
     assert.strictEqual(p.currentIndex, 1);
     assert.isFalse(p.empty);
@@ -640,7 +621,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, ">");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 1);
-    // @ts-ignore
     assert.strictEqual(p.text, " # Test");
     assert.strictEqual(p.currentIndex, 1);
     assert.isFalse(p.empty);
@@ -736,7 +716,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
   it("doesn't mutate a following number when removing an operator", () => {
     const p = new LineParser("> 42", 0);
     p.nextOperator();
-    // @ts-ignore
     assert.strictEqual(p.text, " 42");
     assert.strictEqual(p.currentIndex, 1);
   });
@@ -744,7 +723,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
   it("doesn't mutate a following word when removing an operator", () => {
     const p = new LineParser("< Test", 0);
     p.nextOperator();
-    // @ts-ignore
     assert.strictEqual(p.text, " Test");
     assert.strictEqual(p.currentIndex, 1);
   });
@@ -752,7 +730,6 @@ describe("LineParser.nextOperator() -> ParseResult", () => {
   it("doesn't mutate a following string when removing an operator", () => {
     const p = new LineParser(' >= "Test"', 0);
     p.nextOperator();
-    // @ts-ignore
     assert.strictEqual(p.text, ' "Test"');
     assert.strictEqual(p.currentIndex, 3);
   });
@@ -776,7 +753,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
     assert(p.empty);
@@ -794,7 +770,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
     assert(p.empty);
@@ -812,7 +787,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
     assert(p.empty);
@@ -830,7 +804,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, " ");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -848,7 +821,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "\t");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -866,7 +838,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "ö");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -885,7 +856,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "öö");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -904,7 +874,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "öö");
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
     assert(p.empty);
@@ -922,7 +891,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, "\tword");
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -940,7 +908,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, " \t42");
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -958,7 +925,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, ' "Test String"');
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -976,7 +942,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, " #Comment");
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -986,7 +951,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
   it("doesn't mutate a following number when removing a word", () => {
     const p = new LineParser("Test 42", 0);
     p.nextWord();
-    // @ts-ignore
     assert.strictEqual(p.text, " 42");
     assert.strictEqual(p.currentIndex, 4);
   });
@@ -994,7 +958,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
   it("doesn't mutate a following word when removing a word", () => {
     const p = new LineParser("Test Word", 0);
     p.nextWord();
-    // @ts-ignore
     assert.strictEqual(p.text, " Word");
     assert.strictEqual(p.currentIndex, 4);
   });
@@ -1002,7 +965,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
   it("doesn't mutate a following boolean when removing a word", () => {
     const p = new LineParser("Test >=", 0);
     p.nextWord();
-    // @ts-ignore
     assert.strictEqual(p.text, " >=");
     assert.strictEqual(p.currentIndex, 4);
   });
@@ -1010,7 +972,6 @@ describe("LineParser.nextWord() -> ParseResult", () => {
   it("doesn't mutate a following string when removing a word", () => {
     const p = new LineParser(' Test "Word"', 0);
     p.nextWord();
-    // @ts-ignore
     assert.strictEqual(p.text, ' "Word"');
     assert.strictEqual(p.currentIndex, 5);
   });
@@ -1161,7 +1122,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
     assert(p.empty);
@@ -1179,7 +1139,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, " value");
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -1197,7 +1156,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -1215,7 +1173,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -1233,7 +1190,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "\t ");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -1251,7 +1207,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -1269,7 +1224,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 7);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 7);
     assert(p.empty);
@@ -1287,7 +1241,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
     assert(p.empty);
@@ -1305,7 +1258,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "");
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, "\t ");
     assert.strictEqual(p.currentIndex, 4);
     assert(p.empty);
@@ -1323,7 +1275,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 11);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 11);
     assert(p.empty);
@@ -1341,7 +1292,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, " test text");
     assert.strictEqual(p.currentIndex, 6);
     assert.isFalse(p.empty);
@@ -1359,7 +1309,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "ööö");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, " test");
     assert.strictEqual(p.currentIndex, 5);
     assert.isFalse(p.empty);
@@ -1377,7 +1326,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "öö");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 2);
-    // @ts-ignore
     assert.strictEqual(p.text, ' "test"');
     assert.strictEqual(p.currentIndex, 2);
     assert.isFalse(p.empty);
@@ -1395,7 +1343,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "testöövalue");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 11);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 11);
     assert(p.empty);
@@ -1414,7 +1361,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "testöövalue");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 13);
-    // @ts-ignore
     assert.strictEqual(p.text, " test");
     assert.strictEqual(p.currentIndex, 13);
     assert.isFalse(p.empty);
@@ -1432,7 +1378,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test42");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 7);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 7);
     assert(p.empty);
@@ -1450,7 +1395,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "42test");
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 7);
-    // @ts-ignore
     assert.strictEqual(p.text, " \t");
     assert.strictEqual(p.currentIndex, 7);
     assert(p.empty);
@@ -1468,7 +1412,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "42 test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 9);
-    // @ts-ignore
     assert.strictEqual(p.text, " 321");
     assert.strictEqual(p.currentIndex, 9);
     assert.isFalse(p.empty);
@@ -1486,7 +1429,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "Test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, " # Value");
     assert.strictEqual(p.currentIndex, 6);
     assert.isFalse(p.empty);
@@ -1504,7 +1446,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, ' "42"');
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -1522,7 +1463,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "> test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 8);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 8);
     assert(p.empty);
@@ -1532,7 +1472,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
   it("doesn't mutate a following number when removing a string", () => {
     const p = new LineParser('"Test" 42', 0);
     p.nextString();
-    // @ts-ignore
     assert.strictEqual(p.text, " 42");
     assert.strictEqual(p.currentIndex, 6);
   });
@@ -1540,7 +1479,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
   it("doesn't mutate a following word when removing a string", () => {
     const p = new LineParser('"Test" Text', 0);
     p.nextString();
-    // @ts-ignore
     assert.strictEqual(p.text, " Text");
     assert.strictEqual(p.currentIndex, 6);
   });
@@ -1548,7 +1486,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
   it("doesn't mutate a following boolean when removing a string", () => {
     const p = new LineParser('"Test" <', 0);
     p.nextString();
-    // @ts-ignore
     assert.strictEqual(p.text, " <");
     assert.strictEqual(p.currentIndex, 6);
   });
@@ -1556,7 +1493,6 @@ describe("LineParser.nextString() -> ParseResult", () => {
   it("doesn't mutate a following string when removing a string", () => {
     const p = new LineParser('"Test" "Value"', 0);
     p.nextString();
-    // @ts-ignore
     assert.strictEqual(p.text, ' "Value"');
     assert.strictEqual(p.currentIndex, 6);
   });
@@ -1650,7 +1586,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
     assert(p.empty);
@@ -1668,7 +1603,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert.isFalse(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
     assert(p.empty);
@@ -1686,7 +1620,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
     assert(p.empty);
@@ -1704,7 +1637,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert.isFalse(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
     assert(p.empty);
@@ -1722,7 +1654,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -1740,7 +1671,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert.isFalse(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 7);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 7);
     assert(p.empty);
@@ -1758,7 +1688,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 1);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
     assert(p.empty);
@@ -1776,7 +1705,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -1794,7 +1722,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert.isFalse(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 7);
-    // @ts-ignore
     assert.strictEqual(p.text, "\t ");
     assert.strictEqual(p.currentIndex, 7);
     assert(p.empty);
@@ -1812,7 +1739,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 4);
-    // @ts-ignore
     assert.strictEqual(p.text, " test");
     assert.strictEqual(p.currentIndex, 4);
     assert.isFalse(p.empty);
@@ -1830,7 +1756,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert.isFalse(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, '\t"test"');
     assert.strictEqual(p.currentIndex, 5);
     assert.isFalse(p.empty);
@@ -1848,7 +1773,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
     assert.isFalse(currentResult.value);
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 5);
-    // @ts-ignore
     assert.strictEqual(p.text, " # Test");
     assert.strictEqual(p.currentIndex, 5);
     assert.isFalse(p.empty);
@@ -1858,7 +1782,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
   it("doesn't mutate a following number when removing a boolean", () => {
     const p = new LineParser("True 42", 0);
     p.nextBoolean();
-    // @ts-ignore
     assert.strictEqual(p.text, " 42");
     assert.strictEqual(p.currentIndex, 4);
   });
@@ -1866,7 +1789,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
   it("doesn't mutate a following word when removing a boolean", () => {
     const p = new LineParser("False Test", 0);
     p.nextBoolean();
-    // @ts-ignore
     assert.strictEqual(p.text, " Test");
     assert.strictEqual(p.currentIndex, 5);
   });
@@ -1874,7 +1796,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
   it("doesn't mutate a following boolean when removing a boolean", () => {
     const p = new LineParser('"True" =', 0);
     p.nextBoolean();
-    // @ts-ignore
     assert.strictEqual(p.text, " =");
     assert.strictEqual(p.currentIndex, 6);
   });
@@ -1882,7 +1803,6 @@ describe("LineParser.nextBoolean() -> ParseResult", () => {
   it("doesn't mutate a following string when removing a boolean", () => {
     const p = new LineParser('"False" "Test"', 0);
     p.nextBoolean();
-    // @ts-ignore
     assert.strictEqual(p.text, ' "Test"');
     assert.strictEqual(p.currentIndex, 7);
   });
@@ -1977,7 +1897,6 @@ describe("LineParser.parseComment() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "# Test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -1995,7 +1914,6 @@ describe("LineParser.parseComment() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "# Test");
     assert.strictEqual(currentResult.range.start.character, 2);
     assert.strictEqual(currentResult.range.end.character, 8);
-    // @ts-ignore
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 8);
     assert(p.empty);
@@ -2013,7 +1931,6 @@ describe("LineParser.parseComment() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "# Test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 6);
-    // @ts-ignore
     assert.strictEqual(p.text, "  ");
     assert.strictEqual(p.currentIndex, 6);
     assert(p.empty);
@@ -2031,7 +1948,6 @@ describe("LineParser.parseComment() -> ParseResult", () => {
     assert.strictEqual(currentResult.value, "# Test#Test");
     assert.strictEqual(currentResult.range.start.character, 0);
     assert.strictEqual(currentResult.range.end.character, 11);
-    // @ts-ignore
     assert.strictEqual(p.text, "  ");
     assert.strictEqual(p.currentIndex, 11);
     assert(p.empty);

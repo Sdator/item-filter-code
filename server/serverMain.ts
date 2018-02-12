@@ -14,6 +14,7 @@ import {
 
 import { ConfigurationValues } from "./common";
 import { equalArrays } from "./helpers";
+import { getCompletionSuggestions } from "./completion";
 import { ItemFilter } from "./item-filter";
 
 const itemFilters: Map<string, ItemFilter> = new Map();
@@ -84,13 +85,7 @@ connection.onDidChangeConfiguration(change => {
 });
 
 connection.onCompletion(params => {
-  const filter = itemFilters.get(params.textDocument.uri);
-  if (filter) {
-    return filter.getCompletionSuggestions(params.textDocument.uri,
-      params.position);
-  } else {
-    return [];
-  }
+  return getCompletionSuggestions(documents.get(params.textDocument.uri), params.position);
 });
 
 connection.onRequest(DocumentColorRequest.type, params => {

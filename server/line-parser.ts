@@ -18,14 +18,14 @@ const textRegex = /\S+/;
 const eolRegex = /(\r|\n)/;
 const surroundingWSRegex = /^(\s*)(.*\S)\s*$/;
 
-interface ParseResult<T> {
+export interface ParseResult<T> {
   value: T;
   range: Range;
 }
 
 /** Parses data from a single line of a Path of Exile filter. */
 export class LineParser {
-  private text: string;
+  text: string;
   readonly originalLength: number;
   readonly row: number;
   readonly textStartIndex: number;
@@ -94,7 +94,7 @@ export class LineParser {
     const shiftBy = leadingWS.length + value.length;
     const range: Range = {
       start: { line: this.row, character: this.currentIndex + leadingWS.length },
-      end: { line: this.row, character: this.currentIndex + shiftBy },
+      end: { line: this.row, character: this.currentIndex + shiftBy }
     };
 
     this.text = this.text.substr(shiftBy);

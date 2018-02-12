@@ -5,18 +5,17 @@
  * ===========================================================================*/
 
 import {
-  CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity, Position,
-  Range
+  Diagnostic, DiagnosticSeverity, Position, Range, TextDocument
 } from "vscode-languageserver";
 import { ColorInformation, Color } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 const itemData: ItemData = require("../items.json");
 
-import { ConfigurationValues } from "./common";
+import { ruleKeywords, ConfigurationValues } from "./common";
 
 interface ItemData {
-  classesToBases: { [key:string]: string[] };
-  basesToClasses: { [key:string]: string };
+  classesToBases: { [key: string]: string[] };
+  basesToClasses: { [key: string]: string };
   sortedBases: string[];
   sortedBasesIndices: number[];
 }
@@ -33,22 +32,6 @@ export class ItemFilter {
     // TODO(glen): feed colors into this in the 0.0-1.0 format.
     this.colorInformation = new Map();
     this.parsed = this.fullParse(uri, lines);
-  }
-
-  getCompletionSuggestions(_: string, __: Position): CompletionItem[] {
-    // The most accurate way to actually provide autocompletions for an item filter
-    // is to simply parse the entire line in order to figure out the context. We
-    // don't have to worry about other lines at all with item filters, which makes
-    // this fast and easy. This also means that we don't have to wait for the
-    // initial parse, as we parse independently.
-    //
-    // Filtering suggestions based on block constraints would be intrusive and
-    // is better handled through diagnostics.
-
-    return [{
-      label: "Test",
-      kind: CompletionItemKind.Class
-    }];
   }
 
   async getDiagnostics(): Promise<Diagnostic[]> {

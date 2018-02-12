@@ -1,4 +1,4 @@
-If given permission by the user, we will perform a performance sort on the rules within each block. Performance in item filters is a mix of removing rules quickly and removing items from the pool of drops quickly.
+Performance in item filters is a mix of removing rules quickly and removing items from the pool of drops quickly.
 
 Our ordering is currently:
 1. LinkedSockets
