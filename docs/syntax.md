@@ -28,7 +28,7 @@ ShapedMap | Equality | True or False | No
 
 ## Action Rules
 Keyword | Operator | Values | Trailing Comment | Case Sensitive
---- | --- | --- | --- | --- | --- |
+--- | --- | --- | --- | --- |
 SetBorderColor | Equality | 0-255 (3-4 Values) | Yes | N/A
 SetTextColor | Equality | 0-255 (3-4 Values) | Yes | N/A
 SetBackgroundColor | Equality | 0-255 (3-4 Values) | Yes | N/A

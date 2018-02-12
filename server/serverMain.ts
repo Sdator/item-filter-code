@@ -9,21 +9,21 @@ import {
   TextDocuments, InitializeResult, ServerCapabilities
 } from "vscode-languageserver";
 import {
-  ServerCapabilities as CPServerCapabilities, DocumentColorRequest,
-  ColorPresentationRequest
+  ServerCapabilities as CPServerCapabilities, DocumentColorRequest
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { runSafe } from "./helpers";
-import { ConfigurationValues, ItemFilter } from "./item-filter";
+import { ConfigurationValues } from "./common";
+import { equalArrays } from "./helpers";
+import { ItemFilter } from "./item-filter";
 
 const itemFilters: Map<string, ItemFilter> = new Map();
 
 let config: ConfigurationValues = {
   baseWhitelist: [],
   classWhitelist: [],
-  blockWhitelist: [],
   ruleWhitelist: [],
-  performanceHints: true
+  performanceHints: true,
+  alwaysShowAlpha: false
 };
 
 const connection: IConnection = createConnection(new IPCMessageReader(process),
@@ -31,17 +31,19 @@ const connection: IConnection = createConnection(new IPCMessageReader(process),
 
 const documents: TextDocuments = new TextDocuments();
 
-async function processItemFilter(document: TextDocument): Promise<void> {
+function processItemFilter(document: TextDocument): void {
   const uri = document.uri;
   const lines = document.getText().split(/\r?\n/g);
   const filter = new ItemFilter(config, uri, lines);
 
   itemFilters.set(uri, filter);
-  const diagnostics = await filter.getDiagnostics();
-  connection.sendDiagnostics({ uri, diagnostics });
+  filter.getDiagnostics().then(diagnostics => {
+    connection.sendDiagnostics({ uri, diagnostics });
+  }).catch(e => {
+    // TODO(glen): how should we be logging these?
+    console.error(e);
+  });
 }
-
-documents.listen(connection);
 
 connection.onInitialize((_param): InitializeResult => {
   const capabilities: ServerCapabilities & CPServerCapabilities = {
@@ -53,59 +55,52 @@ connection.onInitialize((_param): InitializeResult => {
   return { capabilities };
 });
 
-documents.onDidChangeContent(async change => {
-  await processItemFilter(change.document);
+documents.onDidChangeContent(change => {
+  processItemFilter(change.document);
 });
 
 documents.onDidClose(event => {
   itemFilters.delete(event.document.uri);
 });
 
-connection.onDidChangeConfiguration(async change => {
-  config = <ConfigurationValues> change.settings["item-filter"];
+connection.onDidChangeConfiguration(change => {
+  const newConfig = <ConfigurationValues> change.settings["item-filter"];
 
-  const openFilters = documents.all();
-  const promises: Array<Promise<void>> = [];
-  for (const filter of openFilters) {
-    promises.push(processItemFilter(filter));
+  let update = false;
+  if (!equalArrays(config.baseWhitelist, newConfig.baseWhitelist)) update = true;
+  if (!equalArrays(config.classWhitelist, newConfig.classWhitelist)) update = true;
+  if (!equalArrays(config.ruleWhitelist, newConfig.ruleWhitelist)) update = true;
+  if (!config.performanceHints === newConfig.performanceHints) update = true;
+
+  config = newConfig;
+
+  if (update) {
+    const openFilters = documents.all();
+    itemFilters.clear();
+    for (const filter of openFilters) {
+      processItemFilter(filter);
+    }
   }
-
-  return Promise.all(promises);
 });
 
-connection.onCompletion(async params => {
-  return runSafe(async () => {
-    const filter = itemFilters.get(params.textDocument.uri);
-
-    if (filter) {
-      return await filter.getCompletionSuggestions(params.textDocument.uri,
-        params.position);
-    } else {
-      return [];
-    }
-  }, [], `Error while computing completions for ${params.textDocument.uri}`);
+connection.onCompletion(params => {
+  const filter = itemFilters.get(params.textDocument.uri);
+  if (filter) {
+    return filter.getCompletionSuggestions(params.textDocument.uri,
+      params.position);
+  } else {
+    return [];
+  }
 });
 
 connection.onRequest(DocumentColorRequest.type, params => {
-  return runSafe(() => {
-    const filter = itemFilters.get(params.textDocument.uri);
-    if (filter) {
-      return filter.getColorInformation();
-    } else {
-      return [];
-    }
-  }, [], `Error while computing document colors for ${params.textDocument.uri}`);
+  const filter = itemFilters.get(params.textDocument.uri);
+  if (filter) {
+    return filter.getColorInformation();
+  } else {
+    return [];
+  }
 });
 
-connection.onRequest(ColorPresentationRequest.type, params => {
-  return runSafe(() => {
-    const filter = itemFilters.get(params.textDocument.uri);
-    if (filter) {
-      return filter.computeColorEdit(params.color, params.range);
-    } else {
-      return [];
-    }
-  }, [], `Error while computing color presentations for ${params.textDocument.uri}`);
-});
-
+documents.listen(connection);
 connection.listen();

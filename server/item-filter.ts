@@ -8,16 +8,11 @@ import {
   CompletionItem, CompletionItemKind, Diagnostic, DiagnosticSeverity, Position,
   Range
 } from "vscode-languageserver";
-import { ColorInformation, ColorPresentation, Color } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
+import { ColorInformation, Color } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
+const itemData: ItemData = require("../items.json");
 
-export interface ConfigurationValues {
-  baseWhitelist: string[];
-  classWhitelist: string[];
-  blockWhitelist: string[];
-  ruleWhitelist: string[];
-  performanceHints: boolean;
-}
+import { ConfigurationValues } from "./common";
 
 interface ItemData {
   classesToBases: { [key:string]: string[] };
@@ -26,69 +21,71 @@ interface ItemData {
   sortedBasesIndices: number[];
 }
 
-const data: ItemData = require("../items.json");
-
 export class ItemFilter {
-  config: ConfigurationValues;
-  uri: string;
+  private readonly config: ConfigurationValues;
+  private readonly parsed: Promise<void>;
+  private readonly diagnostics: Map<number, Diagnostic[]>;
+  private readonly colorInformation: Map<number, ColorInformation[]>;
 
-  constructor(config: ConfigurationValues, uri: string, _: string[]) {
+  constructor(config: ConfigurationValues, uri: string, lines: string[]) {
     this.config = config;
-    this.uri = uri;
-
-    console.log(data.sortedBases.length);
+    this.diagnostics = new Map();
+    // TODO(glen): feed colors into this in the 0.0-1.0 format.
+    this.colorInformation = new Map();
+    this.parsed = this.fullParse(uri, lines);
   }
 
-  async getCompletionSuggestions(_: string, __: Position): Promise<CompletionItem[]> {
-    return Promise.resolve([
-      {
-        label: "Test",
-        type: CompletionItemKind.Class
-      }
-    ]);
+  getCompletionSuggestions(_: string, __: Position): CompletionItem[] {
+    // The most accurate way to actually provide autocompletions for an item filter
+    // is to simply parse the entire line in order to figure out the context. We
+    // don't have to worry about other lines at all with item filters, which makes
+    // this fast and easy. This also means that we don't have to wait for the
+    // initial parse, as we parse independently.
+    //
+    // Filtering suggestions based on block constraints would be intrusive and
+    // is better handled through diagnostics.
+
+    return [{
+      label: "Test",
+      kind: CompletionItemKind.Class
+    }];
   }
 
   async getDiagnostics(): Promise<Diagnostic[]> {
-    const result: Diagnostic[] = [];
+    await this.parsed;
 
-    result.push({
-      message: "This is a test.",
-      range: {
-        start: { line: 2, character: 2 },
-        end: { line: 2, character: 6 }
-      },
-      severity: DiagnosticSeverity.Hint
-    });
+    const result: Diagnostic[] = [];
+    for (const [_, value] of this.diagnostics) {
+      result.push.apply(result, value);
+    }
 
     return result;
   }
 
   async getColorInformation(): Promise<ColorInformation[]> {
-    const result: ColorInformation[] = [{
-      color: {
-        red: 1,
-        green: 1,
-        blue: 1,
-        alpha: 1
-      },
+    await this.parsed;
+
+    // const result: ColorInformation[] = [];
+    // for (const [_, value] of this.colorInformation) {
+    //   result.push.apply(result, value);
+    // }
+
+    // return result;
+
+    return [{
+      color: { red: 0.75, green: 0, blue: 0, alpha: 1 },
       range: {
         start: { line: 0, character: 0 },
-        end: { line: 0, character: 4 },
+        end: { line: 0, character: 4 }
       }
     }];
-
-    return result;
   }
 
-  async computeColorEdit(_: Color, range: Range): Promise<ColorPresentation[]> {
-    const result: ColorPresentation[] = [{
-      label: "Test Edit",
-      textEdit: {
-        newText: "Hide",
-        range
-      }
-    }];
+  private async fullParse(uri: string, lines: string[]) {
+    return;
+  }
 
-    return result;
+  private async partialParse(uri: string, changes: any) {
+    return;
   }
 }

@@ -4,26 +4,44 @@
  * license information.
  * ===========================================================================*/
 
-export type Result<T> = Promise<T> | T;
+import { Stretch } from "./common";
+import { Range } from "vscode-languageserver";
 
 export function assertUnreachable(_: never): never {
   throw new Error("Should never hit this assertion at runtime.");
 }
 
-export function runSafe<T>(f: () => Result<T>, errorValue: T, errorMessage: string):
-  Result<T> {
-
-  try {
-    const result = f();
-    if (result instanceof Promise) {
-      return result.then(void 0, e => {
-        console.error(errorMessage, e);
-        return errorValue;
-      });
+export function stretchToRange(stretch: Stretch): Range {
+  return {
+    start: {
+      line: stretch.position.line,
+      character: stretch.position.character
+    },
+    end: {
+      line: stretch.position.line,
+      character: stretch.position.character + stretch.length - 1
     }
-    return result;
-  } catch (e) {
-    console.error(errorMessage, e);
-    return errorValue;
+  };
+}
+
+export function rangeToStretch(range: Range): Stretch {
+  const stretch: Stretch = {
+    position: {
+      line: range.start.line,
+      character: range.start.character
+    },
+    length: range.end.character - range.start.character + 1
+  };
+  return stretch;
+}
+
+export function equalArrays<T>(lha: T[], rha: T[]): boolean {
+  if (lha === rha) return true;
+  if (lha.length !== rha.length) return false;
+
+  for (let i = 0; i < lha.length; i++) {
+    if (lha[i] !== rha[i]) return false;
   }
+
+  return true;
 }

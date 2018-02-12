@@ -11,7 +11,7 @@ const localize = nls.loadMessageBundle();
 
 import {
   languages, Color, ColorInformation, ColorPresentation, ExtensionContext,
-  TextDocument, ProviderResult, Range
+  TextDocument, ProviderResult, Range, workspace
 } from "vscode";
 
 import {
@@ -19,8 +19,7 @@ import {
 } from "vscode-languageclient";
 
 import {
-  ColorPresentationParams, ColorPresentationRequest, DocumentColorParams,
-  DocumentColorRequest
+  DocumentColorParams, DocumentColorRequest
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 let client: LanguageClient;
@@ -43,19 +42,28 @@ function provideDocumentColors(document: TextDocument): ProviderResult<ColorInfo
 function provideColorPresentations(color: Color, context:
   { document: TextDocument, range: Range }): ProviderResult<ColorPresentation[]> {
 
-  const params: ColorPresentationParams = {
-    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(context.document),
-    color,
-    range: client.code2ProtocolConverter.asRange(context.range)
-  };
+  const result: ColorPresentation[] = [];
 
-  return client.sendRequest(ColorPresentationRequest.type, params).then(presentations => {
-    return presentations.map(p => {
-      const presentation = new ColorPresentation(p.label);
-      presentation.textEdit = p.textEdit && client.protocol2CodeConverter.asTextEdit(p.textEdit);
-      return presentation;
-    });
+  const red = Math.trunc(color.red * 255);
+  const green = Math.trunc(color.green * 255);
+  const blue = Math.trunc(color.blue * 255);
+  const alpha = Math.trunc(color.alpha * 255);
+  const appendAlpha = alpha === 255 ? false : true;
+  const alwaysShowAlpha = workspace.getConfiguration("item-filter").get("alwaysShowAlpha");
+
+  let colorString = `${red} ${green} ${blue}`;
+  if (alwaysShowAlpha || appendAlpha) colorString += ` ${alpha}`;
+
+  result.push({
+    label: "Color Picker",
+    textEdit: {
+      newText: colorString,
+      range: context.range,
+      newEol: context.document.eol
+    }
   });
+
+  return result;
 }
 
 export async function activate(context: ExtensionContext) {
