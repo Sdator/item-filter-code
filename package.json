@@ -2,7 +2,7 @@
   "name": "item-filter-code",
   "description": "Support for editing Path of Exile item filters within Visual Studio Code.",
   "displayName": "Item Filter Code",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Glen Marker",
   "publisher": "GlenCFL",
   "license": "MIT",
@@ -14,6 +14,13 @@
   "categories": [
     "Linters",
     "Languages"
+  ],
+  "keywords": [
+    "item filter",
+    "filter",
+    "poe",
+    "path of exile",
+    "exile"
   ],
   "main": "./dist/client/main",
   "scripts": {
@@ -30,7 +37,7 @@
     "vscode-nls": "^3.2.1"
   },
   "devDependencies": {
-    "@glencfl/tslint-config": "^1.4.0",
+    "@glencfl/tslint-config": "^1.4.2",
     "@types/chai": "^4.1.2",
     "@types/gulp": "^4.0.5",
     "@types/js-yaml": "^3.10.1",

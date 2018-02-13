@@ -1,0 +1,47 @@
+---
+rules:
+  - ItemLevel
+  - DropLevel
+  - Quality
+  - Rarity
+  - Class
+  - BaseType
+  - Sockets
+  - LinkedSockets
+  - SocketGroup
+  - Height
+  - Width
+  - Identified
+  - Corrupted
+  - ElderItem
+  - ShaperItem
+  - ShapedMap
+  - SetBorderColor
+  - SetTextColor
+  - SetBackgroundColor
+  - PlayAlertSound
+  - PlayAlertSoundPositional
+  - SetFontSize
+rarities:
+  - Normal
+  - Magic
+  - Rare
+  - Unique
+booleans:
+  - "True"
+  - "False"
+sounds:
+  numberIdentifier:
+    min: 1
+    max: 16
+  stringIdentifiers:
+    ShGeneral: General
+    ShBlessed: Blessed Orb
+    ShChaos: Chaos Orb
+    ShDivine: Divine Orb
+    ShExalted: Exalted Orb
+    ShMirror: Mirror of Kalandra
+    ShAlchemy: Orb of Alchemy
+    ShFusing: Orb of Fusing
+    ShRegal: Regal Orb
+    ShVaal: Vaal Orb

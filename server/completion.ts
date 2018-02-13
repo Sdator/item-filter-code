@@ -21,13 +21,13 @@ import {
   CompletionItem, CompletionItemKind, Position, Range, TextDocument
 } from "vscode-languageserver";
 
-import { rules, sounds, ItemData, ConfigurationValues } from "./common";
+import { ItemData, ConfigurationValues, FilterData } from "./common";
 
 const itemData: ItemData = require("../items.json");
+const filterData: FilterData = require("../filter.json");
 
 const whitespaceRegex = /^\s*$/;
 const whitespaceCharacterRegex = /\s/;
-const nonwhitespaceCharacterRegex = /\S/;
 const equalityOpRegex = /=/;
 
 /**
@@ -57,11 +57,9 @@ export function getCompletionSuggestions(config: ConfigurationValues, document: 
     if (position.character < keywordStartIndex) {
       return getKeywordCompletions(config, position);
     } else if (position.character >= keywordStartIndex && position.character <= keywordEndIndex) {
-      const range: Range = {
-        start: { line: position.line, character: keywordStartIndex },
-        end: { line: position.line, character: keywordEndIndex }
-      };
-      return getFilteredKeywordCompletions(position, keyword, range);
+      const start: Position = { line: position.line, character: keywordStartIndex };
+      const end: Position = { line: position.line, character: keywordEndIndex };
+      return getKeywordCompletions(config, start, end);
     }
 
     const currentIndex = keywordEndIndex;
@@ -73,6 +71,14 @@ export function getCompletionSuggestions(config: ConfigurationValues, document: 
       case "PlayAlertSound":
       case "PlayAlertSoundPositional":
         return getAlertSoundCompletions(config, position, lineText, currentIndex);
+      case "Rarity":
+        return getRarityCompletions(position, lineText, currentIndex);
+      case "Identified":
+      case "Corrupted":
+      case "ElderItem":
+      case "ShaperItem":
+      case "ShapedMap":
+        return getBooleanCompletions(position, lineText, currentIndex);
       default:
         return [];
     }
@@ -81,7 +87,6 @@ export function getCompletionSuggestions(config: ConfigurationValues, document: 
     if (isEmpty) return getKeywordCompletions(config, position);
 
     let foundContent = false;
-    let contentStartIndex: number | undefined;
     for (let i = 0; i <= position.character; i++) {
       const character = lineText.charAt(i);
       if (whitespaceCharacterRegex.test(character)) {
@@ -91,7 +96,6 @@ export function getCompletionSuggestions(config: ConfigurationValues, document: 
       } else {
         if (foundContent) continue;
         foundContent = true;
-        contentStartIndex = i;
       }
     }
 
@@ -123,14 +127,25 @@ function keywordToCompletionItem(text: string, range: Range): CompletionItem {
   };
 }
 
-function getKeywordCompletions(config: ConfigurationValues, pos: Position): CompletionItem[] {
-  const result: CompletionItem[] = [];
-  const range: Range = {
-    start: { line: pos.line, character: pos.character },
-    end: { line: pos.line, character: pos.character }
-  };
+function getKeywordCompletions(config: ConfigurationValues, pos: Position,
+  endPos?: Position): CompletionItem[] {
 
-  for (const k of rules) {
+  const result: CompletionItem[] = [];
+
+  let range: Range;
+  if (endPos) {
+    range = {
+      start: pos,
+      end: endPos
+    };
+  } else {
+    range = {
+      start: { line: pos.line, character: pos.character },
+      end: { line: pos.line, character: pos.character }
+    };
+  }
+
+  for (const k of filterData.rules) {
     result.push(keywordToCompletionItem(k, range));
   }
 
@@ -141,23 +156,9 @@ function getKeywordCompletions(config: ConfigurationValues, pos: Position): Comp
   return result;
 }
 
-function getFilteredKeywordCompletions(pos: Position, text: string, range: Range):
-  CompletionItem[] {
-
-  const result: CompletionItem[] = [];
-
-  for (const k of rules) {
-    if (k.includes(text)) {
-      result.push(keywordToCompletionItem(k, range));
-    }
-  }
-
-  return result;
-}
-
 /**
- * Bypasses all operators and whitespace prior to the first potential value of
- * the filter rule.
+ * Bypasses all equality operators and whitespace prior to the first potential
+ * value of the filter rule.
  * @param text The line text we're parsing.
  * @param index The current index for the line. This should generally be the
  *  very first space following the keyword.
@@ -167,11 +168,42 @@ function getFilteredKeywordCompletions(pos: Position, text: string, range: Range
 function bypassEqOperator(text: string, index: number): number | undefined {
   // All rules accept an optional operator, which we need to bypass first. We
   // also need to verify that there even is a value while we're at it.
-  let remainingCharacters = text.length - (index + 1);
+  const remainingCharacters = text.length - (index + 1);
   for (let i = 1; i <= remainingCharacters; i++) {
     const character = text[i + index];
     if (!equalityOpRegex.test(character) && !whitespaceRegex.test(character)) {
       return index + i;
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Bypasses all equality operators and whitespace prior to the first potential
+ * value of the filter rule.
+ * @param text The line text we're parsing.
+ * @param index The current index for the line. This should generally be the
+ *  very first space following the keyword.
+ * @return The index to the first entity that follows, or undefined is one
+ *  doesn't exist.
+ */
+function bypassOperator(text: string, index: number): number | undefined {
+  // All rules accept an optional operator, which we need to bypass first. We
+  // also need to verify that there even is a value while we're at it.
+  const remainingCharacters = text.length - (index + 1);
+  const singleCharOperators = /^(>|=|<)(?=\s)/;
+  const dualCharOperators = /^(>=|<=)(?=\s)/;
+  for (let i = 1; i <= remainingCharacters; i++) {
+    const remainingText = text.slice(i + index);
+    if (dualCharOperators.test(remainingText)) {
+      i++;
+      continue;
+    } else if (singleCharOperators.test(remainingText)) {
+      continue;
+    } else {
+      const character = text[i + index];
+      if (!whitespaceRegex.test(character)) return index + i;
     }
   }
 
@@ -190,24 +222,25 @@ function getStringContext(position: Position, text: string, index: number): numb
     const character = text.charAt(i);
 
     if (character === '"') {
-      if (start !== undefined) {
-        start = undefined;
-      } else {
-        start = i;
-      }
+      start = start === undefined ? i : undefined;
     }
   }
 
   return start;
 }
 
-/** Returns the string directly under the position within the given text. */
-function getStringText(pos: Position, text: string, index: number): [string, Range] {
+/**
+ * Returns both the string and range for the string directly under the position
+ * within the given text.
+ *
+ * This function assumes that the given index is that of the first value.
+ */
+function getStringRangeAtPosition(pos: Position, text: string, index: number): Range {
+
   const result = getStringContext(pos, text, index);
   const character = text[pos.character];
   const priorCharacter = text[pos.character - 1];
 
-  let value: string;
   let range: Range;
   if (result) {
     // The position is within a quoted string.
@@ -226,7 +259,6 @@ function getStringText(pos: Position, text: string, index: number): [string, Ran
       start: { line: pos.line, character: result },
       end: { line: pos.line, character: endIndex + 1 }
     };
-    value = text.slice(result + 1, endIndex); // Cut the quotes.
   } else if (character === undefined || whitespaceCharacterRegex.test(character)) {
     // We're following a value.
     const croppedText = text.slice(0, pos.character);
@@ -237,9 +269,8 @@ function getStringText(pos: Position, text: string, index: number): [string, Ran
         start: { line: pos.line, character: startIndex },
         end: { line: pos.line, character: endIndex }
       };
-      value = text.slice(startIndex + 1, endIndex - 1); // Cut the quotes.
     } else {
-      let startIndex: number = 0;
+      let startIndex = 0;
       const endIndex = pos.character;
 
       for (let i = endIndex - 1; i > 0; i--) {
@@ -254,7 +285,6 @@ function getStringText(pos: Position, text: string, index: number): [string, Ran
         start: { line: pos.line, character: startIndex },
         end: { line: pos.line, character: endIndex + 1 }
       };
-      value = text.slice(startIndex, endIndex);
     }
   } else if (whitespaceCharacterRegex.test(priorCharacter)) {
     // We're at the start of a value.
@@ -265,7 +295,6 @@ function getStringText(pos: Position, text: string, index: number): [string, Ran
         start: { line: pos.line, character: startIndex },
         end: { line: pos.line, character: endIndex + 1 }
       };
-      value = text.slice(startIndex + 1, endIndex); // Cut the quotes.
     } else {
       const startIndex = pos.character;
       let endIndex: number | undefined;
@@ -283,10 +312,9 @@ function getStringText(pos: Position, text: string, index: number): [string, Ran
         start: { line: pos.line, character: startIndex },
         end: { line: pos.line, character: endIndex + 1 }
       };
-      value = text.slice(startIndex, endIndex + 1);
     }
   } else {
-    let startIndex: number = 0;
+    let startIndex = 0;
     let endIndex: number | undefined;
 
     for (let i = pos.character - 1; i > 0; i--) {
@@ -308,22 +336,21 @@ function getStringText(pos: Position, text: string, index: number): [string, Ran
 
     range = {
       start: { line: pos.line, character: startIndex },
-      end: { line: pos.line, character: endIndex + 1}
+      end: { line: pos.line, character: endIndex + 1 }
     };
-    value = text.slice(startIndex, endIndex + 1);
   }
 
-  // We finally have a value...
-  return [value, range];
+  return range;
 }
 
 function completionForStringRange(text: string, range: Range): CompletionItem {
   return {
-    label: `"${text}"`,
+    label: `${text}`,
+    filterText: `"${text}"`,
     kind: CompletionItemKind.Value,
     textEdit: {
       newText: `"${text}"`,
-      range: range
+      range
     }
   };
 }
@@ -335,17 +362,26 @@ function getClassCompletions(config: ConfigurationValues, pos: Position, text: s
   const valueIndex = bypassEqOperator(text, index);
 
   if (valueIndex === undefined || pos.character < valueIndex) {
-    for (const c in itemData.classesToBases)  {
+    for (const c in itemData.classesToBases) {
       result.push({
         label: c,
         insertText: `"${c}"`,
         kind: CompletionItemKind.Value
       });
     }
+
+    for (const wlc of config.classWhitelist) {
+      result.push({
+        label: wlc,
+        insertText: `"${wlc}"`,
+        kind: CompletionItemKind.Reference
+      });
+    }
+
     return result;
   }
 
-  const [value, valueRange] = getStringText(pos, text, valueIndex);
+  const valueRange = getStringRangeAtPosition(pos, text, valueIndex);
 
   for (const c in itemData.classesToBases) {
     result.push(completionForStringRange(c, valueRange));
@@ -366,17 +402,26 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position, text: st
   const valueIndex = bypassEqOperator(text, index);
 
   if (valueIndex === undefined || pos.character < valueIndex) {
-    for (const c in itemData.sortedBases) {
+    for (const c of itemData.sortedBases) {
       result.push({
-        label: text,
-        insertText: `"${text}"`,
+        label: c,
+        insertText: `"${c}"`,
         kind: CompletionItemKind.Value
       });
     }
+
+    for (const wlb of config.baseWhitelist) {
+      result.push({
+        label: wlb,
+        insertText: `"${wlb}"`,
+        kind: CompletionItemKind.Reference
+      });
+    }
+
     return result;
   }
 
-  const [value, valueRange] = getStringText(pos, text, valueIndex);
+  const valueRange = getStringRangeAtPosition(pos, text, valueIndex);
 
   for (const b of itemData.sortedBases) {
     result.push(completionForStringRange(b, valueRange));
@@ -398,14 +443,19 @@ function getAlertSoundCompletions(config: ConfigurationValues, pos: Position, te
   const valueIndex = bypassEqOperator(text, index);
 
   if (valueIndex === undefined || pos.character < valueIndex) {
-    const minID = sounds.numberIdentifier.min;
-    const maxID = sounds.numberIdentifier.max;
-
-    for (let [id, label] of sounds.stringIdentifiers) {
+    for (const id in filterData.sounds.stringIdentifiers) {
+      const label = filterData.sounds.stringIdentifiers[id];
       result.push({
         label,
         insertText: id,
         kind: CompletionItemKind.Variable
+      });
+    }
+
+    for (const wls of config.soundWhitelist) {
+      result.push({
+        label: wls,
+        kind: CompletionItemKind.Reference
       });
     }
 
@@ -429,10 +479,10 @@ function getAlertSoundCompletions(config: ConfigurationValues, pos: Position, te
   const range: Range = {
     start: { line: pos.line, character: startIndex },
     end: { line: pos.line, character: endIndex + 1 }
-  }
-  const value = text.slice(startIndex, endIndex + 1);
+  };
 
-  for (const [id, label] of sounds.stringIdentifiers) {
+  for (const id in filterData.sounds.stringIdentifiers) {
+    const label = filterData.sounds.stringIdentifiers[id];
     result.push({
       label,
       filterText: id,
@@ -446,9 +496,81 @@ function getAlertSoundCompletions(config: ConfigurationValues, pos: Position, te
   }
 
   for (const wls of config.soundWhitelist) {
-    const suggestion = completionForStringRange(wls, range);
-    suggestion.kind = CompletionItemKind.Reference;
-    result.push(suggestion);
+    result.push({
+      label: wls,
+      textEdit: {
+        newText: wls,
+        range
+      }
+    });
+  }
+
+  return result;
+}
+
+function getRarityCompletions(pos: Position, text: string, index: number): CompletionItem[] {
+  const result: CompletionItem[] = [];
+  const valueIndex = bypassOperator(text, index);
+
+  if (valueIndex === undefined || pos.character < valueIndex) {
+    for (const rarity of filterData.rarities) {
+      result.push({
+        label: rarity,
+        kind: CompletionItemKind.Variable
+      });
+    }
+
+    return result;
+  }
+
+  // A rarity can appear with or without the quotation marks.
+  const valuePosition: Position = { line: pos.line, character: valueIndex };
+  const range = getStringRangeAtPosition(valuePosition, text, valueIndex);
+  if (pos.character > range.end.character) return result;
+
+  for (const r of filterData.rarities) {
+    result.push({
+      label: r,
+      kind: CompletionItemKind.Variable,
+      textEdit: {
+        newText: r,
+        range
+      }
+    });
+  }
+
+  return result;
+}
+
+function getBooleanCompletions(pos: Position, text: string, index: number): CompletionItem[] {
+  const result: CompletionItem[] = [];
+  const valueIndex = bypassOperator(text, index);
+
+  if (valueIndex === undefined || pos.character < valueIndex) {
+    for (const bool of filterData.booleans) {
+      result.push({
+        label: bool,
+        kind: CompletionItemKind.Variable
+      });
+    }
+
+    return result;
+  }
+
+  // A boolean can appear with or without quotation marks.
+  const valuePosition: Position = { line: pos.line, character: valueIndex };
+  const range = getStringRangeAtPosition(valuePosition, text, valueIndex);
+  if (pos.character > range.end.character) return result;
+
+  for (const bool of filterData.booleans) {
+    result.push({
+      label: bool,
+      kind: CompletionItemKind.Value,
+      textEdit: {
+        newText: bool,
+        range
+      }
+    });
   }
 
   return result;

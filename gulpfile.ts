@@ -17,6 +17,13 @@ interface ItemData {
   [itemClass: string]: string[];
 }
 
+interface ItemDataOutput {
+  classesToBases: { [key: string]: string[] },
+  basesToClasses: { [key: string]: string },
+  sortedBases: string[],
+  sortedBasesIndices: number[]
+}
+
 /**
  * Formats TSLint output into a format an easier to consume format, which
  * includes both a relative path to a file within this project and the full
@@ -95,57 +102,51 @@ gulp.task("lint", () => {
 });
 
 gulp.task("data", () => {
-  let data: ItemData;
+  const dataPath = path.join(__dirname, "data");
+  let filterData: object;
+  let itemData: ItemData;
   try {
-    let configPath = path.join(__dirname, "data", "items.yaml");
-    data = yaml.safeLoad(fs.readFileSync(configPath, "utf8"));
+    let filterDataPath = path.join(dataPath, "filter.yaml");
+    filterData = yaml.safeLoad(fs.readFileSync(filterDataPath, "utf8"));
+
+    let itemsPath = path.join(dataPath, "items.yaml");
+    itemData = yaml.safeLoad(fs.readFileSync(itemsPath, "utf8"));
   } catch (e) {
     process.exit(1);
   }
 
-  // The first half of the file consists of two structures: one mapping item
-  // classes to an array of item bases and another mapping each item base to
-  // its item class.
+  // We don't need to modify or process the filter data at all, only output it
+  // to JSON.
+  const filterDataContent = JSON.stringify(filterData);
+  const filterOutputFile = path.join(__dirname, "dist", "filter.json");
+  fs.writeFile(filterOutputFile, filterDataContent, (err) => {
+    if (err) throw err;
+  });
+
+  // We need to create the following object in memory, then output it to the file:
+  //  .classesToBases -- essentially the YAML file's object.
+  //  .basesToClasses -- the list of item bases with their associated class.
+  //  .sortedBases -- the item bases sorted by their then first, then alphabetical order.
+  //  .sortedBasesIndices -- the indices for each character length within the sorted bases list.
+  const itemDataObject: ItemDataOutput = {
+    classesToBases: itemData,
+    basesToClasses: {},
+    sortedBases: [],
+    sortedBasesIndices: []
+  };
+
   let itemBases: string[] = [];
-  // @ts-ignore
-  const entries = Object.entries(data);
 
-  let contents: string = `{\n\t"classesToBases": {\n`;
-  let basesToClasses = "";
-  for (let i = 0; i < entries.length; i++) {
-    let [itemClass, classBases]: [string, string[]] = entries[i];
-    contents += `\t\t"${itemClass}": [\n`;
+  // Fill out basesToClasses as we get the list needed to fill out the last two.
+  for (const itemClass in itemData) {
+    const classBases = itemData[itemClass];
 
-    for (let j = 0; j < classBases.length; j++) {
-      const itemBase = classBases[j];
+    for (const itemBase of classBases) {
       itemBases.push(itemBase);
-
-      if (j === classBases.length - 1) {
-        contents += `\t\t\t"${itemBase}"\n`
-      } else {
-        contents += `\t\t\t"${itemBase}",\n`
-      }
-
-      if (i === entries.length - 1 && j == classBases.length - 1) {
-        basesToClasses += `\t\t"${itemBase}": "${itemClass}"\n`;
-      } else {
-        basesToClasses += `\t\t"${itemBase}": "${itemClass}",\n`;
-      }
-    }
-
-    if (i === entries.length - 1) {
-      contents += `\t\t]\n`;
-    } else {
-      contents += `\t\t],\n`;
+      itemDataObject.basesToClasses[itemBase] = itemClass;
     }
   }
 
-  contents += `\t},\n\t"basesToClasses": {\n${basesToClasses}\t},\n`;
-
-  // The second part of the file is simply an array of the item bases sorted by
-  // length. This part consists of two things: a list of item bases sorted by
-  // their length and then a mapping between each length and the starting index
-  // for that length within the sorted array.
   itemBases.sort((lha: string, rha: string) => {
     if (lha.length > rha.length) {
       return 1;
@@ -156,7 +157,6 @@ gulp.task("data", () => {
     }
   });
 
-  const baseCount = itemBases.length;
   const minLength = itemBases[0].length;
   const maxLength = itemBases[itemBases.length - 1].length;
 
@@ -173,31 +173,12 @@ gulp.task("data", () => {
     }
   }
 
-  contents += `\t"sortedBases": [\n\t\t`
-  for (let i = 0; i < itemBases.length; i++) {
-    const base = itemBases[i];
+  itemDataObject.sortedBasesIndices = indices;
+  itemDataObject.sortedBases = itemBases;
 
-    if (i === itemBases.length - 1) {
-      contents += `"${base}"\n\t],\n`;
-    } else {
-      contents += `"${base}",\n\t\t`
-    }
-  }
-
-  contents += `\t"sortedBasesIndices": [\n\t\t`;
-  for (let i = 0; i < indices.length; i++) {
-    const index = indices[i];
-
-    if (i === indices.length - 1) {
-      contents += `${index}\n\t]\n`;
-    } else {
-      contents += `${index},\n\t\t`;
-    }
-  }
-  contents += "}";
-
-  const outFile = path.join(__dirname, "dist", "items.json");
-  fs.writeFile(outFile, contents, (err) => {
+  const itemDataContent = JSON.stringify(itemDataObject);
+  const itemDataOutputFile = path.join(__dirname, "dist", "items.json");
+  fs.writeFile(itemDataOutputFile, itemDataContent, (err) => {
     if (err) throw err;
   });
 });
