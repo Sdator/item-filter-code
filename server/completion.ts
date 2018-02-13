@@ -13,6 +13,10 @@
 // Filtering suggestions based on block constraints would be intrusive and
 // is better handled through diagnostics.
 
+// TODO(glen): measure performance regarding filtering beforehand vs. just
+//  letting VSCode do so. JSONRPC should have enough throughput that sending
+//  over ~2000 suggestions shouldn't be an issue.
+
 import {
   CompletionItem, CompletionItemKind, Position, Range, TextDocument
 } from "vscode-languageserver";
@@ -51,7 +55,7 @@ export function getCompletionSuggestions(config: ConfigurationValues, document: 
     const keywordEndIndex = keywordStartIndex + keyword.length;
 
     if (position.character < keywordStartIndex) {
-      return getKeywordCompletions(position);
+      return getKeywordCompletions(config, position);
     } else if (position.character >= keywordStartIndex && position.character <= keywordEndIndex) {
       const range: Range = {
         start: { line: position.line, character: keywordStartIndex },
@@ -71,7 +75,7 @@ export function getCompletionSuggestions(config: ConfigurationValues, document: 
     }
   } else {
     const isEmpty = whitespaceRegex.test(lineText);
-    if (isEmpty) return getKeywordCompletions(position);
+    if (isEmpty) return getKeywordCompletions(config, position);
 
     let foundContent = false;
     let contentStartIndex: number | undefined;
@@ -100,7 +104,7 @@ export function getCompletionSuggestions(config: ConfigurationValues, document: 
     } else {
       // Stuff towards the end of the line, with a request for completions at
       // the beginning.
-      return getKeywordCompletions(position);
+      return getKeywordCompletions(config, position);
     }
   }
 }
@@ -116,7 +120,7 @@ function keywordToCompletionItem(text: string, range: Range): CompletionItem {
   };
 }
 
-function getKeywordCompletions(pos: Position): CompletionItem[] {
+function getKeywordCompletions(config: ConfigurationValues, pos: Position): CompletionItem[] {
   const result: CompletionItem[] = [];
   const range: Range = {
     start: { line: pos.line, character: pos.character },
@@ -125,6 +129,10 @@ function getKeywordCompletions(pos: Position): CompletionItem[] {
 
   for (const k of ruleKeywords) {
     result.push(keywordToCompletionItem(k, range));
+  }
+
+  for (const wlk of config.ruleWhitelist) {
+    result.push(keywordToCompletionItem(wlk, range));
   }
 
   return result;
@@ -191,22 +199,41 @@ function getStringContext(position: Position, text: string, index: number): numb
 }
 
 /** Returns the string directly under the position within the given text. */
-function getStringText(pos: Position, text: string, index: number): string {
+function getStringText(pos: Position, text: string, index: number): [string, Range] {
   const result = getStringContext(pos, text, index);
   const character = text[pos.character];
   const priorCharacter = text[pos.character - 1];
 
   let value: string;
+  let range: Range;
   if (result) {
     // The position is within a quoted string.
-    const endIndex = text.indexOf('"', result + 1);
-    value = text.slice(result + 1, endIndex - result); // Cut the quotes.
+    let endIndex = text.indexOf('"', result + 1);
+    if (endIndex === -1) {
+      for (let i = result; i < text.length; i++) {
+        const c = text[i];
+        if (whitespaceCharacterRegex.test(c)) {
+          endIndex = i - 1;
+          break;
+        }
+      }
+      if (endIndex === -1) endIndex = text.length - 1;
+    }
+    range = {
+      start: { line: pos.line, character: result },
+      end: { line: pos.line, character: endIndex + 1 }
+    };
+    value = text.slice(result + 1, endIndex); // Cut the quotes.
   } else if (character === undefined || whitespaceCharacterRegex.test(character)) {
     // We're following a value.
     const croppedText = text.slice(0, pos.character);
     if (priorCharacter === '"') {
       const startIndex = croppedText.lastIndexOf('"', pos.character - 2);
       const endIndex = pos.character;
+      range = {
+        start: { line: pos.line, character: startIndex },
+        end: { line: pos.line, character: endIndex }
+      };
       value = text.slice(startIndex + 1, endIndex - 1); // Cut the quotes.
     } else {
       let startIndex: number = 0;
@@ -220,6 +247,10 @@ function getStringText(pos: Position, text: string, index: number): string {
         }
       }
 
+      range = {
+        start: { line: pos.line, character: startIndex },
+        end: { line: pos.line, character: endIndex + 1 }
+      };
       value = text.slice(startIndex, endIndex);
     }
   } else if (whitespaceCharacterRegex.test(priorCharacter)) {
@@ -227,6 +258,10 @@ function getStringText(pos: Position, text: string, index: number): string {
     if (character === '"') {
       const startIndex = pos.character;
       const endIndex = text.indexOf('"', pos.character + 1);
+      range = {
+        start: { line: pos.line, character: startIndex },
+        end: { line: pos.line, character: endIndex + 1 }
+      };
       value = text.slice(startIndex + 1, endIndex); // Cut the quotes.
     } else {
       const startIndex = pos.character;
@@ -241,6 +276,10 @@ function getStringText(pos: Position, text: string, index: number): string {
       }
       if (endIndex === undefined) endIndex = text.length - 1;
 
+      range = {
+        start: { line: pos.line, character: startIndex },
+        end: { line: pos.line, character: endIndex + 1 }
+      };
       value = text.slice(startIndex, endIndex + 1);
     }
   } else {
@@ -264,27 +303,26 @@ function getStringText(pos: Position, text: string, index: number): string {
     }
     if (endIndex === undefined) endIndex = text.length - 1;
 
+    range = {
+      start: { line: pos.line, character: startIndex },
+      end: { line: pos.line, character: endIndex + 1}
+    };
     value = text.slice(startIndex, endIndex + 1);
   }
 
   // We finally have a value...
-  return value;
+  return [value, range];
 }
 
-function completionFromClassText(text: string): CompletionItem {
+function completionForStringRange(text: string, range: Range): CompletionItem {
   return {
-    label: text,
-    insertText: `"${text}"`,
-    kind: CompletionItemKind.Value
+    label: `"${text}"`,
+    kind: CompletionItemKind.Value,
+    textEdit: {
+      newText: `"${text}"`,
+      range: range
+    }
   };
-}
-
-function completionFromBaseText(text: string): CompletionItem {
-  return {
-    label: text,
-    insertText: `"${text}"`,
-    kind: CompletionItemKind.Value
-  }
 }
 
 function getClassCompletions(config: ConfigurationValues, pos: Position, text: string,
@@ -294,23 +332,24 @@ function getClassCompletions(config: ConfigurationValues, pos: Position, text: s
   const valueIndex = bypassEqOperator(text, index);
 
   if (valueIndex === undefined || pos.character < valueIndex) {
-    for (const c in itemData.classesToBases) {
-      result.push(completionFromClassText(c));
+    for (const c in itemData.classesToBases)  {
+      result.push({
+        label: c,
+        insertText: `"${c}"`,
+        kind: CompletionItemKind.Value
+      });
     }
     return result;
   }
 
-  const value = getStringText(pos, text, valueIndex);
+  const [value, valueRange] = getStringText(pos, text, valueIndex);
 
   for (const c in itemData.classesToBases) {
-    if (value !== "") {
-      if (!c.includes(value)) continue;
-    }
-    result.push(completionFromClassText(c));
+    result.push(completionForStringRange(c, valueRange));
   }
 
   for (const wlc of config.classWhitelist) {
-    const suggestion = completionFromClassText(wlc);
+    const suggestion = completionForStringRange(wlc, valueRange);
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
   }
@@ -325,21 +364,26 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position, text: st
 
   if (valueIndex === undefined || pos.character < valueIndex) {
     for (const c in itemData.sortedBases) {
-      result.push(completionFromBaseText(c));
+      result.push({
+        label: text,
+        insertText: `"${text}"`,
+        kind: CompletionItemKind.Value
+      });
     }
     return result;
   }
 
-  const value = getStringText(pos, text, valueIndex);
+  const [value, valueRange] = getStringText(pos, text, valueIndex);
 
   for (const b of itemData.sortedBases) {
-    result.push(completionFromBaseText(b));
+    result.push(completionForStringRange(b, valueRange));
   }
 
   for (const wlb of config.baseWhitelist) {
-    const suggestion = completionFromBaseText(wlb);
+    const suggestion = completionForStringRange(wlb, valueRange);
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
   }
+
   return result;
 }
