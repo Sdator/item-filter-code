@@ -23,6 +23,7 @@ let config: ConfigurationValues = {
   baseWhitelist: [],
   classWhitelist: [],
   ruleWhitelist: [],
+  soundWhitelist: [],
   performanceHints: true,
   alwaysShowAlpha: false
 };

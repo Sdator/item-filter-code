@@ -75,15 +75,6 @@
       {
         "title": "Item Filter Code",
         "properties": {
-          "item-filter.classWhitelist": {
-            "title": "Class Whitelist",
-            "description": "Additional item classes considered to be valid within item filters.",
-            "type": [
-              "array"
-            ],
-            "default": [],
-            "scope": "window"
-          },
           "item-filter.baseWhitelist": {
             "title": "Base Whitelist",
             "description": "Additional item bases considered to be valid within item filters.",
@@ -93,9 +84,27 @@
             "default": [],
             "scope": "window"
           },
+          "item-filter.classWhitelist": {
+            "title": "Class Whitelist",
+            "description": "Additional item classes considered to be valid within item filters.",
+            "type": [
+              "array"
+            ],
+            "default": [],
+            "scope": "window"
+          },
           "item-filter.ruleWhitelist": {
             "title": "Rule Whitelist",
             "description": "Additional keywords considered to be valid block rules within item filters.",
+            "type": [
+              "array"
+            ],
+            "default": [],
+            "scope": "window"
+          },
+          "item-filter.soundWhitelist": {
+            "title": "Sound Whitelist",
+            "description": "Additional sound identifiers considered to be valid block rules within item filters.",
             "type": [
               "array"
             ],

@@ -9,7 +9,7 @@ import {
 } from "vscode-languageserver";
 import { ColorInformation, Color } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { ruleKeywords, ConfigurationValues, ItemData } from "./common";
+import { ConfigurationValues, ItemData } from "./common";
 
 const itemData: ItemData = require("../items.json");
 

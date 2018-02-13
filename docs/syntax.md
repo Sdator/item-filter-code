@@ -35,3 +35,7 @@ SetBackgroundColor | Equality | 0-255 (3-4 Values) | Yes | N/A
 PlayAlertSound | Equality | 1-16 or Word [0-300] | Yes | Yes
 PlayAlertSoundPositional | Equality | 1-16 or Word [0-300] | Yes | Yes
 SetFontSize | Equality | 18-45 | No | N/A
+
+> String: a value that can optionally be surrounded by quotation marks, possibly multiple words.
+
+> Word: a single word that cannot be surrounded by quotation marks.

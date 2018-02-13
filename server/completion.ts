@@ -21,7 +21,7 @@ import {
   CompletionItem, CompletionItemKind, Position, Range, TextDocument
 } from "vscode-languageserver";
 
-import { ruleKeywords, ItemData, ConfigurationValues } from "./common";
+import { rules, sounds, ItemData, ConfigurationValues } from "./common";
 
 const itemData: ItemData = require("../items.json");
 
@@ -70,6 +70,9 @@ export function getCompletionSuggestions(config: ConfigurationValues, document: 
         return getClassCompletions(config, position, lineText, currentIndex);
       case "BaseType":
         return getBaseCompletions(config, position, lineText, currentIndex);
+      case "PlayAlertSound":
+      case "PlayAlertSoundPositional":
+        return getAlertSoundCompletions(config, position, lineText, currentIndex);
       default:
         return [];
     }
@@ -127,7 +130,7 @@ function getKeywordCompletions(config: ConfigurationValues, pos: Position): Comp
     end: { line: pos.line, character: pos.character }
   };
 
-  for (const k of ruleKeywords) {
+  for (const k of rules) {
     result.push(keywordToCompletionItem(k, range));
   }
 
@@ -143,7 +146,7 @@ function getFilteredKeywordCompletions(pos: Position, text: string, range: Range
 
   const result: CompletionItem[] = [];
 
-  for (const k of ruleKeywords) {
+  for (const k of rules) {
     if (k.includes(text)) {
       result.push(keywordToCompletionItem(k, range));
     }
@@ -381,6 +384,69 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position, text: st
 
   for (const wlb of config.baseWhitelist) {
     const suggestion = completionForStringRange(wlb, valueRange);
+    suggestion.kind = CompletionItemKind.Reference;
+    result.push(suggestion);
+  }
+
+  return result;
+}
+
+function getAlertSoundCompletions(config: ConfigurationValues, pos: Position, text: string,
+  index: number): CompletionItem[] {
+
+  const result: CompletionItem[] = [];
+  const valueIndex = bypassEqOperator(text, index);
+
+  if (valueIndex === undefined || pos.character < valueIndex) {
+    const minID = sounds.numberIdentifier.min;
+    const maxID = sounds.numberIdentifier.max;
+
+    for (let [id, label] of sounds.stringIdentifiers) {
+      result.push({
+        label,
+        insertText: id,
+        kind: CompletionItemKind.Variable
+      });
+    }
+
+    return result;
+  }
+
+  // Get the range for the first value. The first value can only be either a
+  // number or a word (without quotations).
+  const startIndex = valueIndex;
+  let endIndex: number | undefined;
+  for (let i = startIndex; i < text.length; i++) {
+    const c = text[i];
+    if (whitespaceCharacterRegex.test(c)) {
+      endIndex = i - 1;
+      break;
+    }
+  }
+  if (endIndex === undefined) endIndex = text.length - 1;
+  if (pos.character > endIndex + 1) return result;
+
+  const range: Range = {
+    start: { line: pos.line, character: startIndex },
+    end: { line: pos.line, character: endIndex + 1 }
+  }
+  const value = text.slice(startIndex, endIndex + 1);
+
+  for (const [id, label] of sounds.stringIdentifiers) {
+    result.push({
+      label,
+      filterText: id,
+      textEdit: {
+        newText: id,
+        range
+      },
+
+      kind: CompletionItemKind.Variable
+    });
+  }
+
+  for (const wls of config.soundWhitelist) {
+    const suggestion = completionForStringRange(wls, range);
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
   }
