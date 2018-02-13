@@ -9,16 +9,9 @@ import {
 } from "vscode-languageserver";
 import { ColorInformation, Color } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
+import { ruleKeywords, ConfigurationValues, ItemData } from "./common";
+
 const itemData: ItemData = require("../items.json");
-
-import { ruleKeywords, ConfigurationValues } from "./common";
-
-interface ItemData {
-  classesToBases: { [key: string]: string[] };
-  basesToClasses: { [key: string]: string };
-  sortedBases: string[];
-  sortedBasesIndices: number[];
-}
 
 export class ItemFilter {
   private readonly config: ConfigurationValues;

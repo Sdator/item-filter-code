@@ -65,7 +65,7 @@ documents.onDidClose(event => {
 });
 
 connection.onDidChangeConfiguration(change => {
-  const newConfig = <ConfigurationValues> change.settings["item-filter"];
+  const newConfig = <ConfigurationValues>change.settings["item-filter"];
 
   let update = false;
   if (!equalArrays(config.baseWhitelist, newConfig.baseWhitelist)) update = true;
@@ -85,7 +85,8 @@ connection.onDidChangeConfiguration(change => {
 });
 
 connection.onCompletion(params => {
-  return getCompletionSuggestions(documents.get(params.textDocument.uri), params.position);
+  return getCompletionSuggestions(config, documents.get(params.textDocument.uri),
+    params.position);
 });
 
 connection.onRequest(DocumentColorRequest.type, params => {

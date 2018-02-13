@@ -24,3 +24,10 @@ export interface Point {
   line: number;
   character: number;
 }
+
+export interface ItemData {
+  classesToBases: { [key: string]: string[] };
+  basesToClasses: { [key: string]: string };
+  sortedBases: string[];
+  sortedBasesIndices: number[];
+}
