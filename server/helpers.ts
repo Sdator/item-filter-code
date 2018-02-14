@@ -18,3 +18,19 @@ export function equalArrays<T>(lha: T[], rha: T[]): boolean {
 
   return true;
 }
+
+export function getOrdinal(n: number): string {
+  let s=["th","st","nd","rd"],
+  v=n%100;
+  return n+(s[(v-20)%10]||s[v]||s[0]);
+}
+
+export function stylizedArrayJoin(array: any[], finalPrefix = ", and "): string {
+  if (array.length === 0) {
+    return "";
+  } else if (array.length === 1) {
+    return `${array[0]}`;
+  } else {
+    return `${array.slice(0, -1).join(", ")}${finalPrefix} ${array.slice(-1)}`;
+  }
+}

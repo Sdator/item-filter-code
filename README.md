@@ -6,6 +6,8 @@ An extension for Visual Studio Code that provides additional support for writing
 
 - Syntax support for item filters, colorizing the text within your editor.
 - Autocompletion for item classes and bases, as well as all rule keywords.
+- Diagnostics support, enabling error checking as you edit.
+- Color picker support for all rules with a color as a value.
 - Highly configurable, including the ability to add custom item bases, item classes, and rule keywords.
 - Non-destructive implementation. We will never edit, destroy, or sort anything without your permission.
 

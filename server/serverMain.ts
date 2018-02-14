@@ -35,8 +35,8 @@ const documents: TextDocuments = new TextDocuments();
 
 function processItemFilter(document: TextDocument): void {
   const uri = document.uri;
-  const lines = document.getText().split(/\r?\n/g);
-  const filter = new ItemFilter(config, uri, lines);
+  const text = document.getText();
+  const filter = new ItemFilter(config, text);
 
   itemFilters.set(uri, filter);
   filter.getDiagnostics().then(diagnostics => {
@@ -63,6 +63,7 @@ documents.onDidChangeContent(change => {
 
 documents.onDidClose(event => {
   itemFilters.delete(event.document.uri);
+  connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
 });
 
 connection.onDidChangeConfiguration(change => {

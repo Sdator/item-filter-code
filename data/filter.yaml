@@ -22,6 +22,65 @@ rules:
   - PlayAlertSound
   - PlayAlertSoundPositional
   - SetFontSize
+ruleLimits:
+  ItemLevel: 2
+  DropLevel: 2
+  Quality: 1
+  Rarity: 1
+  Class: 1
+  BaseType: 1
+  Sockets: 2
+  LinkedSockets: 2
+  SocketGroup: 1
+  Height: 2
+  Width: 2
+  Identified: 1
+  Corrupted: 1
+  ElderItem: 1
+  ShaperItem: 1
+  ShapedMap: 1
+  SetBorderColor: 1
+  SetTextColor: 1
+  SetBackgroundColor: 1
+  PlayAlertSound: 1
+  PlayAlertSoundPositional: 1
+  SetFontSize: 1
+ruleRanges:
+  ItemLevel:
+    min: 0
+    max: 100
+  DropLevel:
+    min: 0
+    max: 100
+  Quality:
+    min: 0
+    max: 20
+  Sockets:
+    min: 0
+    max: 6
+  LinkedSockets:
+    min: 2
+    max: 6
+    additionals:
+      - 0
+  Height:
+    min: 1
+    max: 4
+  Width:
+    min: 1
+    max: 2
+  SetBorderColor:
+    min: 0
+    max: 255
+  SetTextColor:
+    min: 0
+    max: 255
+  SetBackgroundColor:
+    min: 0
+    max: 255
+  SetFontSize:
+    min: 18
+    max: 45
 rarities:
   - Normal
   - Magic

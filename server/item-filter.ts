@@ -5,47 +5,71 @@
  * ===========================================================================*/
 
 import {
-  Diagnostic
+  Diagnostic, Range
 } from "vscode-languageserver";
 import {
   ColorInformation
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues } from "./common";
+import { parseLine } from "./parse-line";
+
+export interface FilterParseResult {
+  colorInformation: ColorInformation[];
+  diagnostics: Diagnostic[];
+}
+
+export interface FilterContext {
+  config: ConfigurationValues,
+  source: "item-filter",
+  root?: Range;
+  classes: string[];
+  previousRules: Map<string, number>;
+}
 
 export class ItemFilter {
-  private readonly parsed: Promise<void>;
-  // private readonly colorInformation: Map<number, ColorInformation[]>;
+  private readonly parsed: Promise<FilterParseResult>;
 
-  constructor(_: ConfigurationValues, uri: string, lines: string[]) {
-    // TODO(glen): feed colors into this in the 0.0-1.0 format.
-    // this.colorInformation = new Map();
-    this.parsed = this.fullParse(uri, lines);
+  constructor(config: ConfigurationValues, text: string) {
+    this.parsed = this.fullParse(config, text);
   }
 
   async getDiagnostics(): Promise<Diagnostic[]> {
-    await this.parsed;
-    const result: Diagnostic[] = [];
-
-    // for (const [_, value] of this.diagnostics) {
-    //   result.push.apply(result, value);
-    // }
-
-    return result;
+    const { diagnostics } = await this.parsed;
+    return diagnostics;
   }
 
   async getColorInformation(): Promise<ColorInformation[]> {
-    await this.parsed;
-    const result: ColorInformation[] = [];
-
-    // for (const [_, value] of this.colorInformation) {
-    //   result.push.apply(result, value);
-    // }
-
-    return result;
+    const { colorInformation } = await this.parsed;
+    return colorInformation;
   }
 
-  private async fullParse(_: string, __: string[]) {
-    return;
+  private async fullParse(config: ConfigurationValues, text: string):
+    Promise<FilterParseResult> {
+
+    const lines = text.split(/\r?\n/g);
+    const result: FilterParseResult = { colorInformation: [], diagnostics: [] };
+
+    let context: FilterContext = {
+      config,
+      source: "item-filter",
+      classes: [],
+      previousRules: new Map(),
+    };
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const parseResult = parseLine(context, line, i);
+
+      if (parseResult.diagnostics && parseResult.diagnostics.length > 0) {
+        result.diagnostics.push.apply(result.diagnostics, parseResult.diagnostics);
+      }
+
+      if (parseResult.color) {
+        result.colorInformation.push(parseResult.color);
+      }
+    }
+
+    return result;
   }
 }

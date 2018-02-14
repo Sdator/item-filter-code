@@ -23,8 +23,16 @@ export interface ParseResult<T> {
   range: Range;
 }
 
-/** Parses data from a single line of a Path of Exile filter. */
-export class LineParser {
+export function isParseResult<T>(value: any): value is ParseResult<T> {
+  if (value && (<ParseResult<T>>value).range && (<ParseResult<T>>value).value) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/** Parses item filter tokens from a line. */
+export class TokenParser {
   text: string;
   readonly originalLength: number;
   readonly row: number;

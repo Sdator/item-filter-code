@@ -13,11 +13,6 @@ export interface ConfigurationValues {
   alwaysShowAlpha: boolean;
 }
 
-export interface Point {
-  line: number;
-  character: number;
-}
-
 export interface ItemData {
   classesToBases: { [key: string]: string[] };
   basesToClasses: { [key: string]: string };
@@ -27,6 +22,14 @@ export interface ItemData {
 
 export interface FilterData {
   rules: string[];
+  ruleLimits: { [key: string]: number };
+  ruleRanges: {
+    [key: string]: {
+      min: number,
+      max: number,
+      additionals?: number[]
+    }
+  },
   rarities: string[];
   booleans: string[];
   sounds: {

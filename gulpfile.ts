@@ -126,8 +126,8 @@ gulp.task("data", () => {
   // We need to create the following object in memory, then output it to the file:
   //  .classesToBases -- essentially the YAML file's object.
   //  .basesToClasses -- the list of item bases with their associated class.
-  //  .sortedBases -- the item bases sorted by their then first, then alphabetical order.
-  //  .sortedBasesIndices -- the indices for each character length within the sorted bases list.
+  //  .sortedBases -- the item bases sorted by their length first, then alphabetical order.
+  //  .sortedBasesIndices -- the indices for each character length within the sortedBases array.
   const itemDataObject: ItemDataOutput = {
     classesToBases: itemData,
     basesToClasses: {},
