@@ -23,14 +23,6 @@ export interface ParseResult<T> {
   range: Range;
 }
 
-export function isParseResult<T>(value: any): value is ParseResult<T> {
-  if (value && (<ParseResult<T>>value).range && (<ParseResult<T>>value).value) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 /** Parses item filter tokens from a line. */
 export class TokenParser {
   text: string;

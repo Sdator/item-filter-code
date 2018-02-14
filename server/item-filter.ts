@@ -12,7 +12,7 @@ import {
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues } from "./common";
-import { parseLine } from "./parse-line";
+import { LineParser } from "./line-parser";
 
 export interface FilterParseResult {
   colorInformation: ColorInformation[];
@@ -59,14 +59,15 @@ export class ItemFilter {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const parseResult = parseLine(context, line, i);
+      const lineParser = new LineParser(context, line, i);
+      lineParser.parse();
 
-      if (parseResult.diagnostics && parseResult.diagnostics.length > 0) {
-        result.diagnostics.push.apply(result.diagnostics, parseResult.diagnostics);
+      if (lineParser.diagnostics.length > 0) {
+        result.diagnostics.push.apply(result.diagnostics, lineParser.diagnostics);
       }
 
-      if (parseResult.color) {
-        result.colorInformation.push(parseResult.color);
+      if (lineParser.color) {
+        result.colorInformation.push(lineParser.color);
       }
     }
 
