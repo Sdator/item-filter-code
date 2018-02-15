@@ -2,6 +2,9 @@
 
 The history of changes to the extension.
 
+### Version 1.0.1 (February 15th, 2018)
+- A valid color will now be inserted automatically whenever autocompleting a color rule.
+
 ### Version 1.0.0 (February 15th, 2018)
 - Diagnostics added to the language server.
 - Color provider added to the language server.

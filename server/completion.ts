@@ -125,6 +125,17 @@ function keywordToCompletionItem(text: string, range: Range): CompletionItem {
   };
 }
 
+function colorKeywordToCompletionItem(text: string, range: Range): CompletionItem {
+  return {
+    label: text,
+    kind: CompletionItemKind.Property,
+    textEdit: {
+      newText: `${text} 255 255 255`,
+      range
+    }
+  }
+}
+
 function getKeywordCompletions(config: ConfigurationValues, pos: Position,
   endPos?: Position): CompletionItem[] {
 
@@ -144,7 +155,11 @@ function getKeywordCompletions(config: ConfigurationValues, pos: Position,
   }
 
   for (const k of filterData.rules) {
-    result.push(keywordToCompletionItem(k, range));
+    if (k === "SetBorderColor" || k === "SetTextColor" || k === "SetBackgroundColor") {
+      result.push(colorKeywordToCompletionItem(k, range));
+    } else {
+      result.push(keywordToCompletionItem(k, range));
+    }
   }
 
   for (const wlk of config.ruleWhitelist) {

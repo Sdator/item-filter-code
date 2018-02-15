@@ -9,7 +9,6 @@ An extension for Visual Studio Code that provides additional support for writing
 - Diagnostics support, enabling error checking as you edit.
 - Color picker support for all rules with a color as a value.
 - Highly configurable, including the ability to add custom item bases, item classes, and rule keywords.
-- Fast, with incremental update support within the language server.
 - Non-destructive implementation. We will never edit, destroy, or sort anything without your permission.
 
 ### Preview
