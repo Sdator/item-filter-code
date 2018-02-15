@@ -108,12 +108,21 @@ export class LineParser {
       case "BaseType":
         this.parseBaseTypeRule();
         break;
+      case "PlayAlertSound":
+      case "PlayAlertSoundPositional":
+        this.parseSoundRule();
+        break;
       default:
-        // TODO(glen): allow whitelist rules to bypass here.
-        // return processUnknownKeyword(filterContext, lineContext);
-        return {}
+        for (const wlr of this.config.ruleWhitelist) {
+          if (this.keyword === wlr) return;
+        }
+        this.reportUnknownKeyword();
+        return;
     }
 
+    // TODO(glen): add a "missing block enclosure" error.
+    // TODO(glen): probably move this out to item filter, as it's not really
+    //  a line-level thing.
     if (this.keyword !== "Show" && this.keyword !== "Hide") {
       const ruleLimit = filterData.ruleLimits[this.keyword];
       assert(ruleLimit !== undefined);
@@ -135,6 +144,15 @@ export class LineParser {
     this.diagnostics.push({
       message: "Unreadable keyword, likely due to a stray character.",
       range: this.lineRange,
+      severity: DiagnosticSeverity.Error,
+      source: this.filter.source
+    });
+  }
+
+  private reportUnknownKeyword(): void {
+    this.diagnostics.push({
+      message: "Unknown filter keyword.",
+      range: this.keywordRange,
       severity: DiagnosticSeverity.Error,
       source: this.filter.source
     });
@@ -469,6 +487,96 @@ export class LineParser {
     }
   }
 
+  private parseSoundRule() {
+    const operatorResult = this.parser.nextOperator();
+    if (operatorResult) {
+      if (operatorResult.value !== "=") {
+        this.reportNonEqualityOperator(operatorResult);
+      }
+    }
+
+    // NOTE(glen): pretty sure we'll need this soon.
+    // let value: string | undefined;
+    // let range: Range | undefined;
+    const min = filterData.sounds.numberIdentifier.min;
+    const max = filterData.sounds.numberIdentifier.max;
+    const secondPart = ` Expected a number from ${min}-${max} or a valid sound identifier.`
+
+    let invalidIdentifier = true;
+    const wordResult = this.parser.nextWord();
+    if (wordResult) {
+      for (const id in filterData.sounds.stringIdentifiers) {
+        if (id === wordResult.value) {
+          // value = wordResult.value;
+          // range = wordResult.range;
+          invalidIdentifier = false;
+        }
+      }
+
+      for (const id of this.config.soundWhitelist) {
+        if (id === wordResult.value) {
+          // value = wordResult.value;
+          // range = wordResult.range;
+          invalidIdentifier = false;
+        }
+      }
+
+      if (invalidIdentifier) {
+        this.diagnostics.push({
+          message: `Invalid value for a ${this.keyword} rule. ${secondPart}`,
+          range: wordResult.range,
+          severity: DiagnosticSeverity.Error,
+          source: this.filter.source
+        });
+      }
+    } else {
+      const numberResult = this.parser.nextNumber();
+      if (numberResult) {
+        if (numberResult.value >= min && numberResult.value <= max) {
+          // value = `${numberResult.value}`;
+          // range = numberResult.range;
+          invalidIdentifier = false;
+        } else {
+          this.diagnostics.push({
+            message: `Invalid value for a ${this.keyword} rule. ${secondPart}`,
+            range: numberResult.range,
+            severity: DiagnosticSeverity.Error,
+            source: this.filter.source
+          });
+        }
+      } else {
+        this.diagnostics.push({
+          message: `Missing value for a ${this.keyword} rule. ${secondPart}`,
+          range: {
+            start: { line: this.line, character: this.parser.textStartIndex },
+            end: { line: this.line, character: this.parser.originalLength }
+          },
+          severity: DiagnosticSeverity.Error,
+          source: this.filter.source
+        });
+
+        return;
+      }
+    }
+
+    const volumeResult = this.parser.nextNumber();
+    if (volumeResult) {
+      if (volumeResult.value < 0 || volumeResult.value > 300) {
+        this.diagnostics.push({
+          message: `Invalid value for a ${this.keyword} rule.` +
+            "A volume is expected to be a value between 0 and 300.",
+          range: volumeResult.range,
+          severity: DiagnosticSeverity.Error,
+          source: this.filter.source
+        });
+      }
+    }
+
+    if (!this.parser.isIgnored() && this.diagnostics.length === 0) {
+      this.reportTrailingText(DiagnosticSeverity.Error);
+    }
+  }
+
   private parseClassRule() {
     const operatorResult = this.parser.nextOperator();
     if (operatorResult) {
@@ -535,15 +643,18 @@ export class LineParser {
     // number down as low as possible in the majority of cases, though sometimes
     // we really do need to go through the entire list.
     //
-    // Strategy #1: If we were preceded by a Class rule, use it to filter.
-    // Strategy #2: Presort a list of item bases by length, then jump straight
+    // Strategy #1: If we were preceded by a Class rule with up to five values,
+    //  get the item bases associated with those classes and check against that
+    //  list. If we assume ~30 values per class, then this is about 150 values
+    //  to check against.
+    // Strategy #2: Sort a list of item bases by length, then jump straight
     //  to the length of the current item base in that list. It's impossible to
     //  match strings that are smaller and most item base values are exact
     //  matches, so this will take you to the set of the most likely values.
     //  The largest one of these sets is ~180 item bases.
     //
-    // TODO(glen): investigate whether there is actual value maintaining a cache
-    //  reusable between full parses.
+    // The combination currently has parsing down to about 130ms within large
+    // item filters with 4,000+ lines, which is within our performance goal.
 
     const operatorResult = this.parser.nextOperator();
     if (operatorResult) {
@@ -553,21 +664,25 @@ export class LineParser {
     }
 
     const parsedBases: string[] = [];
+    let basePool: string[] = [];
+    let classText: string | undefined;
     // If we assume ~30 items per class, then around 5 is when the class strategy
     // starts to actually perform worse.
     const usingClasses = this.filter.classes.length > 0 && this.filter.classes.length <= 5;
-    let basePool: string[] = [];
 
     if (usingClasses) {
+      const classList: string[] = [];
       for (const itemClass of this.filter.classes) {
         // The above item class could still be partial, so pull the item bases
         // for each matching class.
         for (const fullItemClass of itemData.classes) {
           if (fullItemClass.includes(itemClass)) {
             basePool.push.apply(basePool, itemData.classesToBases[fullItemClass]);
+            classList.push(fullItemClass);
           }
         }
       }
+      classText = stylizedArrayJoin(classList);
     } else {
       basePool = itemData.sortedBases;
     }
@@ -603,18 +718,28 @@ export class LineParser {
         }
 
         if (invalid) {
-          this.diagnostics.push({
-            message: `Invalid value for a ${this.keyword} rule. Only item classes` +
-              " are valid values for this rule.",
-            range: valueResult.range,
-            severity: DiagnosticSeverity.Error,
-            source: this.filter.source
-          });
+          if (classText) {
+            this.diagnostics.push({
+              message: `Invalid value for a ${this.keyword} rule. No value found` +
+                ` for the following classes: ${classText}.`,
+              range: valueResult.range,
+              severity: DiagnosticSeverity.Error,
+              source: this.filter.source
+            });
+          } else {
+            this.diagnostics.push({
+              message: `Invalid value for a ${this.keyword} rule. Only item bases` +
+                " are valid values for this rule.",
+              range: valueResult.range,
+              severity: DiagnosticSeverity.Error,
+              source: this.filter.source
+            });
+          }
         } else {
           parsedBases.push(value);
         }
       } else {
-        if (parsedBases.length === 0) {
+        if (parsedBases.length === 0 && this.diagnostics.length === 0) {
           this.diagnostics.push({
             message: `Missing value for ${this.keyword} rule. A string value was expected.`,
             range: {

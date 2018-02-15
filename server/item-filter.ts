@@ -4,6 +4,12 @@
  * license information.
  * ===========================================================================*/
 
+// TODO(glen): investigate incremental updating. We would likely need to figure
+//  out the block context surrounding the lines prior to sending it into the
+//  line parser again. We'd also need a way to remove diagnostics and color
+//  information based on removed or modified lines. Doesn't sound that difficult,
+//  but we'll see.
+
 import {
   Diagnostic, Range
 } from "vscode-languageserver";
@@ -31,7 +37,7 @@ export class ItemFilter {
   private readonly parsed: Promise<FilterParseResult>;
 
   constructor(config: ConfigurationValues, text: string) {
-    this.parsed = this.fullParse(config, text);
+    this.parsed = this.fullUpdate(config, text);
   }
 
   async getDiagnostics(): Promise<Diagnostic[]> {
@@ -44,7 +50,7 @@ export class ItemFilter {
     return colorInformation;
   }
 
-  private async fullParse(config: ConfigurationValues, text: string):
+  private async fullUpdate(config: ConfigurationValues, text: string):
     Promise<FilterParseResult> {
 
     const lines = text.split(/\r?\n/g);
