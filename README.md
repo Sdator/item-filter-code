@@ -12,6 +12,10 @@ An extension for Visual Studio Code that provides additional support for writing
 - Fast, with incremental update support within the language server.
 - Non-destructive implementation. We will never edit, destroy, or sort anything without your permission.
 
+### Preview
+
+![Item Filter Code Preview](https://raw.githubusercontent.com/glencfl/item-filter-code/master/media/preview.png)
+
 ### Issues & Feature Requests
 
 Issues filed on the [Github tracker](https://github.com/GlenCFL/item-filter-code/issues) will be resolved in a quick and timely manner. If you have a feature request, those are welcome on the tracker as well.

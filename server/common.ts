@@ -30,7 +30,7 @@ export interface FilterData {
       max: number,
       additionals?: number[]
     }
-  },
+  };
   rarities: string[];
   booleans: string[];
   sounds: {

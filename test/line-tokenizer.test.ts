@@ -4,8 +4,9 @@
  * license information.
  * ===========================================================================*/
 
-import { TokenParser } from "../server/token-parser";
 import { assert } from "chai";
+
+import { TokenParser } from "../server/token-parser";
 
 describe("LineParser.constructor()", () => {
   it("sets LineParser.textStartIndex correctly", () => {

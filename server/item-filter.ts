@@ -4,12 +4,6 @@
  * license information.
  * ===========================================================================*/
 
-// TODO(glen): investigate incremental updating. We would likely need to figure
-//  out the block context surrounding the lines prior to sending it into the
-//  line parser again. We'd also need a way to remove diagnostics and color
-//  information based on removed or modified lines. Doesn't sound that difficult,
-//  but we'll see.
-
 import * as assert from "assert";
 import { Diagnostic, Range, DiagnosticSeverity } from "vscode-languageserver";
 import {
@@ -17,7 +11,7 @@ import {
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues, FilterData } from "./common";
-import { getOrdinal } from "./helpers";
+import { getOrdinal, splitLines } from "./helpers";
 import { LineParser } from "./line-parser";
 
 const filterData: FilterData = require("../filter.json");
@@ -28,8 +22,8 @@ export interface FilterParseResult {
 }
 
 export interface BlockContext {
-  config: ConfigurationValues,
-  source: "item-filter",
+  config: ConfigurationValues;
+  source: "item-filter";
   root?: Range;
   blockFound: boolean;
   classes: string[];
@@ -56,10 +50,10 @@ export class ItemFilter {
   private async fullUpdate(config: ConfigurationValues, text: string):
     Promise<FilterParseResult> {
 
-    const lines = text.split(/\r?\n/g);
+    const lines = splitLines(text);
     const result: FilterParseResult = { colorInformation: [], diagnostics: [] };
 
-    let context: BlockContext = {
+    const context: BlockContext = {
       config,
       source: "item-filter",
       blockFound: false,

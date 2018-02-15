@@ -2,7 +2,7 @@
 
 The history of changes to the extension.
 
-### Version 1.0.0 (February 16th, 2018)
+### Version 1.0.0 (February 15th, 2018)
 - Diagnostics added to the language server.
 - Color provider added to the language server.
 

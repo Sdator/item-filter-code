@@ -18,7 +18,7 @@
 //  over ~2000 suggestions shouldn't be an issue.
 
 import {
-  CompletionItem, CompletionItemKind, Position, Range, TextDocument
+  CompletionItem, CompletionItemKind, Position, Range
 } from "vscode-languageserver";
 
 import { ItemData, ConfigurationValues, FilterData } from "./common";
@@ -36,11 +36,9 @@ const equalityOpRegex = /=/;
  * @param document The document to provide completion suggestions for.
  * @param position The context within the document to provide suggestions for.
  */
-export function getCompletionSuggestions(config: ConfigurationValues, document: TextDocument,
+export function getCompletionSuggestions(config: ConfigurationValues, lineText: string,
   position: Position): CompletionItem[] {
 
-  const lines = document.getText().split(/\r?\n/g);
-  const lineText = lines[position.line];
   const keywordRegex = /^\s*[A-Z]+(?=\s|$)/i;
   const wordRegex = /[A-Z]+(?=\s|$)/i;
 

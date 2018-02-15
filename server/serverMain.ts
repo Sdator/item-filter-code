@@ -13,7 +13,7 @@ import {
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues } from "./common";
-import { equalArrays } from "./helpers";
+import { equalArrays, splitLines } from "./helpers";
 import { getCompletionSuggestions } from "./completion";
 import { ItemFilter } from "./item-filter";
 
@@ -87,8 +87,10 @@ connection.onDidChangeConfiguration(change => {
 });
 
 connection.onCompletion(params => {
-  return getCompletionSuggestions(config, documents.get(params.textDocument.uri),
-    params.position);
+  const document = documents.get(params.textDocument.uri);
+  const lines = splitLines(document.getText());
+  const row = params.position.line;
+  return getCompletionSuggestions(config, lines[row], params.position);
 });
 
 connection.onRequest(DocumentColorRequest.type, params => {

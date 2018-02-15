@@ -6,7 +6,10 @@
 
 import * as assert from "assert";
 import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
-import { ColorInformation } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
+
+import {
+  ColorInformation
+} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { FilterData, ItemData, ConfigurationValues } from "./common";
 import { stylizedArrayJoin } from "./helpers";
@@ -45,7 +48,7 @@ export class LineParser {
     this.lineRange = {
       start: { line: this.parser.row, character: this.parser.textStartIndex },
       end: { line: this.parser.row, character: this.parser.textEndIndex }
-    }
+    };
     this.diagnostics = [];
   }
 
@@ -60,12 +63,13 @@ export class LineParser {
     const keywordResult = this.parser.nextWord();
     if (!keywordResult) {
       this.parsed = true;
-      return this.reportUnparseableKeyword();
+      this.reportUnparseableKeyword();
+      return;
     }
 
     this.keyword = keywordResult.value;
     this.keywordRange = keywordResult.range;
-    assert(this.keyword != "");
+    assert(this.keyword !== "");
 
     switch (this.keyword) {
       case "Show":
@@ -116,7 +120,8 @@ export class LineParser {
         for (const wlr of this.config.ruleWhitelist) {
           if (this.keyword === wlr) return;
         }
-        return this.reportUnknownKeyword();
+        this.reportUnknownKeyword();
+        return;
     }
   }
 
@@ -216,7 +221,7 @@ export class LineParser {
     let secondPart: string;
     if (additionals.length > 0) {
       const additionalText = stylizedArrayJoin(additionals, ", or ");
-      secondPart = ` Valid values are either ${min}-${max} or ${additionalText}.`
+      secondPart = ` Valid values are either ${min}-${max} or ${additionalText}.`;
     } else {
       secondPart = ` Valid values are between ${min} and ${max}.`;
     }
@@ -225,7 +230,7 @@ export class LineParser {
       let invalid = numberResult.value < min || numberResult.value > max;
 
       if (invalid) {
-        for (let v of additionals) {
+        for (const v of additionals) {
           if (numberResult.value === v) invalid = false;
         }
       }
@@ -459,7 +464,7 @@ export class LineParser {
           alpha: alphaValue
         },
         range
-      }
+      };
     }
 
     if (!this.parser.isIgnored() && this.diagnostics.length === 0) {
@@ -480,7 +485,7 @@ export class LineParser {
     // let range: Range | undefined;
     const min = filterData.sounds.numberIdentifier.min;
     const max = filterData.sounds.numberIdentifier.max;
-    const secondPart = ` Expected a number from ${min}-${max} or a valid sound identifier.`
+    const secondPart = ` Expected a number from ${min}-${max} or a valid sound identifier.`;
 
     let invalidIdentifier = true;
     const wordResult = this.parser.nextWord();
