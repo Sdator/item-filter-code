@@ -16,6 +16,7 @@ export interface ConfigurationValues {
 export interface ItemData {
   classesToBases: { [key: string]: string[] };
   basesToClasses: { [key: string]: string };
+  classes: string[];
   sortedBases: string[];
   sortedBasesIndices: number[];
 }

@@ -8,11 +8,12 @@ import * as assert from "assert";
 import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 import { ColorInformation } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { FilterData } from "./common";
+import { FilterData, ItemData, ConfigurationValues } from "./common";
 import { getOrdinal, stylizedArrayJoin } from "./helpers";
 import { FilterContext } from "./item-filter";
 import { TokenParser, ParseResult } from "./token-parser";
 
+const itemData: ItemData = require("../items.json");
 const filterData: FilterData = require("../filter.json");
 
 export class LineParser {
@@ -21,13 +22,17 @@ export class LineParser {
   keyword: string;
   keywordRange: Range;
 
+  private readonly config: ConfigurationValues;
   private readonly filter: FilterContext;
   private readonly parser: TokenParser;
   private readonly line: number;
   private readonly lineRange: Range;
   private parsed = false;
 
-  constructor(filterContext: FilterContext, text: string, line: number) {
+  constructor(config: ConfigurationValues, filterContext: FilterContext, text: string,
+    line: number) {
+
+    this.config = config;
     this.filter = filterContext;
     this.line = line;
     this.parser = new TokenParser(text, line);
@@ -96,6 +101,12 @@ export class LineParser {
       case "SetTextColor":
       case "SetBackgroundColor":
         this.parseColorRule();
+        break;
+      case "Class":
+        this.parseClassRule();
+        break;
+      case "BaseType":
+        this.parseBaseTypeRule();
         break;
       default:
         // TODO(glen): allow whitelist rules to bypass here.
@@ -182,6 +193,15 @@ export class LineParser {
         end: { line: this.line, character: this.parser.originalLength }
       },
       severity: DiagnosticSeverity.Error,
+      source: this.filter.source
+    });
+  }
+
+  private reportDuplicateString(parse: ParseResult<string>): void {
+    this.diagnostics.push({
+      message: `Duplicate value detected within a ${this.keyword} rule.`,
+      range: parse.range,
+      severity: DiagnosticSeverity.Warning,
       source: this.filter.source
     });
   }
@@ -446,6 +466,166 @@ export class LineParser {
 
     if (!this.parser.isIgnored() && this.diagnostics.length === 0) {
       this.reportTrailingText(DiagnosticSeverity.Error);
+    }
+  }
+
+  private parseClassRule() {
+    const operatorResult = this.parser.nextOperator();
+    if (operatorResult) {
+      if (operatorResult.value !== "=") {
+        this.reportNonEqualityOperator(operatorResult);
+      }
+    }
+
+    const parsedClasses: string[] = [];
+
+    while (true) {
+      const valueResult = this.parser.nextString();
+
+      if (valueResult) {
+        if (parsedClasses.includes(valueResult.value)) {
+          this.reportDuplicateString(valueResult);
+        }
+
+        let invalid = true;
+        for (const c of itemData.classes) {
+          if (c.includes(valueResult.value)) invalid = false;
+        }
+
+        if (invalid) {
+          for (const wlc of this.config.classWhitelist) {
+            if (wlc.includes(valueResult.value)) invalid = false;
+          }
+        }
+
+        if (invalid) {
+          this.diagnostics.push({
+            message: `Invalid value for a ${this.keyword} rule. Only item classes` +
+              " are valid values for this rule.",
+            range: valueResult.range,
+            severity: DiagnosticSeverity.Error,
+            source: this.filter.source
+          });
+        } else {
+          this.filter.classes.push(valueResult.value);
+          parsedClasses.push(valueResult.value);
+        }
+      } else {
+        if (parsedClasses.length === 0) {
+          this.diagnostics.push({
+            message: `Missing value for ${this.keyword} rule. A string value was expected.`,
+            range: {
+              start: { line: this.line, character: this.parser.textStartIndex },
+              end: { line: this.line, character: this.parser.originalLength }
+            },
+            severity: DiagnosticSeverity.Error,
+            source: this.filter.source
+          });
+        }
+
+        break;
+      }
+    }
+  }
+
+  private parseBaseTypeRule() {
+    // This function is the hotpath of the entire language server. Validating
+    // values naively requires you to look through potentially 2,000 values
+    // in order to find the match. We currently use two techniques to get that
+    // number down as low as possible in the majority of cases, though sometimes
+    // we really do need to go through the entire list.
+    //
+    // Strategy #1: If we were preceded by a Class rule, use it to filter.
+    // Strategy #2: Presort a list of item bases by length, then jump straight
+    //  to the length of the current item base in that list. It's impossible to
+    //  match strings that are smaller and most item base values are exact
+    //  matches, so this will take you to the set of the most likely values.
+    //  The largest one of these sets is ~180 item bases.
+    //
+    // TODO(glen): investigate whether there is actual value maintaining a cache
+    //  reusable between full parses.
+
+    const operatorResult = this.parser.nextOperator();
+    if (operatorResult) {
+      if (operatorResult.value !== "=") {
+        this.reportNonEqualityOperator(operatorResult);
+      }
+    }
+
+    const parsedBases: string[] = [];
+    const usingClasses = this.filter.classes.length > 1 && this.filter.classes.length < 10;
+    let basePool: string[] = [];
+
+    if (usingClasses) {
+      for (const itemClass of this.filter.classes) {
+        // The above item class could still be partial, so pull the item bases
+        // for each matching class.
+        for (const fullItemClass of itemData.classes) {
+          if (fullItemClass.includes(itemClass)) {
+            basePool.push.apply(basePool, itemData.classesToBases[fullItemClass]);
+          }
+        }
+      }
+    } else {
+      basePool = itemData.sortedBases;
+    }
+
+    while (true) {
+      const valueResult = this.parser.nextString();
+
+      if (valueResult) {
+        const value = valueResult.value;
+        if (parsedBases.includes(value)) {
+          this.reportDuplicateString(valueResult);
+        }
+
+        let invalid = true;
+        if (usingClasses) {
+          for (const itemBase of basePool) {
+            if (itemBase.length >= value.length && itemBase.includes(value)) {
+              invalid = false;
+            }
+          }
+        } else {
+          const startIndex = itemData.sortedBasesIndices[value.length - 1];
+          for (let i = startIndex; i < itemData.sortedBases.length; i++) {
+            const itemBase = itemData.sortedBases[i];
+            if (itemBase.includes(value)) invalid = false;
+          }
+        }
+
+        if (invalid) {
+          for (const wlb of this.config.baseWhitelist) {
+            if (wlb.includes(value)) invalid = false;
+          }
+        }
+
+        if (invalid) {
+          this.diagnostics.push({
+            message: `Invalid value for a ${this.keyword} rule. Only item classes` +
+              " are valid values for this rule.",
+            range: valueResult.range,
+            severity: DiagnosticSeverity.Error,
+            source: this.filter.source
+          });
+        } else {
+          parsedBases.push(value);
+        }
+      } else {
+        if (parsedBases.length === 0) {
+          this.diagnostics.push({
+            message: `Missing value for ${this.keyword} rule. A string value was expected.`,
+            range: {
+              start: { line: this.line, character: this.parser.textStartIndex },
+              end: { line: this.line, character: this.parser.originalLength }
+            },
+            severity: DiagnosticSeverity.Error,
+            source: this.filter.source
+          });
+        }
+
+        break;
+      }
     }
   }
 }

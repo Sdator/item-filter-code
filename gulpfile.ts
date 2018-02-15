@@ -20,6 +20,7 @@ interface ItemData {
 interface ItemDataOutput {
   classesToBases: { [key: string]: string[] },
   basesToClasses: { [key: string]: string },
+  classes: string[],
   sortedBases: string[],
   sortedBasesIndices: number[]
 }
@@ -126,11 +127,13 @@ gulp.task("data", () => {
   // We need to create the following object in memory, then output it to the file:
   //  .classesToBases -- essentially the YAML file's object.
   //  .basesToClasses -- the list of item bases with their associated class.
+  //  .classes -- an array containing every class.
   //  .sortedBases -- the item bases sorted by their length first, then alphabetical order.
   //  .sortedBasesIndices -- the indices for each character length within the sortedBases array.
   const itemDataObject: ItemDataOutput = {
     classesToBases: itemData,
     basesToClasses: {},
+    classes: [],
     sortedBases: [],
     sortedBasesIndices: []
   };
@@ -139,6 +142,7 @@ gulp.task("data", () => {
 
   // Fill out basesToClasses as we get the list needed to fill out the last two.
   for (const itemClass in itemData) {
+    itemDataObject.classes.push(itemClass);
     const classBases = itemData[itemClass];
 
     for (const itemBase of classBases) {
@@ -162,7 +166,7 @@ gulp.task("data", () => {
 
   let indices: number[] = [];
   let currentIndex = 0;
-  let currentLength = minLength;
+  let currentLength = 1;
   while (currentLength <= maxLength) {
     const base = itemBases[currentIndex];
     if (currentLength <= base.length) {

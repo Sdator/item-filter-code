@@ -59,7 +59,7 @@ export class ItemFilter {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const lineParser = new LineParser(context, line, i);
+      const lineParser = new LineParser(config, context, line, i);
       lineParser.parse();
 
       if (lineParser.diagnostics.length > 0) {
