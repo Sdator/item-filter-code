@@ -2,9 +2,8 @@
 
 The history of changes to the extension.
 
-### Version 1.0.0 (TBD)
-
-- Basic diagnostics added to the language server.
+### Version 1.0.0 (February 16th, 2018)
+- Diagnostics added to the language server.
 - Color provider added to the language server.
 
 ### Version 0.2.0 (February 13th, 2018)

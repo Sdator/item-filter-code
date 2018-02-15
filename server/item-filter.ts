@@ -10,25 +10,28 @@
 //  information based on removed or modified lines. Doesn't sound that difficult,
 //  but we'll see.
 
-import {
-  Diagnostic, Range
-} from "vscode-languageserver";
+import * as assert from "assert";
+import { Diagnostic, Range, DiagnosticSeverity } from "vscode-languageserver";
 import {
   ColorInformation
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { ConfigurationValues } from "./common";
+import { ConfigurationValues, FilterData } from "./common";
+import { getOrdinal } from "./helpers";
 import { LineParser } from "./line-parser";
+
+const filterData: FilterData = require("../filter.json");
 
 export interface FilterParseResult {
   colorInformation: ColorInformation[];
   diagnostics: Diagnostic[];
 }
 
-export interface FilterContext {
+export interface BlockContext {
   config: ConfigurationValues,
   source: "item-filter",
   root?: Range;
+  blockFound: boolean;
   classes: string[];
   previousRules: Map<string, number>;
 }
@@ -56,17 +59,21 @@ export class ItemFilter {
     const lines = text.split(/\r?\n/g);
     const result: FilterParseResult = { colorInformation: [], diagnostics: [] };
 
-    let context: FilterContext = {
+    let context: BlockContext = {
       config,
       source: "item-filter",
+      blockFound: false,
       classes: [],
-      previousRules: new Map(),
+      previousRules: new Map()
     };
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const lineParser = new LineParser(config, context, line, i);
       lineParser.parse();
+
+      if (!lineParser.keyword) continue;
+      this.performBlockDiagnostics(context, lineParser);
 
       if (lineParser.diagnostics.length > 0) {
         result.diagnostics.push.apply(result.diagnostics, lineParser.diagnostics);
@@ -78,5 +85,37 @@ export class ItemFilter {
     }
 
     return result;
+  }
+
+  private performBlockDiagnostics(context: BlockContext, parser: LineParser) {
+    if (parser.keyword !== "Show" && parser.keyword !== "Hide") {
+      if (context.blockFound) {
+        const ruleLimit = filterData.ruleLimits[parser.keyword];
+        assert(ruleLimit !== undefined);
+
+        const occurrences = context.previousRules.get(parser.keyword);
+        if (occurrences !== undefined && occurrences >= ruleLimit) {
+          parser.diagnostics.push({
+            message: `${getOrdinal(occurrences + 1)} occurrence of the` +
+              ` ${parser.keyword} rule within a block with a limit of ${ruleLimit}.`,
+            range: parser.keywordRange,
+            severity: DiagnosticSeverity.Warning,
+            source: context.source
+          });
+        }
+
+        context.previousRules.set(parser.keyword, occurrences === undefined ? 1 : occurrences);
+      } else {
+        // We have a rule without an enclosing block.
+        parser.diagnostics.push({
+          message: `Block rule ${parser.keyword} found outside of a Hide or Show block.`,
+          range: parser.lineRange,
+          severity: DiagnosticSeverity.Error,
+          source: context.source
+        });
+      }
+    } else {
+      context.blockFound = true;
+    }
   }
 }

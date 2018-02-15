@@ -9,8 +9,8 @@ import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 import { ColorInformation } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { FilterData, ItemData, ConfigurationValues } from "./common";
-import { getOrdinal, stylizedArrayJoin } from "./helpers";
-import { FilterContext } from "./item-filter";
+import { stylizedArrayJoin } from "./helpers";
+import { BlockContext } from "./item-filter";
 import { TokenParser, ParseResult } from "./token-parser";
 
 const itemData: ItemData = require("../items.json");
@@ -19,34 +19,34 @@ const filterData: FilterData = require("../filter.json");
 export class LineParser {
   readonly diagnostics: Diagnostic[];
   color?: ColorInformation;
+
+  // With our implementation, both of these will always be defined within the
+  // contexts that they are used. We simply don't want to pass both to every
+  // single function or do null checks at each usage site.
+  // @ts-ignore
   keyword: string;
+  // @ts-ignore
   keywordRange: Range;
+  line: number;
+  lineRange: Range;
 
   private readonly config: ConfigurationValues;
-  private readonly filter: FilterContext;
+  private readonly filter: BlockContext;
   private readonly parser: TokenParser;
-  private readonly line: number;
-  private readonly lineRange: Range;
   private parsed = false;
 
-  constructor(config: ConfigurationValues, filterContext: FilterContext, text: string,
+  constructor(config: ConfigurationValues, filterContext: BlockContext, text: string,
     line: number) {
 
     this.config = config;
     this.filter = filterContext;
-    this.line = line;
     this.parser = new TokenParser(text, line);
+    this.line = line;
     this.lineRange = {
-      start: { line, character: this.parser.textStartIndex },
-      end: { line, character: this.parser.textEndIndex }
-    };
+      start: { line: this.parser.row, character: this.parser.textStartIndex },
+      end: { line: this.parser.row, character: this.parser.textEndIndex }
+    }
     this.diagnostics = [];
-
-    this.keyword = "";
-    this.keywordRange = {
-      start: { line: -1, character: -1 },
-      end: { line: -1, character: -1 }
-    };
   }
 
   parse() {
@@ -116,27 +116,7 @@ export class LineParser {
         for (const wlr of this.config.ruleWhitelist) {
           if (this.keyword === wlr) return;
         }
-        this.reportUnknownKeyword();
-        return;
-    }
-
-    // TODO(glen): add a "missing block enclosure" error.
-    // TODO(glen): probably move this out to item filter, as it's not really
-    //  a line-level thing.
-    if (this.keyword !== "Show" && this.keyword !== "Hide") {
-      const ruleLimit = filterData.ruleLimits[this.keyword];
-      assert(ruleLimit !== undefined);
-
-      const occurrences = this.filter.previousRules.get(this.keyword);
-      if (occurrences !== undefined && occurrences >= ruleLimit) {
-        this.diagnostics.push({
-          message: `${getOrdinal(occurrences + 1)} occurrence of the` +
-            ` ${this.keyword} rule within a block with a limit of ${ruleLimit}.`,
-          range: this.keywordRange,
-          severity: DiagnosticSeverity.Warning,
-          source: this.filter.source
-        });
-      }
+        return this.reportUnknownKeyword();
     }
   }
 
@@ -224,7 +204,7 @@ export class LineParser {
     });
   }
 
-  private getNumber(): ParseResult<number> | undefined {
+  private expectNumber(): ParseResult<number> | undefined {
     const rangeLimits = filterData.ruleRanges[this.keyword];
     assert(rangeLimits !== undefined);
     const min = rangeLimits.min;
@@ -321,7 +301,7 @@ export class LineParser {
       }
     }
 
-    this.getNumber();
+    this.expectNumber();
 
     if (!this.parser.empty && this.diagnostics.length === 0) {
       this.reportTrailingText(DiagnosticSeverity.Error);
@@ -495,7 +475,7 @@ export class LineParser {
       }
     }
 
-    // NOTE(glen): pretty sure we'll need this soon.
+    // TODO(glen): get sounds into VSCode somehow.
     // let value: string | undefined;
     // let range: Range | undefined;
     const min = filterData.sounds.numberIdentifier.min;
