@@ -553,7 +553,9 @@ export class LineParser {
     }
 
     const parsedBases: string[] = [];
-    const usingClasses = this.filter.classes.length > 1 && this.filter.classes.length < 10;
+    // If we assume ~30 items per class, then around 5 is when the class strategy
+    // starts to actually perform worse.
+    const usingClasses = this.filter.classes.length > 0 && this.filter.classes.length <= 5;
     let basePool: string[] = [];
 
     if (usingClasses) {
@@ -589,7 +591,7 @@ export class LineParser {
         } else {
           const startIndex = itemData.sortedBasesIndices[value.length - 1];
           for (let i = startIndex; i < itemData.sortedBases.length; i++) {
-            const itemBase = itemData.sortedBases[i];
+            const itemBase = basePool[i];
             if (itemBase.includes(value)) invalid = false;
           }
         }
