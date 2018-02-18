@@ -102,7 +102,7 @@ function createSoundDecorations(sounds: SoundInformation[]): DecorationOptions[]
     const decoration: DecorationOptions = {
       range: client.protocol2CodeConverter.asRange(sound.range),
       hoverMessage: markdownString
-    }
+    };
 
     result.push(decoration);
   }
@@ -115,7 +115,8 @@ function playSoundCommand({identifier, volume}: PlaySoundOptions): void {
 }
 
 export async function activate(context: ExtensionContext) {
-  context.subscriptions.push(commands.registerCommand("item-filter.playSound", playSoundCommand));
+  context.subscriptions.push(commands.registerCommand("item-filter.playSound",
+    playSoundCommand));
 
   const activeEditor = window.activeTextEditor;
   if (activeEditor) {
@@ -171,7 +172,6 @@ export async function activate(context: ExtensionContext) {
     { provideDocumentColors, provideColorPresentations }));
 
   client.onNotification("update-sounds", (uri: string, sounds: SoundInformation[]) => {
-    if (process.platform !== "win32") return;
     const decorations = createSoundDecorations(sounds);
 
     if (window.activeTextEditor && uri === activateEditorURI) {

@@ -2,6 +2,11 @@
 
 The history of changes to the extension.
 
+### Version 1.2.0 (February 20th, 2018)
+- Hovering over item bases within the editor will now show the unique items specific to that base.
+- Added support for playing sound on MacOS through the system binary `afplay`.
+- Added support for enabling sound support on Linux through configuration variables. See the README for more information.
+
 ### Version 1.1.0 (February 18th, 2018)
 - Sound identifiers now have a border decoration within the editor.
 - Windows users can now play sounds by hovering over sound identifiers.
