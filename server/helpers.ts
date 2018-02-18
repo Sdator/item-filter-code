@@ -40,3 +40,38 @@ export function stylizedArrayJoin(array: any[], finalPrefix = ", and "): string 
 export function splitLines(text: string): string[] {
   return text.split(/\r?\n/g);
 }
+
+// These two functions are from the following source file:
+// https://github.com/Microsoft/vscode/blob/1.20.1/extensions/css/server/src/utils/errors.ts
+//
+// They are subject to the following license:
+//  Copyright (c) Microsoft Corporation. All rights reserved.
+//  Licensed under the MIT License. See License.txt in the project root for license information.
+export function formatError(message: string, err: Error | string | object): string {
+  if (err instanceof Error) {
+    const error = err;
+    return `${message}: ${error.message}\n${error.stack}`;
+  } else if (typeof err === "string") {
+    return `${message}: ${err}`;
+  } else if (err) {
+    return `${message}: ${err.toString()}`;
+  }
+  return message;
+}
+export function runSafe<T>(func: () => Thenable<T> | T, errorVal: T,
+  errorMessage: string): Thenable<T> | T {
+
+  try {
+    const t = func();
+    if (t instanceof Promise) {
+      return t.then(void 0, e => {
+        console.error(formatError(errorMessage, e));
+        return errorVal;
+      });
+    }
+    return t;
+  } catch (e) {
+    console.error(formatError(errorMessage, e));
+    return errorVal;
+  }
+}

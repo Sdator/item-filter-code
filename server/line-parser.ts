@@ -13,7 +13,7 @@ import {
 
 import { FilterData, ItemData, ConfigurationValues } from "./common";
 import { stylizedArrayJoin } from "./helpers";
-import { BlockContext } from "./item-filter";
+import { BlockContext, SoundInformation } from "./item-filter";
 import { TokenParser, ParseResult } from "./token-parser";
 
 const itemData: ItemData = require("../items.json");
@@ -22,6 +22,7 @@ const filterData: FilterData = require("../filter.json");
 export class LineParser {
   readonly diagnostics: Diagnostic[];
   color?: ColorInformation;
+  sound?: SoundInformation;
 
   // With our implementation, both of these will always be defined within the
   // contexts that they are used. We simply don't want to pass both to every
@@ -32,6 +33,7 @@ export class LineParser {
   keywordRange: Range;
   line: number;
   lineRange: Range;
+  knownKeyword: boolean;
 
   private readonly config: ConfigurationValues;
   private readonly filter: BlockContext;
@@ -50,6 +52,7 @@ export class LineParser {
       end: { line: this.parser.row, character: this.parser.textEndIndex }
     };
     this.diagnostics = [];
+    this.knownKeyword = false;
   }
 
   parse() {
@@ -123,6 +126,8 @@ export class LineParser {
         this.reportUnknownKeyword();
         return;
     }
+
+    this.knownKeyword = true;
   }
 
   private reportUnparseableKeyword(): void {
@@ -480,9 +485,11 @@ export class LineParser {
       }
     }
 
-    // TODO(glen): get sounds into VSCode somehow.
-    // let value: string | undefined;
-    // let range: Range | undefined;
+    let identifier: string | undefined;
+    let volume: number | undefined;
+    let range: Range | undefined;
+    let knownIdentifier = false;
+
     const min = filterData.sounds.numberIdentifier.min;
     const max = filterData.sounds.numberIdentifier.max;
     const secondPart = ` Expected a number from ${min}-${max} or a valid sound identifier.`;
@@ -492,16 +499,17 @@ export class LineParser {
     if (wordResult) {
       for (const id in filterData.sounds.stringIdentifiers) {
         if (id === wordResult.value) {
-          // value = wordResult.value;
-          // range = wordResult.range;
+          identifier = wordResult.value;
+          range = wordResult.range;
+          knownIdentifier = true;
           invalidIdentifier = false;
         }
       }
 
       for (const id of this.config.soundWhitelist) {
         if (id === wordResult.value) {
-          // value = wordResult.value;
-          // range = wordResult.range;
+          identifier = wordResult.value;
+          range = wordResult.range;
           invalidIdentifier = false;
         }
       }
@@ -518,8 +526,9 @@ export class LineParser {
       const numberResult = this.parser.nextNumber();
       if (numberResult) {
         if (numberResult.value >= min && numberResult.value <= max) {
-          // value = `${numberResult.value}`;
-          // range = numberResult.range;
+          identifier = `${numberResult.value}`;
+          range = numberResult.range;
+          knownIdentifier = true;
           invalidIdentifier = false;
         } else {
           this.diagnostics.push({
@@ -554,11 +563,18 @@ export class LineParser {
           severity: DiagnosticSeverity.Error,
           source: this.filter.source
         });
+      } else {
+        volume = volumeResult.value;
       }
     }
 
     if (!this.parser.isIgnored() && this.diagnostics.length === 0) {
       this.reportTrailingText(DiagnosticSeverity.Error);
+    }
+
+    if (identifier && range) {
+      const v: number = volume === undefined ? 100 : volume;
+      this.sound = { knownIdentifier, identifier, volume: v, range };
     }
   }
 
@@ -628,10 +644,9 @@ export class LineParser {
     // number down as low as possible in the majority of cases, though sometimes
     // we really do need to go through the entire list.
     //
-    // Strategy #1: If we were preceded by a Class rule with up to five values,
-    //  get the item bases associated with those classes and check against that
-    //  list. If we assume ~30 values per class, then this is about 150 values
-    //  to check against.
+    // Strategy #1: If we were preceded by a Class rule, then get the item bases
+    //  associated with those classes and check against that list. This has better
+    //  performance until that class list contains ~5 entries.
     // Strategy #2: Sort a list of item bases by length, then jump straight
     //  to the length of the current item base in that list. It's impossible to
     //  match strings that are smaller and most item base values are exact
@@ -651,9 +666,11 @@ export class LineParser {
     const parsedBases: string[] = [];
     let basePool: string[] = [];
     let classText: string | undefined;
+
     // If we assume ~30 items per class, then around 5 is when the class strategy
-    // starts to actually perform worse.
-    const usingClasses = this.filter.classes.length > 0 && this.filter.classes.length <= 5;
+    // starts to actually perform worse. We could cutoff there, but we want to
+    // have consistency with the diagnostics.
+    const usingClasses = this.filter.classes.length > 0;
 
     if (usingClasses) {
       const classList: string[] = [];

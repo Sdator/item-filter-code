@@ -2,6 +2,14 @@
 
 The history of changes to the extension.
 
+### Version 1.1.0 (February 18th, 2018)
+- Sound identifiers now have a border decoration within the editor.
+- Windows users can now play sounds by hovering over sound identifiers.
+- Added several partial item bases to the autocompletion results.
+- Class rules that proceed a BaseType rule are now always used when determining
+  whether or not each item base is valid.
+- Fixed an unhandled promise rejection relating to invalid or whitelisted keywords.
+
 ### Version 1.0.1 (February 15th, 2018)
 - A valid color will now be inserted automatically whenever autocompleting a color rule.
 

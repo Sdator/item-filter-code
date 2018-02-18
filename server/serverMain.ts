@@ -6,14 +6,14 @@
 
 import {
   createConnection, IConnection, IPCMessageReader, IPCMessageWriter, TextDocument,
-  TextDocuments, InitializeResult, ServerCapabilities
+  TextDocuments, InitializeResult, ServerCapabilities, CompletionItem
 } from "vscode-languageserver";
 import {
   ServerCapabilities as CPServerCapabilities, DocumentColorRequest
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues } from "./common";
-import { equalArrays, splitLines } from "./helpers";
+import { equalArrays, splitLines, runSafe } from "./helpers";
 import { getCompletionSuggestions } from "./completion";
 import { ItemFilter } from "./item-filter";
 
@@ -33,18 +33,15 @@ const connection: IConnection = createConnection(new IPCMessageReader(process),
 
 const documents: TextDocuments = new TextDocuments();
 
-function processItemFilter(document: TextDocument): void {
+async function processItemFilter(document: TextDocument): Promise<void> {
   const uri = document.uri;
   const text = document.getText();
   const filter = new ItemFilter(config, text);
 
   itemFilters.set(uri, filter);
-  filter.getDiagnostics().then(diagnostics => {
-    connection.sendDiagnostics({ uri, diagnostics });
-  }).catch(e => {
-    // TODO(glen): how should we be logging these?
-    console.error(e);
-  });
+  const payload = await filter.payload;
+  connection.sendDiagnostics({ uri, diagnostics: payload.diagnostics });
+  connection.sendNotification("update-sounds", uri, payload.soundInformation);
 }
 
 connection.onInitialize((_param): InitializeResult => {
@@ -58,7 +55,9 @@ connection.onInitialize((_param): InitializeResult => {
 });
 
 documents.onDidChangeContent(change => {
-  processItemFilter(change.document);
+  return runSafe(async () => {
+    return processItemFilter(change.document);
+  }, undefined, `Error while processing text changes within ${change.document.uri}`);
 });
 
 documents.onDidClose(event => {
@@ -67,39 +66,52 @@ documents.onDidClose(event => {
 });
 
 connection.onDidChangeConfiguration(change => {
-  const newConfig = <ConfigurationValues>change.settings["item-filter"];
+  return runSafe(async () => {
+    const newConfig = <ConfigurationValues>change.settings["item-filter"];
+    let update = false;
+    if (!equalArrays(config.baseWhitelist, newConfig.baseWhitelist)) update = true;
+    if (!equalArrays(config.classWhitelist, newConfig.classWhitelist)) update = true;
+    if (!equalArrays(config.ruleWhitelist, newConfig.ruleWhitelist)) update = true;
+    if (!config.performanceHints === newConfig.performanceHints) update = true;
 
-  let update = false;
-  if (!equalArrays(config.baseWhitelist, newConfig.baseWhitelist)) update = true;
-  if (!equalArrays(config.classWhitelist, newConfig.classWhitelist)) update = true;
-  if (!equalArrays(config.ruleWhitelist, newConfig.ruleWhitelist)) update = true;
-  if (!config.performanceHints === newConfig.performanceHints) update = true;
+    config = newConfig;
 
-  config = newConfig;
+    if (update) {
+      const openFilters = documents.all();
+      itemFilters.clear();
 
-  if (update) {
-    const openFilters = documents.all();
-    itemFilters.clear();
-    for (const filter of openFilters) {
-      processItemFilter(filter);
+      const promises: Array<Promise<void>> = [];
+      for (const filter of openFilters) {
+        promises.push(processItemFilter(filter));
+      }
+
+      return await Promise.all(promises);
+    } else {
+      return;
     }
-  }
+  }, undefined, `Error while processing configuration variable changes`);
 });
 
 connection.onCompletion(params => {
-  const document = documents.get(params.textDocument.uri);
-  const lines = splitLines(document.getText());
-  const row = params.position.line;
-  return getCompletionSuggestions(config, lines[row], params.position);
+  return runSafe<CompletionItem[]>(() => {
+    const document = documents.get(params.textDocument.uri);
+    const lines = splitLines(document.getText());
+    const row = params.position.line;
+    return getCompletionSuggestions(config, lines[row], params.position);
+  }, [], `Error while computing autocompletion results for ${params.textDocument.uri}`);
 });
 
-connection.onRequest(DocumentColorRequest.type, params => {
-  const filter = itemFilters.get(params.textDocument.uri);
-  if (filter) {
-    return filter.getColorInformation();
-  } else {
-    return [];
-  }
+connection.onRequest(DocumentColorRequest.type, async params => {
+  return runSafe(async () => {
+    const filter = itemFilters.get(params.textDocument.uri);
+
+    if (filter) {
+      const payload = await filter.payload;
+      return payload.colorInformation;
+    } else {
+      return [];
+    }
+  }, [], `Error while computing color presentations for ${params.textDocument.uri}`);
 });
 
 documents.listen(connection);

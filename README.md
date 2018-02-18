@@ -10,6 +10,7 @@ An extension for Visual Studio Code that provides additional support for writing
 - Color picker support for all rules with a color as a value.
 - Highly configurable, including the ability to add custom item bases, item classes, and rule keywords.
 - Non-destructive implementation. We will never edit, destroy, or sort anything without your permission.
+- (Windows Only) Preview sounds by hovering over sound identifiers within the editor.
 
 ### Preview
 

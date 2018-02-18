@@ -105,10 +105,14 @@ gulp.task("lint", () => {
 gulp.task("data", () => {
   const dataPath = path.join(__dirname, "data");
   let filterData: object;
+  let soundData: object;
   let itemData: ItemData;
   try {
     let filterDataPath = path.join(dataPath, "filter.yaml");
     filterData = yaml.safeLoad(fs.readFileSync(filterDataPath, "utf8"));
+
+    let soundDataPath = path.join(dataPath, "sounds.yaml");
+    soundData = yaml.safeLoad(fs.readFileSync(soundDataPath, "utf8"));
 
     let itemsPath = path.join(dataPath, "items.yaml");
     itemData = yaml.safeLoad(fs.readFileSync(itemsPath, "utf8"));
@@ -116,11 +120,17 @@ gulp.task("data", () => {
     process.exit(1);
   }
 
-  // We don't need to modify or process the filter data at all, only output it
-  // to JSON.
+  // We don't need to modify or process the filter or sound data at all, only
+  // output both to JSON.
   const filterDataContent = JSON.stringify(filterData);
   const filterOutputFile = path.join(__dirname, "dist", "filter.json");
   fs.writeFile(filterOutputFile, filterDataContent, (err) => {
+    if (err) throw err;
+  });
+
+  const soundDataContent = JSON.stringify(soundData);
+  const soundOutputFile = path.join(__dirname, "dist", "sounds.json");
+  fs.writeFile(soundOutputFile, soundDataContent, (err) => {
     if (err) throw err;
   });
 

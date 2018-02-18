@@ -10,19 +10,37 @@ import * as nls from "vscode-nls";
 const localize = nls.loadMessageBundle();
 
 import {
-  languages, Color, ColorInformation, ColorPresentation, ExtensionContext,
-  TextDocument, ProviderResult, Range, workspace
+  commands, languages, window, workspace, ExtensionContext, TextDocument, ProviderResult,
+  Range, Color, ColorInformation, ColorPresentation, DecorationOptions, MarkdownString
 } from "vscode";
-
 import {
   LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
 } from "vscode-languageclient";
-
 import {
   DocumentColorParams, DocumentColorRequest
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
+import { SoundInformation } from "../server/item-filter";
+import { playSound } from "./sound-player";
+
+interface ColorContext {
+  document: TextDocument;
+  range: Range;
+}
+
+interface PlaySoundOptions {
+  identifier: string;
+  volume: string;
+}
+
 let client: LanguageClient;
+let activateEditorURI: string | undefined;
+const soundDecorationType = window.createTextEditorDecorationType({
+  borderWidth: "0px 0px 1px",
+  borderStyle: "solid",
+  borderColor: "MediumSeaGreen"
+});
+const soundDecorationCache: Map<string, DecorationOptions[]> = new Map();
 
 function provideDocumentColors(document: TextDocument): ProviderResult<ColorInformation[]> {
   const params: DocumentColorParams = {
@@ -39,8 +57,8 @@ function provideDocumentColors(document: TextDocument): ProviderResult<ColorInfo
   });
 }
 
-function provideColorPresentations(color: Color, context:
-  { document: TextDocument, range: Range }): ProviderResult<ColorPresentation[]> {
+function provideColorPresentations(color: Color, context: ColorContext):
+  ProviderResult<ColorPresentation[]> {
 
   const result: ColorPresentation[] = [];
 
@@ -66,7 +84,64 @@ function provideColorPresentations(color: Color, context:
   return result;
 }
 
+function createSoundDecorations(sounds: SoundInformation[]): DecorationOptions[] {
+  const result: DecorationOptions[] = [];
+
+  for (const sound of sounds) {
+    if (!sound.knownIdentifier) continue;
+    const soundFields: PlaySoundOptions = {
+      identifier: sound.identifier,
+      volume: `${sound.volume}`
+    };
+
+    const commandText = "command:item-filter.playSound?" + JSON.stringify(soundFields);
+    const markdown = `[Play Sound](${encodeURI(commandText)})`;
+    const markdownString = new MarkdownString(markdown);
+    markdownString.isTrusted = true;
+
+    const decoration: DecorationOptions = {
+      range: client.protocol2CodeConverter.asRange(sound.range),
+      hoverMessage: markdownString
+    }
+
+    result.push(decoration);
+  }
+
+  return result;
+}
+
+function playSoundCommand({identifier, volume}: PlaySoundOptions): void {
+  playSound(identifier, parseInt(volume, 10));
+}
+
 export async function activate(context: ExtensionContext) {
+  context.subscriptions.push(commands.registerCommand("item-filter.playSound", playSoundCommand));
+
+  const activeEditor = window.activeTextEditor;
+  if (activeEditor) {
+    activateEditorURI = activeEditor.document.uri.toString();
+  }
+
+  context.subscriptions.push(window.onDidChangeActiveTextEditor(editor => {
+    if (editor === undefined) {
+      activateEditorURI = undefined;
+      return;
+    }
+
+    const uri = editor.document.uri.toString();
+    activateEditorURI = uri;
+
+    const decorations = soundDecorationCache.get(uri);
+    if (decorations) {
+      editor.setDecorations(soundDecorationType, decorations);
+    }
+  }));
+
+  context.subscriptions.push(workspace.onDidCloseTextDocument(document => {
+    const uri = document.uri.toString();
+    soundDecorationCache.delete(uri);
+  }));
+
   const serverModule = context.asAbsolutePath(path.join("dist", "server",
     "serverMain.js"));
   const debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
@@ -94,4 +169,15 @@ export async function activate(context: ExtensionContext) {
   await client.onReady();
   context.subscriptions.push(languages.registerColorProvider(documentSelector,
     { provideDocumentColors, provideColorPresentations }));
+
+  client.onNotification("update-sounds", (uri: string, sounds: SoundInformation[]) => {
+    if (process.platform !== "win32") return;
+    const decorations = createSoundDecorations(sounds);
+
+    if (window.activeTextEditor && uri === activateEditorURI) {
+      window.activeTextEditor.setDecorations(soundDecorationType, decorations);
+    }
+
+    soundDecorationCache.set(uri, decorations);
+  });
 }

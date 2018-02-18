@@ -133,7 +133,7 @@ function colorKeywordToCompletionItem(text: string, range: Range): CompletionIte
       newText: `${text} 255 255 255`,
       range
     }
-  }
+  };
 }
 
 function getKeywordCompletions(config: ConfigurationValues, pos: Position,

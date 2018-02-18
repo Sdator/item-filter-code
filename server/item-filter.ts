@@ -18,6 +18,7 @@ const filterData: FilterData = require("../filter.json");
 
 export interface FilterParseResult {
   colorInformation: ColorInformation[];
+  soundInformation: SoundInformation[];
   diagnostics: Diagnostic[];
 }
 
@@ -30,28 +31,29 @@ export interface BlockContext {
   previousRules: Map<string, number>;
 }
 
+export interface SoundInformation {
+  knownIdentifier: boolean;
+  identifier: string;
+  volume: number;
+  range: Range;
+}
+
 export class ItemFilter {
-  private readonly parsed: Promise<FilterParseResult>;
+  readonly payload: Promise<FilterParseResult>;
 
   constructor(config: ConfigurationValues, text: string) {
-    this.parsed = this.fullUpdate(config, text);
-  }
-
-  async getDiagnostics(): Promise<Diagnostic[]> {
-    const { diagnostics } = await this.parsed;
-    return diagnostics;
-  }
-
-  async getColorInformation(): Promise<ColorInformation[]> {
-    const { colorInformation } = await this.parsed;
-    return colorInformation;
+    this.payload = this.fullUpdate(config, text);
   }
 
   private async fullUpdate(config: ConfigurationValues, text: string):
     Promise<FilterParseResult> {
 
     const lines = splitLines(text);
-    const result: FilterParseResult = { colorInformation: [], diagnostics: [] };
+    const result: FilterParseResult = {
+      colorInformation: [],
+      soundInformation: [],
+      diagnostics: []
+    };
 
     const context: BlockContext = {
       config,
@@ -67,7 +69,9 @@ export class ItemFilter {
       lineParser.parse();
 
       if (!lineParser.keyword) continue;
-      this.performBlockDiagnostics(context, lineParser);
+      if (lineParser.knownKeyword) {
+        this.performBlockDiagnostics(context, lineParser);
+      }
 
       if (lineParser.diagnostics.length > 0) {
         result.diagnostics.push.apply(result.diagnostics, lineParser.diagnostics);
@@ -75,6 +79,10 @@ export class ItemFilter {
 
       if (lineParser.color) {
         result.colorInformation.push(lineParser.color);
+      }
+
+      if (lineParser.sound) {
+        result.soundInformation.push(lineParser.sound);
       }
     }
 
