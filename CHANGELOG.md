@@ -2,7 +2,7 @@
 
 The history of changes to the extension.
 
-### Version 1.2.0 (February 20th, 2018)
+### Version 1.2.0 (February 19th, 2018)
 - Hovering over item bases within the editor will now show both the item class and the unique items specific to that base.
 - Added support for playing sound on MacOS through the system binary `afplay`.
 - Added support for enabling sound on Linux through configuration variables. See the details section for more information.

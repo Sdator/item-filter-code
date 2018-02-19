@@ -36,7 +36,7 @@ interface PlaySoundOptions {
 let client: LanguageClient;
 let activateEditorURI: string | undefined;
 const soundDecorationType = window.createTextEditorDecorationType({
-  borderWidth: "0px 0px 1px",
+  borderWidth: "0px 0px 0.6mm",
   borderStyle: "solid",
   borderColor: "MediumSeaGreen"
 });

@@ -50,10 +50,12 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
   const valueRange = getStringRangeAtPosition(position, text, valueIndex);
   let baseType = text.slice(valueRange.start.character, valueRange.end.character);
 
-  if (baseType[0] === '"') baseType = baseType.substr(1);
-  if (baseType[baseType.length - 1] === '"') {
-    baseType = baseType.slice(0, baseType.length - 1);
-  }
+  // The range will include quotation marks, if there are any. We need to get rid
+  // of them, as we store items without them in the data files.
+  const length = baseType.length;
+  const startIndex = baseType[0] === `"` ? 1 : 0;
+  const endIndex = baseType[length - 1] === `"` ? length - 1 : length;
+  baseType = baseType.slice(startIndex, endIndex);
 
   // We're essentially buffering directly into a markdown string.
   let output: string = "";
