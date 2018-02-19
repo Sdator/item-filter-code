@@ -21,7 +21,7 @@ import {
   CompletionItem, CompletionItemKind, Position, Range
 } from "vscode-languageserver";
 
-import { ItemData, ConfigurationValues, FilterData } from "./common";
+import { ConfigurationValues, ItemData, FilterData } from "./common";
 
 const itemData: ItemData = require("../items.json");
 const filterData: FilterData = require("../filter.json");
@@ -178,7 +178,7 @@ function getKeywordCompletions(config: ConfigurationValues, pos: Position,
  * @return The index to the first entity that follows, or undefined is one
  *  doesn't exist.
  */
-function bypassEqOperator(text: string, index: number): number | undefined {
+export function bypassEqOperator(text: string, index: number): number | undefined {
   // All rules accept an optional operator, which we need to bypass first. We
   // also need to verify that there even is a value while we're at it.
   const remainingCharacters = text.length - (index + 1);
@@ -243,12 +243,10 @@ function getStringContext(position: Position, text: string, index: number): numb
 }
 
 /**
- * Returns both the string and range for the string directly under the position
- * within the given text.
- *
- * This function assumes that the given index is that of the first value.
+ * Returns the range for the string directly under the position within the given
+ * text. This function assumes that the given index is that of the first value.
  */
-function getStringRangeAtPosition(pos: Position, text: string, index: number): Range {
+export function getStringRangeAtPosition(pos: Position, text: string, index: number): Range {
 
   const result = getStringContext(pos, text, index);
   const character = text[pos.character];

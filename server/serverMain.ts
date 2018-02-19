@@ -14,7 +14,8 @@ import {
 
 import { ConfigurationValues } from "./common";
 import { equalArrays, splitLines, runSafe } from "./helpers";
-import { getCompletionSuggestions } from "./completion";
+import { getCompletionSuggestions } from "./completion-provider";
+import { getHoverResult } from "./hover-provider";
 import { ItemFilter } from "./item-filter";
 
 const itemFilters: Map<string, ItemFilter> = new Map();
@@ -48,7 +49,8 @@ connection.onInitialize((_param): InitializeResult => {
   const capabilities: ServerCapabilities & CPServerCapabilities = {
     textDocumentSync: documents.syncKind,
     completionProvider: {},
-    colorProvider: true
+    colorProvider: true,
+    hoverProvider: true
   };
 
   return { capabilities };
@@ -99,6 +101,18 @@ connection.onCompletion(params => {
     const row = params.position.line;
     return getCompletionSuggestions(config, lines[row], params.position);
   }, [], `Error while computing autocompletion results for ${params.textDocument.uri}`);
+});
+
+// The return type with no results (null) was clarified in November, 2017.
+// The current definitions don't seem to have that updated type information yet.
+// @ts-ignore
+connection.onHover(params => {
+  return runSafe(async () => {
+    const document = documents.get(params.textDocument.uri);
+    const lines = splitLines(document.getText());
+    const row = params.position.line;
+    return getHoverResult(lines[row], params.position);
+  }, null, `Error while computing hover for ${params.textDocument.uri}`);
 });
 
 connection.onRequest(DocumentColorRequest.type, async params => {
