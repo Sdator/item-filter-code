@@ -141,7 +141,7 @@
           },
           "item-filter.linuxMPGPath": {
             "title": "Linux MPG Path",
-            "description": "The full path to the mpg123 binary on your system. You should include both the filename and extension in order for this to work properly.",
+            "description": "The full path to the mpg123 binary on your system. You should include the file name of the binary as well in order for this to work properly.",
             "type": "string",
             "default": "",
             "scope": "window"

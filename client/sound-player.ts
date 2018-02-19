@@ -4,10 +4,8 @@
  * license information.
  * ===========================================================================*/
 
-// Currently, we only display the sound decorations within the editor on Windows.
-// On Windows, we invoke the bundled mpg123 binary through a subprocess in order
-// to play audio. This will hopefully be unnecessary at some point when the
-// VS Code team provides a sound API.
+// There is no API for playing sounds in Visual Studio Code, so we call out to
+// executables on the system. On Windows, we bundle a binary with the extension.
 
 import * as path from "path";
 import * as cp from "child_process";

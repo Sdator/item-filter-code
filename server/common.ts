@@ -41,3 +41,15 @@ export interface FilterData {
     stringIdentifiers: { [key: string]: string }
   };
 }
+
+export interface UniqueItem {
+  name: string;
+	boss?: string;
+	league?: string;
+	leagues?: string[];
+	location?: string;
+}
+
+export interface UniqueData {
+  [itemBase: string]: Array<string|UniqueItem>;
+}
