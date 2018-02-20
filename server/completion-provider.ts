@@ -21,10 +21,11 @@ import {
   CompletionItem, CompletionItemKind, Position, Range
 } from "vscode-languageserver";
 
-import { ConfigurationValues, ItemData, FilterData } from "./common";
+import { ConfigurationValues, ItemData, FilterData, SuggestionData } from "./common";
 
 const itemData: ItemData = require("../items.json");
 const filterData: FilterData = require("../filter.json");
+const suggestionData: SuggestionData = require("../suggestions.json");
 
 const whitespaceRegex = /^\s*$/;
 const whitespaceCharacterRegex = /\s/;
@@ -403,6 +404,23 @@ function getClassCompletions(config: ConfigurationValues, pos: Position, text: s
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
   }
+
+  for (const extraSuggestion of suggestionData.extraClasses) {
+    if (typeof(extraSuggestion) === "string") {
+      result.push(completionForStringRange(extraSuggestion, valueRange));
+    } else {
+      result.push({
+        label: `${extraSuggestion.name}`,
+        filterText: `"${extraSuggestion.name}"`,
+        kind: CompletionItemKind.Text,
+        textEdit: {
+          newText: `${extraSuggestion.text}`,
+          range: valueRange
+        }
+      });
+    }
+  }
+
   return result;
 }
 
@@ -442,6 +460,22 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position, text: st
     const suggestion = completionForStringRange(wlb, valueRange);
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
+  }
+
+  for (const extraSuggestion of suggestionData.extraBases) {
+    if (typeof(extraSuggestion) === "string") {
+      result.push(completionForStringRange(extraSuggestion, valueRange));
+    } else {
+      result.push({
+        label: `${extraSuggestion.name}`,
+        filterText: `"${extraSuggestion.name}"`,
+        kind: CompletionItemKind.Text,
+        textEdit: {
+          newText: `${extraSuggestion.text}`,
+          range: valueRange
+        }
+      });
+    }
   }
 
   return result;

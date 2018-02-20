@@ -107,6 +107,7 @@ gulp.task("data", () => {
   let filterData: object;
   let soundData: object;
   let uniqueData: object;
+  let suggestionData: object;
   let itemData: ItemData;
   try {
     let filterDataPath = path.join(dataPath, "filter.yaml");
@@ -118,14 +119,16 @@ gulp.task("data", () => {
     let uniqueDataPath = path.join(dataPath, "uniques.yaml");
     uniqueData = yaml.safeLoad(fs.readFileSync(uniqueDataPath, "utf8"));
 
+    let suggestionDataPath = path.join(dataPath, "suggestions.yaml");
+    suggestionData = yaml.safeLoad(fs.readFileSync(suggestionDataPath, "utf8"));
+
     let itemsPath = path.join(dataPath, "items.yaml");
     itemData = yaml.safeLoad(fs.readFileSync(itemsPath, "utf8"));
   } catch (e) {
     process.exit(1);
   }
 
-  // We don't need to modify or process the filter, sound, and unique data at all,
-  // only output both to JSON.
+  // We don't need to process each of these, only output them to JSON.
   const filterDataContent = JSON.stringify(filterData);
   const filterOutputFile = path.join(__dirname, "dist", "filter.json");
   fs.writeFile(filterOutputFile, filterDataContent, (err) => {
@@ -141,6 +144,12 @@ gulp.task("data", () => {
   const uniqueDataContent = JSON.stringify(uniqueData);
   const uniqueOutputFile = path.join(__dirname, "dist", "uniques.json");
   fs.writeFile(uniqueOutputFile, uniqueDataContent, (err) => {
+    if (err) throw err;
+  });
+
+  const suggestionDataContent = JSON.stringify(suggestionData);
+  const suggestionOutputFile = path.join(__dirname, "dist", "suggestions.json");
+  fs.writeFile(suggestionOutputFile, suggestionDataContent, (err) => {
     if (err) throw err;
   });
 

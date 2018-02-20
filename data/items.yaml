@@ -1,6 +1,5 @@
 ---
 Abyss Jewel:
-  - Eye Jewel
   - Searching Eye Jewel
   - Hypnotic Eye Jewel
   - Ghastly Eye Jewel
@@ -203,7 +202,6 @@ Active Skill Gems:
 Amulets:
   - Agate Amulet
   - Amber Amulet
-  - Talisman
   - Ashscale Talisman
   - Avian Twins Talisman
   - Black Maw Talisman
@@ -810,7 +808,6 @@ Helmets:
   - Zealot Helmet
 Hideout Doodads: []
 Hybrid Flasks:
-  - Hybrid Flask
   - Colossal Hybrid Flask
   - Hallowed Hybrid Flask
   - Large Hybrid Flask
@@ -818,13 +815,11 @@ Hybrid Flasks:
   - Sacred Hybrid Flask
   - Small Hybrid Flask
 Jewel:
-  - Jewel
   - Cobalt Jewel
   - Crimson Jewel
   - Prismatic Jewel
   - Viridian Jewel
 Labyrinth Item:
-  - Key
   - Golden Key
   - Silver Key
   - Treasure Key
@@ -842,7 +837,6 @@ Labyrinth Trinket:
   - Sand of Eternity
   - Vial Of Power
 Leaguestone:
-  - Leaguestone
   - Ambush Leaguestone
   - Anarchy Leaguestone
   - Beyond Leaguestone
@@ -861,7 +855,6 @@ Leaguestone:
   - Torment Leaguestone
   - Warbands Leaguestone
 Life Flasks:
-  - Life Flask
   - Colossal Life Flask
   - Divine Life Flask
   - Eternal Life Flask
@@ -875,7 +868,6 @@ Life Flasks:
   - Sanctified Life Flask
   - Small Life Flask
 Mana Flasks:
-  - Mana Flask
   - Colossal Mana Flask
   - Divine Mana Flask
   - Eternal Mana Flask
@@ -1050,7 +1042,6 @@ Maps:
 Microtransactions: []
 Misc Map Items:
   - Ancient Reliquary Key
-  - Breachstone
   - Chayula's Breachstone
   - Esh's Breachstone
   - Tul's Breachstone
@@ -1136,7 +1127,6 @@ One Hand Swords:
   - Variscite Blade
   - War Sword
 Pantheon Soul:
-  - Captured Soul
   - Captured Soul of Arachnoxia
   - Captured Soul of Armala, the Widow
   - Captured Soul of Drek, Apex Hunter

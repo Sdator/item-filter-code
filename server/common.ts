@@ -42,7 +42,7 @@ export interface FilterData {
   };
 }
 
-export interface UniqueItem {
+interface UniqueItem {
   name: string;
 	boss?: string;
 	league?: string;
@@ -52,4 +52,14 @@ export interface UniqueItem {
 
 export interface UniqueData {
   [itemBase: string]: Array<string|UniqueItem>;
+}
+
+interface Suggestion {
+	name: string;
+	text: string;
+}
+
+export interface SuggestionData {
+	extraBases: Array<string|Suggestion>;
+	extraClasses: Array<string|Suggestion>;
 }
