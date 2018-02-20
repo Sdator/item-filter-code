@@ -19,7 +19,7 @@ import { TokenParser, ParseResult } from "./token-parser";
 const itemData: ItemData = require("../items.json");
 const filterData: FilterData = require("../filter.json");
 
-export class LineParser {
+export class LineValidator {
   readonly diagnostics: Diagnostic[];
   color?: ColorInformation;
   sound?: SoundInformation;

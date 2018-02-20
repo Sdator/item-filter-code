@@ -10,37 +10,27 @@
 import { Hover, Position } from "vscode-languageserver";
 
 import { UniqueData, ItemData, FilterData } from "./common";
-import { bypassEqOperator, getStringRangeAtPosition } from "./completion-provider";
+import { bypassEqOperator, getKeyword, getStringRangeAtPosition } from "./line-utilities";
 
 const itemData: ItemData = require("../items.json");
 const filterData: FilterData = require("../filter.json");
 const uniqueData: UniqueData = require("../uniques.json");
 
 export function getHoverResult(text: string, position: Position): Hover | null {
-  const keywordRegex = /^\s*[A-Z]+(?=\s|$)/i;
-  const wordRegex = /[A-Z]+(?=\s|$)/i;
 
-  const hasKeyword = keywordRegex.test(text);
-  if (!hasKeyword) return null;
-
-  const keywordResult = wordRegex.exec(text);
+  const keywordResult = getKeyword(text, position.line);
   if (!keywordResult) return null;
 
-  const keyword = keywordResult[0];
-  const keywordStartIndex = keywordResult.index;
-  const keywordEndIndex = keywordStartIndex + keyword.length;
-  const currentIndex = keywordEndIndex;
+  const [keyword, keywordRange] = keywordResult;
+  const currentIndex = keywordRange.end.character;
 
-  if (keywordStartIndex > position.character) return null;
-  else if (keywordEndIndex > position.character) {
+  if (keywordRange.start.character > position.character) return null;
+  else if (keywordRange.end.character > position.character) {
     const keywordDescription = filterData.keywordDescriptions[keyword];
     if (keywordDescription) {
       const keywordHover: Hover = {
         contents: keywordDescription,
-        range: {
-          start: { line: position.line, character: keywordStartIndex },
-          end: { line: position.line, character: keywordEndIndex }
-        }
+        range: keywordRange
       }
       return keywordHover;
     } else {
@@ -48,7 +38,7 @@ export function getHoverResult(text: string, position: Position): Hover | null {
     }
   }
 
-  if (keywordEndIndex >= position.character) return null;
+  if (keywordRange.end.character >= position.character) return null;
 
   switch (keyword) {
     case "BaseType":

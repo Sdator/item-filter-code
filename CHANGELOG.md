@@ -6,6 +6,7 @@ The history of changes to the extension.
 - Added a brief description to each keyword on hover.
 - Added extra item classes and item bases to the completion suggestions.
   + Some completion entries will insert multiple values, such as the `Mortal Set` for the BaseType rule.
+- Breachstones now have the correct item class, which is `Map Fragments`.
 
 ### Version 1.2.0 (February 19th, 2018)
 - Hovering over item bases within the editor will now show both the item class and the unique items specific to that base.

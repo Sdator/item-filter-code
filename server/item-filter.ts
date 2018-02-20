@@ -12,7 +12,7 @@ import {
 
 import { ConfigurationValues, FilterData } from "./common";
 import { getOrdinal, splitLines } from "./helpers";
-import { LineParser } from "./line-parser";
+import { LineValidator } from "./line-validator";
 
 const filterData: FilterData = require("../filter.json");
 
@@ -65,7 +65,7 @@ export class ItemFilter {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const lineParser = new LineParser(config, context, line, i);
+      const lineParser = new LineValidator(config, context, line, i);
       lineParser.parse();
 
       if (!lineParser.keyword) continue;
@@ -89,7 +89,7 @@ export class ItemFilter {
     return result;
   }
 
-  private performBlockDiagnostics(context: BlockContext, parser: LineParser) {
+  private performBlockDiagnostics(context: BlockContext, parser: LineValidator) {
     if (parser.keyword !== "Show" && parser.keyword !== "Hide") {
       if (context.blockFound) {
         const ruleLimit = filterData.ruleLimits[parser.keyword];
