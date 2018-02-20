@@ -2,4 +2,7 @@
 extends: "@glencfl/tslint-config"
 rules:
   no-console: false
+  # You cant pass undefined over the language server protocol, so null is used
+  # in many places within the server.
+  no-null-keyword: false
   no-unsafe-any: false

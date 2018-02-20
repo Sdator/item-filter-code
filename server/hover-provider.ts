@@ -9,10 +9,11 @@
 
 import { Hover, Position } from "vscode-languageserver";
 
-import { UniqueData, ItemData } from "./common";
+import { UniqueData, ItemData, FilterData } from "./common";
 import { bypassEqOperator, getStringRangeAtPosition } from "./completion-provider";
 
 const itemData: ItemData = require("../items.json");
+const filterData: FilterData = require("../filter.json");
 const uniqueData: UniqueData = require("../uniques.json");
 
 export function getHoverResult(text: string, position: Position): Hover | null {
@@ -29,6 +30,23 @@ export function getHoverResult(text: string, position: Position): Hover | null {
   const keywordStartIndex = keywordResult.index;
   const keywordEndIndex = keywordStartIndex + keyword.length;
   const currentIndex = keywordEndIndex;
+
+  if (keywordStartIndex > position.character) return null;
+  else if (keywordEndIndex > position.character) {
+    const keywordDescription = filterData.keywordDescriptions[keyword];
+    if (keywordDescription) {
+      const keywordHover: Hover = {
+        contents: keywordDescription,
+        range: {
+          start: { line: position.line, character: keywordStartIndex },
+          end: { line: position.line, character: keywordEndIndex }
+        }
+      }
+      return keywordHover;
+    } else {
+      return null;
+    }
+  }
 
   if (keywordEndIndex >= position.character) return null;
 
@@ -58,7 +76,7 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
   baseType = baseType.slice(startIndex, endIndex);
 
   // We're essentially buffering directly into a markdown string.
-  let output: string = "";
+  let output = "";
   const itemClass = itemData.basesToClasses[baseType];
   if (itemClass) {
     output += `Class: \`${itemClass}\`\n\n`;

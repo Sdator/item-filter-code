@@ -1,4 +1,29 @@
 ---
+keywordDescriptions:
+  Show: "If all conditions are matched, show the item and do any actions specified."
+  Hide: "If all conditions are matched, hide the item and do any actions specified."
+  ItemLevel: "The item level that the item was generated at."
+  DropLevel: "The level that the item begins dropping at."
+  Quality: "The amount of quality on the item."
+  Rarity: "The rarity of the item."
+  Class: "The item class of the item. Specifying part of a class name is allowed and will match any classes with that text in the name."
+  BaseType: "The base type of the item. Specifying a part of a base type name is allowed and will match any of the base types with that text in the name."
+  Sockets: "The total number of sockets that the item has."
+  LinkedSockets: "The size of the largest group of linked sockets that the item has."
+  SocketGroup: "A group of linked sockets that contains the specified combination. Each letter is the short-hand for the color. For example, RRG will match any group that contains two red sockets linked and a green socket."
+  Height: "The number of slots that the item takes on the Y-axis."
+  Width: "The number of slots that the item takes on the X-axis."
+  Identified: "Whether or not the item is identified."
+  Corrupted: "Whether or not the item is corrupted."
+  ElderItem: "Whether or not the item is an Elder item."
+  ShaperItem: "Whether or not the item is a Shaper item."
+  ShapedMap: "Whether or not the item is a shaped map."
+  SetBorderColor: "Sets the border color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional."
+  SetTextColor: "Sets the text color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional."
+  SetBackgroundColor: "Sets the color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional."
+  PlayAlertSound: "Plays the specified alert sound, with an optional volume level, whenever the item is dropped."
+  PlayAlertSoundPositional: "Plays the specified alert sound, with an optional volume level, whenever the item is dropped."
+  SetFontSize: "Sets the font size of item text."
 rules:
   - ItemLevel
   - DropLevel

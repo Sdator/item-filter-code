@@ -75,7 +75,7 @@
       {
         "language": "item-filter",
         "scopeName": "source.filter",
-        "path": "./syntaxes/ItemFilter.tmLanguage.json"
+        "path": "./syntaxes/item-filter.tmLanguage.json"
       }
     ],
     "configuration": [

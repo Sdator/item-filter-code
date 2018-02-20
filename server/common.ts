@@ -22,6 +22,7 @@ export interface ItemData {
 }
 
 export interface FilterData {
+  keywordDescriptions: { [keyword: string]: string };
   rules: string[];
   ruleLimits: { [key: string]: number };
   ruleRanges: {
@@ -44,10 +45,10 @@ export interface FilterData {
 
 interface UniqueItem {
   name: string;
-	boss?: string;
-	league?: string;
-	leagues?: string[];
-	location?: string;
+  boss?: string;
+  league?: string;
+  leagues?: string[];
+  location?: string;
 }
 
 export interface UniqueData {
@@ -55,11 +56,11 @@ export interface UniqueData {
 }
 
 interface Suggestion {
-	name: string;
-	text: string;
+  name: string;
+  text: string;
 }
 
 export interface SuggestionData {
-	extraBases: Array<string|Suggestion>;
-	extraClasses: Array<string|Suggestion>;
+  extraBases: Array<string|Suggestion>;
+  extraClasses: Array<string|Suggestion>;
 }
