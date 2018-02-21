@@ -9,7 +9,7 @@
 
 import { Hover, Position } from "vscode-languageserver";
 
-import { UniqueData, ItemData, FilterData } from "./common";
+import { UniqueData, UniqueItem, ItemData, FilterData } from "./common";
 import { bypassEqOperator, getKeyword, getStringRangeAtPosition } from "./line-utilities";
 
 const itemData: ItemData = require("../items.json");
@@ -31,7 +31,8 @@ export function getHoverResult(text: string, position: Position): Hover | null {
       const keywordHover: Hover = {
         contents: keywordDescription,
         range: keywordRange
-      }
+      };
+
       return keywordHover;
     } else {
       return null;
@@ -43,6 +44,8 @@ export function getHoverResult(text: string, position: Position): Hover | null {
   switch (keyword) {
     case "BaseType":
       return getBaseTypeHover(position, text, currentIndex);
+    case "Class":
+      return getClassHover(position, text, currentIndex);
     default:
       return null;
   }
@@ -67,16 +70,50 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
 
   // We're essentially buffering directly into a markdown string.
   let output = "";
-  const itemClass = itemData.basesToClasses[baseType];
-  if (itemClass) {
-    output += `Class: \`${itemClass}\`\n\n`;
+
+  const itemClasses: string[] = [];
+  const matchedBases: string[] = [];
+  for (const itemClass of itemData.classes) {
+    const itemBases = itemData.classesToBases[itemClass];
+    for (const itemBase of itemBases) {
+      if (itemBase.includes(baseType)) {
+        if (!itemClasses.includes(itemClass)) itemClasses.push(itemClass);
+        matchedBases.push(itemBase);
+      }
+    }
   }
 
-  const uniques = uniqueData[baseType];
-  if (uniques) {
+  if (itemClasses.length === 1) {
+    output += `Class: \`${itemClasses[0]}\`\n\n`;
+  } else if (itemClasses.length > 1) {
+    output += `Classes:`;
+    for (const itemClass of itemClasses) {
+      output += ` \`${itemClass}\``;
+    }
+
+    if (matchedBases.length > 5) {
+      output += `\n\nMatched Items: \`${matchedBases.length}\`\n\n`;
+    } else if (matchedBases.length > 1) {
+      output += "\n\nMatched Items:\n";
+      for (const match of matchedBases) {
+        output += `- ${match}\n`;
+      }
+      output += "\n\n";
+    }
+  }
+
+  const matchedUniques: Array<string|UniqueItem> = [];
+  for (const itemBase of matchedBases) {
+    const uniques = uniqueData[itemBase];
+    if (uniques && uniques.length >= 1) {
+      matchedUniques.push.apply(matchedUniques, uniques);
+    }
+  }
+
+  if (matchedUniques.length >= 1) {
     output += "Uniques:\n";
     let uniquesPushed = 0;
-    for (const unique of uniques) {
+    for (const unique of matchedUniques) {
       if (typeof(unique) === "string") {
         output += `- ${unique}\n`;
       } else {
@@ -89,17 +126,73 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
             output += ` \`${league}\``;
           }
         }
-        output += `\n`;
+        output += "\n";
       }
 
       uniquesPushed++;
       if (uniquesPushed === 5) {
-        if (uniques.length > 5) {
-          output += `- ... and ${uniques.length - 5} more.`;
+        if (matchedUniques.length > 5) {
+          output += `- ... and ${matchedUniques.length - 5} more.`;
         }
         break;
       }
     }
+  }
+
+  if (output === "") {
+    return null;
+  } else {
+    const result: Hover = {
+      contents: output,
+      range: valueRange
+    };
+
+    return result;
+  }
+}
+
+function getClassHover(position: Position, text: string, index: number): Hover | null {
+  const valueIndex = bypassEqOperator(text, index);
+
+  if (valueIndex === undefined || position.character < valueIndex) {
+    return null;
+  }
+
+  const valueRange = getStringRangeAtPosition(position, text, valueIndex);
+  let classType = text.slice(valueRange.start.character, valueRange.end.character);
+
+  // Trim the quotation marks.
+  const length = classType.length;
+  const startIndex = classType[0] === `"` ? 1 : 0;
+  const endIndex = classType[length - 1] === `"` ? length - 1 : length;
+  classType = classType.slice(startIndex, endIndex);
+
+  let output = "";
+
+  const matchedClasses: string[] = [];
+  for (const itemClass of itemData.classes) {
+    if (itemClass.includes(classType)) {
+      matchedClasses.push(itemClass);
+    }
+  }
+
+  let containedItems = 0;
+  if (matchedClasses.length === 1) {
+    output += `Class \`${matchedClasses[0]}\`\n\n`;
+    const items = itemData.classesToBases[matchedClasses[0]];
+    if (items !== undefined) containedItems = items.length;
+  } else if (matchedClasses.length > 1) {
+    output += `Matched Classes:\n`;
+    for (const itemClass of matchedClasses) {
+      output += `- ${itemClass}\n`;
+      const items = itemData.classesToBases[itemClass];
+      if (items !== undefined) containedItems += items.length;
+    }
+    output += "\n";
+  }
+
+  if (containedItems > 0) {
+    output += `Items: \`${containedItems}\``;
   }
 
   if (output === "") {

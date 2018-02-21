@@ -43,7 +43,7 @@ export interface FilterData {
   };
 }
 
-interface UniqueItem {
+export interface UniqueItem {
   name: string;
   boss?: string;
   league?: string;

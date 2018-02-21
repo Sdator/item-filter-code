@@ -2,8 +2,10 @@
 
 The history of changes to the extension.
 
-### Version 1.3.0 (TBD)
+### Version 1.3.0 (February 21st, 2018)
 - Added a brief description to each keyword on hover.
+- Added hover information to item class values.
+- Added more details to the hover for item base values, particularly when partially matching.
 - Added extra item classes and item bases to the completion suggestions.
   + Some completion entries will insert multiple values, such as the `Mortal Set` for the BaseType rule.
 - Breachstones now have the correct item class, which is `Map Fragments`.
