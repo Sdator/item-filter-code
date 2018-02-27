@@ -9,12 +9,12 @@
 
 import { Hover, Position } from "vscode-languageserver";
 
-import { UniqueData, UniqueItem, ItemData, FilterData } from "./common";
+import { UniqueData, UniqueItem, ItemData, FilterData } from "../types";
 import { bypassEqOperator, getKeyword, getStringRangeAtPosition } from "./line-utilities";
 
-const itemData: ItemData = require("../items.json");
-const filterData: FilterData = require("../filter.json");
-const uniqueData: UniqueData = require("../uniques.json");
+const itemData: ItemData = require("../../items.json");
+const filterData: FilterData = require("../../filter.json");
+const uniqueData: UniqueData = require("../../uniques.json");
 
 export function getHoverResult(text: string, position: Position): Hover | null {
 

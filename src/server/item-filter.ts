@@ -10,11 +10,11 @@ import {
   ColorInformation
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { ConfigurationValues, FilterData } from "./common";
-import { getOrdinal, splitLines } from "./helpers";
+import { ConfigurationValues, FilterData } from "../types";
+import { getOrdinal, splitLines } from "../helpers";
 import { LineValidator } from "./line-validator";
 
-const filterData: FilterData = require("../filter.json");
+const filterData: FilterData = require("../../filter.json");
 
 export interface FilterParseResult {
   colorInformation: ColorInformation[];

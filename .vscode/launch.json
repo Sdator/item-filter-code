@@ -12,7 +12,7 @@
       "stopOnEntry": false,
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/dist/client/**/*.js"
+        "${workspaceFolder}/dist/src/client/**/*.js"
       ]
     },
     {
@@ -22,7 +22,7 @@
       "port": 6009,
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/dist/server/**/*.js"
+        "${workspaceFolder}/dist/src/server/**/*.js"
       ]
     },
     {

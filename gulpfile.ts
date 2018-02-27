@@ -10,6 +10,7 @@ import gulpTSLint = require("gulp-tslint");
 
 import * as fs from "fs";
 import * as yaml from "js-yaml";
+import * as mkdirp from "mkdirp";
 import * as path from "path";
 import * as tslint from "tslint";
 
@@ -76,8 +77,7 @@ gulp.task("clean", () => {
 });
 
 const typeScriptGlobs = [
-  "client/**/*.ts",
-  "server/**/*.ts",
+  "src/**/*.ts",
   "test/**/*.ts",
   "!**/*.d.ts",
 ];
@@ -129,26 +129,30 @@ gulp.task("data", () => {
   }
 
   // We don't need to process each of these, only output them to JSON.
+  // We don't need to process each of these, only output them to JSON.
+  const outputDir = path.join(__dirname, "dist");
+  mkdirp.sync(outputDir);
+
   const filterDataContent = JSON.stringify(filterData);
-  const filterOutputFile = path.join(__dirname, "dist", "filter.json");
+  const filterOutputFile = path.join(outputDir, "filter.json");
   fs.writeFile(filterOutputFile, filterDataContent, (err) => {
     if (err) throw err;
   });
 
   const soundDataContent = JSON.stringify(soundData);
-  const soundOutputFile = path.join(__dirname, "dist", "sounds.json");
+  const soundOutputFile = path.join(outputDir, "sounds.json");
   fs.writeFile(soundOutputFile, soundDataContent, (err) => {
     if (err) throw err;
   });
 
   const uniqueDataContent = JSON.stringify(uniqueData);
-  const uniqueOutputFile = path.join(__dirname, "dist", "uniques.json");
+  const uniqueOutputFile = path.join(outputDir, "uniques.json");
   fs.writeFile(uniqueOutputFile, uniqueDataContent, (err) => {
     if (err) throw err;
   });
 
   const suggestionDataContent = JSON.stringify(suggestionData);
-  const suggestionOutputFile = path.join(__dirname, "dist", "suggestions.json");
+  const suggestionOutputFile = path.join(outputDir, "suggestions.json");
   fs.writeFile(suggestionOutputFile, suggestionDataContent, (err) => {
     if (err) throw err;
   });
@@ -210,7 +214,7 @@ gulp.task("data", () => {
   itemDataObject.sortedBases = itemBases;
 
   const itemDataContent = JSON.stringify(itemDataObject);
-  const itemDataOutputFile = path.join(__dirname, "dist", "items.json");
+  const itemDataOutputFile = path.join(outputDir, "items.json");
   fs.writeFile(itemDataOutputFile, itemDataContent, (err) => {
     if (err) throw err;
   });

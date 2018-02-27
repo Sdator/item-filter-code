@@ -11,13 +11,13 @@ import {
   ColorInformation
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { FilterData, ItemData, ConfigurationValues } from "./common";
-import { stylizedArrayJoin } from "./helpers";
+import { FilterData, ItemData, ConfigurationValues } from "../types";
+import { stylizedArrayJoin } from "../helpers";
 import { BlockContext, SoundInformation } from "./item-filter";
 import { TokenParser, ParseResult } from "./token-parser";
 
-const itemData: ItemData = require("../items.json");
-const filterData: FilterData = require("../filter.json");
+const itemData: ItemData = require("../../items.json");
+const filterData: FilterData = require("../../filter.json");
 
 export class LineValidator {
   readonly diagnostics: Diagnostic[];

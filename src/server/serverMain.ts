@@ -6,14 +6,14 @@
 
 import {
   createConnection, IConnection, IPCMessageReader, IPCMessageWriter, TextDocument,
-  TextDocuments, InitializeResult, ServerCapabilities, CompletionItem
+  TextDocuments, InitializeResult, ServerCapabilities
 } from "vscode-languageserver";
 import {
   ServerCapabilities as CPServerCapabilities, DocumentColorRequest
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { ConfigurationValues } from "./common";
-import { equalArrays, splitLines, runSafe } from "./helpers";
+import { ConfigurationValues, SoundNotification } from "../types";
+import { equalArrays, splitLines, runSafe } from "../helpers";
 import { getCompletionSuggestions } from "./completion-provider";
 import { getHoverResult } from "./hover-provider";
 import { ItemFilter } from "./item-filter";
@@ -42,7 +42,7 @@ async function processItemFilter(document: TextDocument): Promise<void> {
   itemFilters.set(uri, filter);
   const payload = await filter.payload;
   connection.sendDiagnostics({ uri, diagnostics: payload.diagnostics });
-  connection.sendNotification("update-sounds", uri, payload.soundInformation);
+  connection.sendNotification(SoundNotification.type, { uri, sounds: payload.soundInformation });
 }
 
 connection.onInitialize((_param): InitializeResult => {
@@ -63,8 +63,10 @@ documents.onDidChangeContent(change => {
 });
 
 documents.onDidClose(event => {
-  itemFilters.delete(event.document.uri);
-  connection.sendDiagnostics({ uri: event.document.uri, diagnostics: [] });
+  const uri = event.document.uri;
+  itemFilters.delete(uri);
+  connection.sendDiagnostics({ uri, diagnostics: [] });
+  connection.sendNotification(SoundNotification.type, { uri, sounds: [] });
 });
 
 connection.onDidChangeConfiguration(change => {
@@ -95,7 +97,7 @@ connection.onDidChangeConfiguration(change => {
 });
 
 connection.onCompletion(params => {
-  return runSafe<CompletionItem[]>(() => {
+  return runSafe(async () => {
     const document = documents.get(params.textDocument.uri);
     const lines = splitLines(document.getText());
     const row = params.position.line;

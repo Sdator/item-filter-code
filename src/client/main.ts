@@ -20,7 +20,7 @@ import {
   DocumentColorParams, DocumentColorRequest
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { SoundInformation } from "../server/item-filter";
+import { SoundInformation, SoundNotification } from "../types";
 import { playSound } from "./sound-player";
 
 interface ColorContext {
@@ -48,12 +48,13 @@ function provideDocumentColors(document: TextDocument): ProviderResult<ColorInfo
   };
 
   return client.sendRequest(DocumentColorRequest.type, params).then(symbols => {
-    return symbols.map(symbol => {
+    const result = symbols.map(symbol => {
       const range = client.protocol2CodeConverter.asRange(symbol.range);
       const color = new Color(symbol.color.red, symbol.color.green,
         symbol.color.blue, symbol.color.alpha);
       return new ColorInformation(range, color);
     });
+    return result;
   });
 }
 
@@ -143,7 +144,7 @@ export async function activate(context: ExtensionContext) {
     soundDecorationCache.delete(uri);
   }));
 
-  const serverModule = context.asAbsolutePath(path.join("dist", "server",
+  const serverModule = context.asAbsolutePath(path.join("dist", "src", "server",
     "serverMain.js"));
   const debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
 
@@ -171,13 +172,13 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(languages.registerColorProvider(documentSelector,
     { provideDocumentColors, provideColorPresentations }));
 
-  client.onNotification("update-sounds", (uri: string, sounds: SoundInformation[]) => {
-    const decorations = createSoundDecorations(sounds);
+  client.onNotification(SoundNotification.type, params => {
+    const decorations = createSoundDecorations(params.sounds);
 
-    if (window.activeTextEditor && uri === activateEditorURI) {
+    if (window.activeTextEditor && params.uri === activateEditorURI) {
       window.activeTextEditor.setDecorations(soundDecorationType, decorations);
     }
 
-    soundDecorationCache.set(uri, decorations);
+    soundDecorationCache.set(params.uri, decorations);
   });
 }

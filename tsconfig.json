@@ -18,8 +18,7 @@
     "removeComments": true
   },
   "include": [
-    "client/**/*.ts",
-    "server/**/*.ts",
+    "src/**/*.ts",
     "test/**/*.ts"
   ]
 }

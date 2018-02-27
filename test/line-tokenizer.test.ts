@@ -6,7 +6,7 @@
 
 import { assert } from "chai";
 
-import { TokenParser } from "../server/token-parser";
+import { TokenParser } from "../src/server/token-parser";
 
 describe("LineParser.constructor()", () => {
   it("sets LineParser.textStartIndex correctly", () => {

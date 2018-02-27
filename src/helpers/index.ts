@@ -4,6 +4,8 @@
  * license information.
  * ===========================================================================*/
 
+import { Position } from "vscode-languageserver";
+
 export function assertUnreachable(_: never): never {
   throw new Error("Should never hit this assertion at runtime.");
 }
@@ -39,6 +41,31 @@ export function stylizedArrayJoin(array: any[], finalPrefix = ", and "): string 
 
 export function splitLines(text: string): string[] {
   return text.split(/\r?\n/g);
+}
+
+/**
+ * Splits the given text into lines, while preserving the linebreak at the end
+ * of each of those lines.
+ * @param text The text to be split into lines.
+ * @return The lines contained within the text.
+ */
+export function splitLinesWithBreaks(text: string): string[] {
+  const splitResult = text.split(/([^\n]*(?:\r?\n|$))/g);
+  const filterResult = splitResult.filter(value => value.length !== 0);
+
+  // We lose the last line if it's completely empty above, so we need to add it
+  // back in.
+  const index = text.lastIndexOf("\n") + 1;
+  if (text[index] === undefined) {
+    filterResult.push("");
+  }
+
+  return filterResult;
+}
+
+export function atSamePosition(lha: Position, rha: Position): boolean {
+  if (lha.line === rha.line && lha.character === rha.character) return true;
+  return false;
 }
 
 // These two functions are from the following source file:

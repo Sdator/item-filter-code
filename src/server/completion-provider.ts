@@ -21,15 +21,15 @@ import {
   CompletionItem, CompletionItemKind, Position, Range
 } from "vscode-languageserver";
 
-import { ConfigurationValues, ItemData, FilterData, SuggestionData } from "./common";
+import { ConfigurationValues, ItemData, FilterData, SuggestionData } from "../types";
 import {
   whitespaceRegex, whitespaceCharacterRegex, bypassEqOperator, bypassOperator,
   getKeyword, getStringRangeAtPosition
 } from "./line-utilities";
 
-const itemData: ItemData = require("../items.json");
-const filterData: FilterData = require("../filter.json");
-const suggestionData: SuggestionData = require("../suggestions.json");
+const itemData: ItemData = require("../../items.json");
+const filterData: FilterData = require("../../filter.json");
+const suggestionData: SuggestionData = require("../../suggestions.json");
 
 /**
  * Synchronously returns completion suggestions for the given position in the

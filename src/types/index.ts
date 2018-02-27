@@ -4,6 +4,10 @@
  * license information.
  * ===========================================================================*/
 
+import { Range } from "vscode-languageserver";
+
+export { SoundNotification, SoundNotificationParams } from "./notifications";
+
 export interface ConfigurationValues {
   baseWhitelist: string[];
   classWhitelist: string[];
@@ -12,6 +16,8 @@ export interface ConfigurationValues {
   performanceHints: boolean;
   alwaysShowAlpha: boolean;
 }
+
+export type Result<T> = T | Promise<T>;
 
 export interface ItemData {
   classesToBases: { [key: string]: string[] };
@@ -52,7 +58,7 @@ export interface UniqueItem {
 }
 
 export interface UniqueData {
-  [itemBase: string]: Array<string|UniqueItem>;
+  [itemBase: string]: Array<string | UniqueItem>;
 }
 
 interface Suggestion {
@@ -61,6 +67,13 @@ interface Suggestion {
 }
 
 export interface SuggestionData {
-  extraBases: Array<string|Suggestion>;
-  extraClasses: Array<string|Suggestion>;
+  extraBases: Array<string | Suggestion>;
+  extraClasses: Array<string | Suggestion>;
+}
+
+export interface SoundInformation {
+  knownIdentifier: boolean;
+  identifier: string;
+  volume: number;
+  range: Range;
 }
