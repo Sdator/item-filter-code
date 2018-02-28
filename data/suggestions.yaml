@@ -27,11 +27,14 @@ extraBases:
   - Essence of Zeal
   - Eye Jewel
   - Hybrid Flask
+  - Iron Net
   - Leaguestone
   - Life Flask
   - Mana Flask
   - Memory Fragment
+  - Rope Net
   - Shaper's Orb
+  - Steel Net
   - name: Sacrifice Set
     text: >-
       "Sacrifice at Dusk" "Sacrifice at Midnight" "Sacrifice at Dawn" "Sacrifice at Noon"
@@ -56,6 +59,9 @@ extraBases:
   - name: Talismans - Tier 4
     text: >-
       "Greatwolf Talisman"
+  - name: Bestiary Nets
+    text: >-
+      "Simple Rope Net" "Simple Iron Net" "Simple Steel Net" "Reinforced Rope Net" "Reinforced Iron Net" "Reinforced Steel Net" "Strong Rope Net" "Strong Iron Net" "Strong Steel Net" "Thaumaturgical Net"
 extraClasses:
   - Axes
   - Card

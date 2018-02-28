@@ -2,11 +2,15 @@
 
 The history of changes to the extension.
 
+### Version 1.4.2 (February 28th, 2018)
+- Fixed a typo for the "Bestiary Orb" base type.
+- Added extra suggestions for Bestiary nets to the completion provider, with "Bestiary Nets" being an alias for all 10 nets.
+
 ### Version 1.4.1 (February 28th, 2018)
 - Renamed "Elder Orb" to "Elder's Orb".
 
 ### Version 1.4.0 (February 28th, 2018)
-- Added support for both patch 3.3 and the Bestiary challenge league.
+- Added support for both patch 3.2 and the Bestiary challenge league.
   + New unique items will be added soon after launch once all are discovered.
 
 ### Version 1.3.0 (February 21st, 2018)
