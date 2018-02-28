@@ -2,6 +2,9 @@
 
 The history of changes to the extension.
 
+### Version 1.4.1 (February 28th, 2018)
+- Renamed "Elder Orb" to "Elder's Orb".
+
 ### Version 1.4.0 (February 28th, 2018)
 - Added support for both patch 3.3 and the Bestiary challenge league.
   + New unique items will be added soon after launch once all are discovered.
