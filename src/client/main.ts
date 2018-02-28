@@ -48,13 +48,12 @@ function provideDocumentColors(document: TextDocument): ProviderResult<ColorInfo
   };
 
   return client.sendRequest(DocumentColorRequest.type, params).then(symbols => {
-    const result = symbols.map(symbol => {
+    return symbols.map(symbol => {
       const range = client.protocol2CodeConverter.asRange(symbol.range);
       const color = new Color(symbol.color.red, symbol.color.green,
         symbol.color.blue, symbol.color.alpha);
       return new ColorInformation(range, color);
     });
-    return result;
   });
 }
 

@@ -30,6 +30,7 @@ extraBases:
   - Leaguestone
   - Life Flask
   - Mana Flask
+  - Memory Fragment
   - Shaper's Orb
   - name: Sacrifice Set
     text: >-

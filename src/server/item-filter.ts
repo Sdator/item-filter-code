@@ -10,7 +10,7 @@ import {
   ColorInformation
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { ConfigurationValues, FilterData } from "../types";
+import { ConfigurationValues, FilterData, SoundInformation } from "../types";
 import { getOrdinal, splitLines } from "../helpers";
 import { LineValidator } from "./line-validator";
 
@@ -29,13 +29,6 @@ export interface BlockContext {
   blockFound: boolean;
   classes: string[];
   previousRules: Map<string, number>;
-}
-
-export interface SoundInformation {
-  knownIdentifier: boolean;
-  identifier: string;
-  volume: number;
-  range: Range;
 }
 
 export class ItemFilter {

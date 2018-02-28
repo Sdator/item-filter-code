@@ -11,9 +11,9 @@ import {
   ColorInformation
 } from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
-import { FilterData, ItemData, ConfigurationValues } from "../types";
+import { ConfigurationValues, FilterData, ItemData, SoundInformation } from "../types";
 import { stylizedArrayJoin } from "../helpers";
-import { BlockContext, SoundInformation } from "./item-filter";
+import { BlockContext } from "./item-filter";
 import { TokenParser, ParseResult } from "./token-parser";
 
 const itemData: ItemData = require("../../items.json");

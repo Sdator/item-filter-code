@@ -2,6 +2,10 @@
 
 The history of changes to the extension.
 
+### Version 1.4.0 (February 28th, 2018)
+- Added support for both patch 3.3 and the Bestiary challenge league.
+  + New unique items will be added soon after launch once all are discovered.
+
 ### Version 1.3.0 (February 21st, 2018)
 - Added a brief description to each keyword on hover.
 - Added hover information to item class values.
