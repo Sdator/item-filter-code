@@ -25,6 +25,7 @@ Corrupted | Equality | True or False | No
 ElderItem | Equality | True or False | No
 ShaperItem | Equality | True or False | No
 ShapedMap | Equality | True or False | No
+ElderMap | Equality | True or False | No
 
 ## Action Rules
 Keyword | Operator | Values | Trailing Comment | Case Sensitive

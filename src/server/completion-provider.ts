@@ -69,6 +69,7 @@ export function getCompletionSuggestions(config: ConfigurationValues, lineText: 
       case "ElderItem":
       case "ShaperItem":
       case "ShapedMap":
+      case "ElderMap":
         return getBooleanCompletions(position, lineText, currentIndex);
       default:
         return [];

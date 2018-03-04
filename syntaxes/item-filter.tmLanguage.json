@@ -347,7 +347,7 @@
     "boolean-rules": {
       "patterns": [
         {
-          "begin": "^\\s*(Identified|Corrupted|ElderItem|ShaperItem|ShapedMap)(?=\\s)",
+          "begin": "^\\s*(Identified|Corrupted|ElderItem|ShaperItem|ShapedMap|ElderMap)(?=\\s)",
           "end": "\\s*$",
           "captures": {
             "1": {

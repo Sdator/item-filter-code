@@ -313,6 +313,41 @@ Show
     SetBorderColor 170 158 130
     PlayAlertSound 3 80
 
+# Bestiary Nets - Valuable
+Show
+    BaseType "Thaumaturgical Net"
+    SetTextColor 215 40 30
+    SetBackgroundColor 0 0 0
+    SetBorderColor 255 255 255
+    SetFontSize 42
+    PlayAlertSound 9 225
+
+# Bestiary Nets - Medium Value
+Show
+    BaseType "Simple Rope Net" "Reinforced Rope Net" "Strong Rope Net" "Simple Iron Net" "Reinforced Iron Net" "Strong Iron Net" "Simple Steel Net" "Reinforced Steel Net" "Strong Steel Net" "Thaumaturgical Net"
+    SetTextColor 215 40 30
+    SetBackgroundColor 0 0 0
+    SetBorderColor 0 0 0
+    SetFontSize 38
+
+# Bestiary Orb
+Show
+    BaseType "Bestiary Orb"
+    SetTextColor 215 40 30
+    SetBackgroundColor 0 0 0
+    SetBorderColor 255 255 255
+    SetFontSize 42
+    PlayAlertSound 9 225
+
+# Captured Monster
+Show
+    BaseType "Imprinted Bestiary Orb"
+    SetTextColor 215 40 30
+    SetBackgroundColor 0 0 0
+    SetBorderColor 255 0 0
+    SetFontSize 42
+    PlayAlertSound 9 225
+
 Show # Gems - Empower/Enhance/Enlighten/Portal
     Class "Gems"
     BaseType "Empower" "Enhance" "Enlighten" "Portal"
@@ -376,7 +411,7 @@ Show
     SetBackgroundColor 54 100 146
     SetBorderColor 0 0 0
     SetFontSize 40
-
+	
 # Maps - DropLevel 78+
 Show
     DropLevel >= 78
@@ -476,7 +511,7 @@ Show # Divination Cards - All
     SetFontSize 38
     PlayAlertSound 9 230
 
-# Chroma Orb Recipe
+# Chroma Orb Recipe 
 Show # Chromatic Orb Recipe - Norm
     SocketGroup "RGB"
     Rarity = Normal

@@ -2,6 +2,9 @@
 
 The history of changes to the extension.
 
+### Version 1.5.0 (Match 4th, 2018)
+- Added support for the unannounced `ElderMap` rule.
+
 ### Version 1.4.2 (February 28th, 2018)
 - Fixed a typo for the "Bestiary Orb" base type.
 - Added extra suggestions for Bestiary nets to the completion provider, with "Bestiary Nets" being an alias for all 10 nets.

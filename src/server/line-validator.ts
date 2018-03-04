@@ -102,6 +102,7 @@ export class LineValidator {
       case "ElderItem":
       case "ShaperItem":
       case "ShapedMap":
+      case "ElderMap":
         this.parseBooleanRule();
         break;
       case "SetBorderColor":
