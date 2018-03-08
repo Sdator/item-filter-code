@@ -151,6 +151,10 @@ Moonstone Ring:
       - Onslaught
   - Timeclasp
   - Valyrium
+Opal Ring:
+  - Stormfire
+  - name: Mark of the Shaper
+    boss: The Elder (Uber)
 Paua Ring:
   - Doedre's Damning
   - Perandus Signet
@@ -170,6 +174,9 @@ Sapphire Ring:
     boss: Guardian of the Hydra
   - name: Tasalio's Sign
     league: Bloodlines
+Steel Ring:
+  - name: Mark of the Elder
+    boss: The Elder (Uber)
 Topaz Ring:
   - Kikazaru
   - name: Valako's Sign
@@ -219,6 +226,8 @@ Fire Arrow Quiver:
   - Blackgleam
 Penetrating Arrow Quiver:
   - Drillneck
+  - name: Voidfletcher
+    boss: The Elder (Uber)
 Serrated Arrow Quiver:
   - Craghead
 Sharktooth Arrow Quiver:
@@ -238,6 +247,10 @@ Astral Plate:
   - Death's Oath
 Assassin's Garb:
   - Cospri's Will
+Blood Raiment:
+  - name: Saqawal's Nest
+    boss: Saqawal, First of the Sky
+    league: Bestiary
 Buckskin Tunic:
   - Ashrend
 Bone Armour:
@@ -288,6 +301,9 @@ Gladiator Plate:
 Glorious Plate:
   - Kaom's Heart
 Golden Plate:
+  - name: Craiceann's Carapace
+    boss: Craiceann, First of the Deep
+    league: Bestiary
   - Greed's Embrace
 Holy Chainmail:
   - Voll's Protector
@@ -336,12 +352,18 @@ Strapped Leather:
   - Briskwrap
 Triumphant Lamellar:
   - Cherrubim's Maleficence
+  - name: Farrul's Fur
+    boss: Farrul, First of the Plains
+    league: Bestiary
 Vaal Regalia:
   - The Beast Fur Shawl
 Varnished Coat:
   - Carcass Jack
 Widowsilk Robe:
   - Doedre's Skin
+  - name: Fenumus' Shroud
+    boss: Fenumus, First of the Night
+    league: Bestiary
   - Infernal Mantle
 Wyrmscale Doublet:
   - Gruthkul's Pelt
@@ -358,6 +380,10 @@ Arcanist Slippers:
   - name: Inya's Epiphany
     league: Prophecy
     location: The Pale Court
+Assassin's Boots:
+  - name: Fenumus' Spinnerets
+    boss: Fenumus, First of the Night
+    league: Bestiary
 Bronzescale Boots:
   - Lioneye's Paws
 Clasped Boots:
@@ -375,9 +401,16 @@ Goathide Boots:
   - Abberath's Hooves
   - Victario's Flight
 Goliath Greaves:
+  - name: Craiceann's Tracks
+    boss: Craiceann, First of the Deep
+    league: Bestiary
   - name: The Infinite Pursuit
     league: Breach
     location: Uul-Netol's Domain
+Hydrascale Boots:
+  - name: Saqawal's Talons
+    boss: Saqawal, First of the Sky
+    league: Bestiary
 Ironscale Boots:
   - Dusktoe
 Legion Boots:
@@ -417,6 +450,9 @@ Slink Boots:
   - name: Atziri's Step
     boss: Atziri, Queen of the Vaal
     location: The Apex of Sacrifice
+  - name: Farrul's Chase
+    boss: Farrul, First of the Plains
+    league: Bestiary
 Soldier Boots:
   - Alberon's Warpath
 Sorcerer Boots:
@@ -460,6 +496,9 @@ Bronzescale Gauntlets:
       - Invasion
       - Ambush
 Carnal Mitts:
+  - name: Fenumus' Weave
+    boss: Fenumus, First of the Night
+    league: Bestiary
   - The Embalmer
 Chain Gloves:
   - Shackles of the Wretched
@@ -481,6 +520,10 @@ Goathide Gloves:
   - Hrimsorrow
 Goliath Gauntlets:
   - Empire's Grasp
+Hydrascale Gauntlets:
+  - name: Farrul's Pounce
+    boss: Farrul, First of the Plains
+    league: Bestiary
 Iron Gauntlets:
   - Lochtonial Caress
 Ironscale Gauntlets:
@@ -501,6 +544,9 @@ Serpentscale Gauntlets:
 Silk Gloves:
   - Asenath's Gentle Touch
 Soldier Gloves:
+  - name: Saqawal's Winds
+    boss: Saqawal, First of the Sky
+    league: Bestiary
   - Southbound
 Sorcerer Gloves:
   - Allelopathy
@@ -514,6 +560,9 @@ Steelscale Gauntlets:
 Strapped Mitts:
   - Facebreaker
 Titan Gauntlets:
+  - name: Craiceann's Pincers
+    boss: Craiceann, First of the Deep
+    league: Bestiary
   - Veruso's Battering Rams
 Vaal Gauntlets:
   - name: Atziri's Acuity
@@ -558,6 +607,9 @@ Great Crown:
 Great Helmet:
   - Veil of the Night
 Harlequin Mask:
+  - name: Farrul's Bite
+    boss: Farrul, First of the Plains
+    league: Bestiary
   - name: Mind of the Council
     boss: Inya, the Unbearable Whispers
     league: Prophecy
@@ -566,6 +618,8 @@ Hubris Circlet:
   - name: Eber's Unification
     league: Prophecy
     location: The Pale Court
+  - name: Indigon
+    boss: The Elder (Uber)
   - name: Ylfeban's Trickery
     league: Tempest
 Iron Circlet:
@@ -585,12 +639,19 @@ Lion Pelt:
     boss: Guardian of the Chimera
 Lunaris Circlet:
   - Doedre's Scorn
+Magistrate Crown:
+  - name: Craiceann's Chitin
+    boss: Craiceann, First of the Deep
+    league: Bestiary
 Mind Cage:
   - Rime Gaze
   - name: Scold's Bridle
     league: Torment
 Necromancer Circlet:
   - Chitus' Apex
+  - name: Fenumus' Toxins
+    boss: Fenumus, First of the Night
+    league: Bestiary
 Nightmare Bascinet:
   - The Bringer of Rain
   - Devoto's Devotion
@@ -608,6 +669,8 @@ Regicide Mask:
   - name: Crown of the Pale King
     league: Tempest
     location: The Pale Court
+  - name: Gorgon's Gaze
+    location: Pillars of Arun
 Samite Helmet:
   - Hrimnor's Resolve
 Secutor Helm:
@@ -617,11 +680,16 @@ Siege Helmet:
     league: Breach
     location: Xoph's Domain
 Silken Hood:
+  - name: Saqawal's Flock
+    boss: Saqawal, First of the Sky
+    league: Bestiary
   - Starkonja's Head
 Sinner Tricorne:
   - Alpha's Howl
 Soldier Helmet:
   - Honourhome
+Tribal Circlet:
+  - Mark of the Red Covenant
 Tricorne:
   - Fairgraves' Tricorne
 Ursine Pelt:
@@ -994,6 +1062,8 @@ Long Staff:
   - Realmshaper
 Maelström Staff:
   - Taryn's Shiver
+  - name: Disintegrator
+    boss: The Elder (Uber)
 Military Staff:
   - Tremor Rod
 Primordial Staff:
@@ -1053,6 +1123,8 @@ Infernal Sword:
   - name: Starforge
     boss: The Shaper
     location: The Shaper's Realm
+  - name: Voidforge
+    boss: The Elder (Uber)
 Jagged Foil:
   - Fidelitas' Spike
 Jewelled Foil:
@@ -1266,6 +1338,7 @@ Crimson Jewel:
   - Mantra of Flames
   - Martial Artistry
   - Might in All Forms
+  - Might of the Meek
   - Overwhelming Odds
   - Primordial Might
   - Rain of Splinters

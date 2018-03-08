@@ -13,9 +13,9 @@ const commentRegex = /^(\s*)((#.*\S+)|(#\s*))(\s*)$/;
 const operatorRegex = /^(\s*)(<=|>=|=|<|>){1}(\s+|$)/;
 const booleanRegex = /^(\s*)("true"|true|"false"|false)(\s+|$)/i;
 
-const quotationRegex = /^(")([^\"]*)(")$/;
+const quotationRegex = /^"([^\"]*)"$/;
 const textRegex = /\S+/;
-const eolRegex = /(\r|\n)/;
+const eolRegex = /\r|\n/;
 const surroundingWSRegex = /^(\s*)(.*\S)\s*$/;
 
 export interface ParseResult<T> {
@@ -97,7 +97,7 @@ export class TokenParser {
       end: { line: this.row, character: this.currentIndex + shiftBy }
     };
 
-    this.text = this.text.substr(shiftBy);
+    this.text = this.text.slice(shiftBy);
     this.currentIndex += shiftBy;
 
     if (!textRegex.test(this.text)) {
@@ -157,7 +157,7 @@ export class TokenParser {
 
     if (result) {
       const quotationResult = quotationRegex.exec(result.value);
-      if (quotationResult) result.value = quotationResult[2];
+      if (quotationResult) result.value = quotationResult[1];
       return result;
     } else {
       return undefined;

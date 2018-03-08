@@ -2,7 +2,12 @@
 
 The history of changes to the extension.
 
-### Version 1.5.0 (Match 4th, 2018)
+### Version 1.6.0 (March 7th, 2018)
+- Added support for the new `Necromancy Net` base type.
+- Modified the extra suggestion for `Net` to include the new net.
+- Added all but one of the new unique items from patch 3.2 and the Bestiary league.
+
+### Version 1.5.0 (March 4th, 2018)
 - Added support for the unannounced `ElderMap` rule.
 
 ### Version 1.4.2 (February 28th, 2018)

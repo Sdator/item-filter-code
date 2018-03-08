@@ -61,7 +61,7 @@ extraBases:
       "Greatwolf Talisman"
   - name: Bestiary Nets
     text: >-
-      "Simple Rope Net" "Simple Iron Net" "Simple Steel Net" "Reinforced Rope Net" "Reinforced Iron Net" "Reinforced Steel Net" "Strong Rope Net" "Strong Iron Net" "Strong Steel Net" "Thaumaturgical Net"
+      "Rope Net" "Iron Net" "Steel Net" "Thaumaturgical Net" "Necromancy Net"
 extraClasses:
   - Axes
   - Card
