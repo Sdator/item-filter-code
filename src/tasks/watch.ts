@@ -39,12 +39,12 @@ function watchData() {
   });
 
   dataWatcher.on("add", () => {
-    dataUpdater()
+    dataUpdater();
   });
 
   dataWatcher.on("unlink", () => {
     console.log("Error: data removed while the watcher was active.");
-    process.exit(1)
+    process.exit(1);
   });
 }
 

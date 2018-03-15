@@ -5,9 +5,10 @@
  * ===========================================================================*/
 
 import * as assert from "assert";
+import { Diagnostic, Range, DiagnosticSeverity } from "vscode-languageserver";
 import {
-  ColorInformation, Diagnostic, Range, DiagnosticSeverity
-} from "vscode-languageserver";
+  ColorInformation
+} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues, FilterData, SoundInformation } from "../types";
 import { getOrdinal, splitLines } from "../helpers";

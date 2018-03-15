@@ -5,9 +5,10 @@
  * ===========================================================================*/
 
 import * as assert from "assert";
+import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 import {
-  ColorInformation, Diagnostic, DiagnosticSeverity, Range
-} from "vscode-languageserver";
+  ColorInformation
+} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues, FilterData, ItemData, SoundInformation } from "../types";
 import { stylizedArrayJoin } from "../helpers";

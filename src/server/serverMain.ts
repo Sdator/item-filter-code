@@ -5,9 +5,12 @@
  * ===========================================================================*/
 
 import {
-  createConnection, DocumentColorRequest, IConnection, IPCMessageReader,
+  createConnection, IConnection, IPCMessageReader,
   IPCMessageWriter, TextDocument, TextDocuments, InitializeResult, ServerCapabilities
 } from "vscode-languageserver";
+import {
+  ServerCapabilities as CPServerCapabilities, DocumentColorRequest
+} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues, SoundNotification } from "../types";
 import { equalArrays, splitLines, runSafe } from "../helpers";
@@ -43,7 +46,7 @@ async function processItemFilter(document: TextDocument): Promise<void> {
 }
 
 connection.onInitialize((_param): InitializeResult => {
-  const capabilities: ServerCapabilities = {
+  const capabilities: ServerCapabilities & CPServerCapabilities = {
     textDocumentSync: documents.syncKind,
     completionProvider: {},
     colorProvider: true,

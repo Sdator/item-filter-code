@@ -14,9 +14,13 @@ import {
   Range, Color, ColorInformation, ColorPresentation, DecorationOptions, MarkdownString
 } from "vscode";
 import {
-  DocumentColorParams, DocumentColorRequest, LanguageClient, LanguageClientOptions,
+  LanguageClient, LanguageClientOptions,
   ServerOptions, TransportKind
 } from "vscode-languageclient";
+
+import {
+  DocumentColorParams, DocumentColorRequest
+} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { SoundInformation, SoundNotification } from "../types";
 import { playSound } from "./sound-player";
