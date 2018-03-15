@@ -27,9 +27,9 @@ import {
   getKeyword, getStringRangeAtPosition
 } from "./line-utilities";
 
-const itemData: ItemData = require("../../items.json");
-const filterData: FilterData = require("../../filter.json");
-const suggestionData: SuggestionData = require("../../suggestions.json");
+const itemData: ItemData = require("../items.json");
+const filterData: FilterData = require("../filter.json");
+const suggestionData: SuggestionData = require("../suggestions.json");
 
 /**
  * Synchronously returns completion suggestions for the given position in the

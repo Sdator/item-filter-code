@@ -5,19 +5,17 @@
  * ===========================================================================*/
 
 import * as assert from "assert";
-import { Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
-
 import {
-  ColorInformation
-} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
+  ColorInformation, Diagnostic, DiagnosticSeverity, Range
+} from "vscode-languageserver";
 
 import { ConfigurationValues, FilterData, ItemData, SoundInformation } from "../types";
 import { stylizedArrayJoin } from "../helpers";
 import { BlockContext } from "./item-filter";
 import { TokenParser, ParseResult } from "./token-parser";
 
-const itemData: ItemData = require("../../items.json");
-const filterData: FilterData = require("../../filter.json");
+const itemData: ItemData = require("../items.json");
+const filterData: FilterData = require("../filter.json");
 
 export class LineValidator {
   readonly diagnostics: Diagnostic[];

@@ -6,10 +6,13 @@
   "author": "Glen Marker",
   "publisher": "GlenCFL",
   "license": "MIT",
-  "icon": "media/icon.png",
+  "homepage": "https://github.com/GlenCFL/item-filter-code#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/GlenCFL/item-filter-code.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GlenCFL/item-filter-code/issues"
   },
   "categories": [
     "Linters",
@@ -22,37 +25,62 @@
     "path of exile",
     "exile"
   ],
-  "main": "./dist/src/client/main",
+  "icon": "media/icon.png",
+  "badges": [
+    {
+      "url": "https://travis-ci.org/GlenCFL/item-filter-code.svg?branch=master",
+      "href": "https://travis-ci.org/GlenCFL/item-filter-code",
+      "description": "Continuous Integration"
+    },
+    {
+      "url": "https://codecov.io/gh/GlenCFL/item-filter-code/branch/master/graph/badge.svg",
+      "href": "https://codecov.io/gh/GlenCFL/item-filter-code",
+      "description": "Test Coverage"
+    }
+  ],
+  "main": "./out/client/main",
   "scripts": {
-    "vscode:prepublish": "tsc -p . && gulp data",
-    "compile": "tsc -p . && gulp lint && gulp data",
-    "watch": "tsc -watch -p .",
-    "test": "tsc -p . && gulp data && node ./node_modules/vscode/bin/test",
-    "clean": "gulp clean",
+    "vscode:prepublish": "npm run compile && npm run lint",
+    "compile:data": "ts-node tasks/data",
+    "compile:ts": "tsc -p .",
+    "compile": "npm run clean && npm run compile:ts && npm run compile:data",
+    "watch": "ts-node tasks/watch",
+    "lint": "ts-node tasks/lint",
+    "clean": "ts-node tasks/clean",
+    "coverage:on": "ts-node tasks/cov on",
+    "coverage:off": "ts-node tasks/cov off",
+    "test": "node ./out/test/standardTest.js",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "dependencies": {
-    "vscode-languageclient": "^3.5.0",
-    "vscode-languageserver": "^3.5.0",
-    "vscode-nls": "^3.2.1"
+    "vscode-languageclient": "^4.0.0",
+    "vscode-languageserver": "^4.0.0",
+    "vscode-nls": "^3.2.2"
   },
   "devDependencies": {
-    "@glencfl/tslint-config": "^1.4.3",
+    "@glencfl/tslint-config": "^1.4.4",
     "@types/chai": "^4.1.2",
-    "@types/gulp": "^4.0.5",
+    "@types/chokidar": "^1.7.5",
+    "@types/istanbul": "^0.4.29",
     "@types/js-yaml": "^3.10.1",
+    "@types/lodash": "^4.14.104",
     "@types/mkdirp": "^0.5.2",
     "@types/mocha": "^2.2.48",
+    "@types/rimraf": "^2.0.2",
     "chai": "^4.1.2",
-    "gulp": "^3.9.1",
-    "gulp-clean": "^0.4.0",
-    "gulp-tslint": "^8.1.2",
+    "chokidar": "^2.0.2",
+    "decache": "^4.4.0",
+    "istanbul": "^0.4.5",
     "js-yaml": "^3.10.0",
+    "lodash": "^4.17.5",
     "mkdirp": "^0.5.1",
+    "mocha": "^2.5.3",
+    "remap-istanbul": "^0.10.1",
+    "rimraf": "^2.6.2",
     "ts-node": "^5.0.0",
     "tslint": "^5.9.1",
     "typescript": "^2.7.1",
-    "vscode": "^1.1.10"
+    "vscode": "^1.1.13"
   },
   "engines": {
     "vscode": "^1.18.0"
@@ -70,7 +98,7 @@
         "extensions": [
           ".filter"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./languages/item-filter.json"
       }
     ],
     "grammars": [

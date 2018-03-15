@@ -5,16 +5,15 @@
  * ===========================================================================*/
 
 import * as assert from "assert";
-import { Diagnostic, Range, DiagnosticSeverity } from "vscode-languageserver";
 import {
-  ColorInformation
-} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
+  ColorInformation, Diagnostic, Range, DiagnosticSeverity
+} from "vscode-languageserver";
 
 import { ConfigurationValues, FilterData, SoundInformation } from "../types";
 import { getOrdinal, splitLines } from "../helpers";
 import { LineValidator } from "./line-validator";
 
-const filterData: FilterData = require("../../filter.json");
+const filterData: FilterData = require("../filter.json");
 
 export interface FilterParseResult {
   colorInformation: ColorInformation[];

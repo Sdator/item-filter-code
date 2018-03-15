@@ -14,11 +14,9 @@ import {
   Range, Color, ColorInformation, ColorPresentation, DecorationOptions, MarkdownString
 } from "vscode";
 import {
-  LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
+  DocumentColorParams, DocumentColorRequest, LanguageClient, LanguageClientOptions,
+  ServerOptions, TransportKind
 } from "vscode-languageclient";
-import {
-  DocumentColorParams, DocumentColorRequest
-} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { SoundInformation, SoundNotification } from "../types";
 import { playSound } from "./sound-player";
@@ -143,7 +141,7 @@ export async function activate(context: ExtensionContext) {
     soundDecorationCache.delete(uri);
   }));
 
-  const serverModule = context.asAbsolutePath(path.join("dist", "src", "server",
+  const serverModule = context.asAbsolutePath(path.join("out", "server",
     "serverMain.js"));
   const debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
 
