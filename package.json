@@ -26,29 +26,17 @@
     "exile"
   ],
   "icon": "media/icon.png",
-  "badges": [
-    {
-      "url": "https://travis-ci.org/GlenCFL/item-filter-code.svg?branch=master",
-      "href": "https://travis-ci.org/GlenCFL/item-filter-code",
-      "description": "Continuous Integration"
-    },
-    {
-      "url": "https://codecov.io/gh/GlenCFL/item-filter-code/branch/master/graph/badge.svg",
-      "href": "https://codecov.io/gh/GlenCFL/item-filter-code",
-      "description": "Test Coverage"
-    }
-  ],
   "main": "./out/client/main",
   "scripts": {
     "vscode:prepublish": "npm run compile && npm run lint",
-    "compile:data": "ts-node tasks/data",
+    "compile:data": "ts-node src/tasks/data",
     "compile:ts": "tsc -p .",
     "compile": "npm run clean && npm run compile:ts && npm run compile:data",
-    "watch": "ts-node tasks/watch",
-    "lint": "ts-node tasks/lint",
-    "clean": "ts-node tasks/clean",
-    "coverage:on": "ts-node tasks/cov on",
-    "coverage:off": "ts-node tasks/cov off",
+    "watch": "ts-node src/tasks/watch",
+    "lint": "ts-node src/tasks/lint",
+    "clean": "ts-node src/tasks/clean",
+    "coverage:on": "ts-node src/tasks/cov on",
+    "coverage:off": "ts-node src/tasks/cov off",
     "test": "node ./out/test/standardTest.js",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },

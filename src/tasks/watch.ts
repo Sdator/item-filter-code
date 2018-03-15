@@ -6,11 +6,10 @@
 
 import * as _ from "lodash";
 import * as chokidar from "chokidar";
+import * as fs from "fs";
 import * as path from "path";
 
 import * as lib from "./index";
-
-const rootDir = lib.rootDir;
 
 /** Preprocesses all data files each time there is a change. */
 function watchData() {
@@ -40,18 +39,20 @@ function watchData() {
   });
 
   dataWatcher.on("add", () => {
-    dataUpdater();
+    dataUpdater()
   });
 
   dataWatcher.on("unlink", () => {
     console.log("Error: data removed while the watcher was active.");
-    process.exit(1);
+    process.exit(1)
   });
 }
 
 /** Lints all TypeScript files on a change. */
 function watchTypeScript() {
-  const tsWatches: string[] = require("../tsconfig.lint.json").include;
+  const tsconfig = path.join(lib.rootDir, "tsconfig.json");
+  const content = fs.readFileSync(tsconfig, "utf8");
+  const globs = JSON.parse(content).include;
 
   const capture = () => {
     console.log("TSLint Pulse Start\n");
@@ -59,7 +60,7 @@ function watchTypeScript() {
     console.log("TSLint Pulse End\n");
   };
 
-  const tsWatcher = chokidar.watch(tsWatches);
+  const tsWatcher = chokidar.watch(globs);
   const tsUpdater = _.debounce(capture, 100);
 
   tsWatcher.on("change", () => {

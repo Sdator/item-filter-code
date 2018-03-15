@@ -5,12 +5,10 @@ data/**
 docs/**
 examples/**
 src/**
-tasks/**
 .codecov.yml
 .gitignore
 .travis.yml
 package-lock.json
 tsconfig.json
-tsconfig.lint.json
 tslint.yaml
 yarn-error.log

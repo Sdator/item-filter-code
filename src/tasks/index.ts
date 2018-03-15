@@ -12,77 +12,13 @@ import * as fs from "fs";
 import * as glob from "glob";
 import * as path from "path";
 import * as mkdirp from "mkdirp";
-import * as ts from "typescript";
 import * as tslint from "tslint";
 import * as yaml from "js-yaml";
 
 import rimraf = require("rimraf");
 
-export const rootDir = path.join(__dirname, "..");
-export const buildDir = path.join(rootDir, "out");
-
-interface CoverageConfigFile {
-  enabled: boolean;
-  relativeSourcePath: string;
-  relativeCoverageDir: string;
-  ignorePatterns: string[];
-  reports: string[];
-  verbose: boolean;
-}
-
-interface ProcessedDataFormat {
-  classesToBases: { [key: string]: string[] };
-  basesToClasses: { [key: string]: string };
-  classes: string[];
-  sortedBases: string[];
-  sortedBasesIndices: number[];
-}
-
-/**
- * Formats TSLint output into a format an easier to consume format, which
- * includes both a relative path to a file within this project and the full
- * range of the error within that file.
- *
- * While it looks decent from the CLI, it's primarily intended to be used by a
- * problem matcher within a suitable text editor. The output format is:
- * `file@[startY, startX, endY, endX] - severity: message`
- */
-class PositionFormatter extends tslint.Formatters.AbstractFormatter {
-  format(failures: tslint.RuleFailure[]): string {
-    let result = "";
-
-    for (const failure of failures) {
-      const fullPath = failure.getFileName();
-      const relPath = path.relative(path.join(__dirname, ".."), fullPath);
-
-      const startPosition = failure.getStartPosition().getLineAndCharacter();
-      const startLine = startPosition.line + 1;
-      const startColumn = startPosition.character + 1;
-      const endPosition = failure.getEndPosition().getLineAndCharacter();
-      const endLine = endPosition.line + 1;
-      const endColumn = endPosition.character + 1;
-      const severity = failure.getRuleSeverity().toUpperCase();
-      const message = failure.getFailure().toLowerCase();
-      const rule = failure.getRuleName();
-
-      const errorText = `${relPath}@[${startLine},${startColumn},${endLine},${endColumn}] - ` +
-        `${severity}: ${message} (${rule})`;
-      result += `${errorText}\n`;
-    }
-
-    return result;
-  }
-}
-
-function loadYAML(relPath: string): object {
-  try {
-    const fullPath = path.join(rootDir, relPath);
-    return yaml.safeLoad(fs.readFileSync(fullPath, "utf8"));
-  } catch (e) {
-    const newMessage = e && e.message ? `${relPath}: ${e.message}` : `${relPath}: ${e}`;
-    throw new Error(newMessage);
-  }
-}
+export const rootDir = path.join(__dirname, "..", "..");
+const buildDir = path.join(rootDir, "out");
 
 /** Deletes every known temporary file from the project. */
 export function clean(): void {
@@ -102,6 +38,15 @@ export function clean(): void {
   for (const file of temporaryFiles) {
     if (fs.existsSync(file)) fs.unlinkSync(file);
   }
+}
+
+interface CoverageConfigFile {
+  enabled: boolean;
+  relativeSourcePath: string;
+  relativeCoverageDir: string;
+  ignorePatterns: string[];
+  reports: string[];
+  verbose: boolean;
 }
 
 /** Toggles coverage reporting for our tests on or off. */
@@ -125,6 +70,24 @@ export function toggleCoverage(on: boolean): void {
 
   if (!fs.existsSync(buildDir)) mkdirp.sync(buildDir);
   fs.writeFileSync(outputFile, JSON.stringify(contents));
+}
+
+interface ProcessedDataFormat {
+  classesToBases: { [key: string]: string[] };
+  basesToClasses: { [key: string]: string };
+  classes: string[];
+  sortedBases: string[];
+  sortedBasesIndices: number[];
+}
+
+function loadYAML(relPath: string): object {
+  try {
+    const fullPath = path.join(rootDir, relPath);
+    return yaml.safeLoad(fs.readFileSync(fullPath, "utf8"));
+  } catch (e) {
+    const newMessage = e && e.message ? `${relPath}: ${e.message}` : `${relPath}: ${e}`;
+    throw new Error(newMessage);
+  }
 }
 
 export function preprocessData(): void {
@@ -230,9 +193,45 @@ export function preprocessData(): void {
   });
 }
 
+/**
+ * Formats TSLint output into a format an easier to consume format, which
+ * includes both a relative path to a file within this project and the full
+ * range of the error within that file.
+ *
+ * While it looks decent from the CLI, it's primarily intended to be used by a
+ * problem matcher within a suitable text editor. The output format is:
+ * `file@[startY, startX, endY, endX] - severity: message`
+ */
+class PositionFormatter extends tslint.Formatters.AbstractFormatter {
+  format(failures: tslint.RuleFailure[]): string {
+    let result = "";
+
+    for (const failure of failures) {
+      const fullPath = failure.getFileName();
+      const relPath = path.relative(path.join(__dirname, ".."), fullPath);
+
+      const startPosition = failure.getStartPosition().getLineAndCharacter();
+      const startLine = startPosition.line + 1;
+      const startColumn = startPosition.character + 1;
+      const endPosition = failure.getEndPosition().getLineAndCharacter();
+      const endLine = endPosition.line + 1;
+      const endColumn = endPosition.character + 1;
+      const severity = failure.getRuleSeverity().toUpperCase();
+      const message = failure.getFailure().toLowerCase();
+      const rule = failure.getRuleName();
+
+      const errorText = `${relPath}@[${startLine},${startColumn},${endLine},${endColumn}] - ` +
+        `${severity}: ${message} (${rule})`;
+      result += `${errorText}\n`;
+    }
+
+    return result;
+  }
+}
+
 export function lintTypeScript(isCommandLine: boolean): number {
-  const tsconfig = path.join(rootDir, "tsconfig.lint.json");
-  const content = fs.readFileSync(path.join(rootDir, "tsconfig.lint.json"), "utf8");
+  const tsconfig = path.join(rootDir, "tsconfig.json");
+  const content = fs.readFileSync(tsconfig, "utf8");
   const globs = JSON.parse(content).include;
 
   const program = tslint.Linter.createProgram(tsconfig, rootDir);
@@ -249,13 +248,13 @@ export function lintTypeScript(isCommandLine: boolean): number {
     for (const file of files) {
       const contents = fs.readFileSync(file, "utf8");
       linter.lint(file, contents, config);
-      const lintResult = linter.getResult();
-
-      if (lintResult.errorCount > 0) errorsFound = true;
-      if (lintResult.failures.length > 0) {
-        console.log(lintResult.output);
-      }
     }
+  }
+
+  const lintResult = linter.getResult();
+  if (lintResult.errorCount > 0) errorsFound = true;
+  if (lintResult.failures.length > 0) {
+    console.log(lintResult.output);
   }
 
   if (errorsFound) {
