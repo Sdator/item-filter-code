@@ -2,6 +2,10 @@
 
 The history of changes to the extension.
 
+### Version 1.7.0 (March 15th, 2018)
+- Added support for the new DisableDropSound rule.
+- Fixed a performance oversight, resulting in a 5x speedup when parsing large item filters.
+
 ### Version 1.6.0 (March 7th, 2018)
 - Added support for the new `Necromancy Net` base type.
 - Modified the extra suggestion for `Net` to include the new net.

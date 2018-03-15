@@ -70,6 +70,7 @@ export function getCompletionSuggestions(config: ConfigurationValues, lineText: 
       case "ShaperItem":
       case "ShapedMap":
       case "ElderMap":
+      case "DisableDropSound":
         return getBooleanCompletions(position, lineText, currentIndex);
       default:
         return [];

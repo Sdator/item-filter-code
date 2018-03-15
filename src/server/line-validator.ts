@@ -103,6 +103,7 @@ export class LineValidator {
       case "ShaperItem":
       case "ShapedMap":
       case "ElderMap":
+      case "DisableDropSound":
         this.parseBooleanRule();
         break;
       case "SetBorderColor":
@@ -599,12 +600,18 @@ export class LineValidator {
 
         let invalid = true;
         for (const c of itemData.classes) {
-          if (c.includes(valueResult.value)) invalid = false;
+          if (c.includes(valueResult.value)) {
+            invalid = false;
+            break;
+          }
         }
 
         if (invalid) {
           for (const wlc of this.config.classWhitelist) {
-            if (wlc.includes(valueResult.value)) invalid = false;
+            if (wlc.includes(valueResult.value)) {
+              invalid = false;
+              break;
+            }
           }
         }
 
@@ -704,19 +711,26 @@ export class LineValidator {
           for (const itemBase of basePool) {
             if (itemBase.length >= value.length && itemBase.includes(value)) {
               invalid = false;
+              break;
             }
           }
         } else {
           const startIndex = itemData.sortedBasesIndices[value.length - 1];
           for (let i = startIndex; i < itemData.sortedBases.length; i++) {
             const itemBase = basePool[i];
-            if (itemBase.includes(value)) invalid = false;
+            if (itemBase.includes(value)) {
+              invalid = false;
+              break;
+            }
           }
         }
 
         if (invalid) {
           for (const wlb of this.config.baseWhitelist) {
-            if (wlb.includes(value)) invalid = false;
+            if (wlb.includes(value)) {
+              invalid = false;
+              break;
+            }
           }
         }
 
