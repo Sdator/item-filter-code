@@ -5,30 +5,18 @@
  * ===========================================================================*/
 
 import * as path from "path";
-import * as nls from "vscode-nls";
-
-const localize = nls.loadMessageBundle();
 
 import {
-  commands, languages, window, workspace, ExtensionContext, TextDocument, ProviderResult,
-  Range, Color, ColorInformation, ColorPresentation, DecorationOptions, MarkdownString
+  commands, window, workspace, ExtensionContext, DecorationOptions, MarkdownString
 } from "vscode";
+
 import {
-  LanguageClient, LanguageClientOptions,
-  ServerOptions, TransportKind
+  LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
 } from "vscode-languageclient";
 
-import {
-  DocumentColorParams, DocumentColorRequest
-} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
-
+import { buildRoot } from "../common";
 import { SoundInformation, SoundNotification } from "../types";
 import { playSound } from "./sound-player";
-
-interface ColorContext {
-  document: TextDocument;
-  range: Range;
-}
 
 interface PlaySoundOptions {
   identifier: string;
@@ -43,48 +31,6 @@ const soundDecorationType = window.createTextEditorDecorationType({
   borderColor: "MediumSeaGreen"
 });
 const soundDecorationCache: Map<string, DecorationOptions[]> = new Map();
-
-function provideDocumentColors(document: TextDocument): ProviderResult<ColorInformation[]> {
-  const params: DocumentColorParams = {
-    textDocument: client.code2ProtocolConverter.asTextDocumentIdentifier(document)
-  };
-
-  return client.sendRequest(DocumentColorRequest.type, params).then(symbols => {
-    return symbols.map(symbol => {
-      const range = client.protocol2CodeConverter.asRange(symbol.range);
-      const color = new Color(symbol.color.red, symbol.color.green,
-        symbol.color.blue, symbol.color.alpha);
-      return new ColorInformation(range, color);
-    });
-  });
-}
-
-function provideColorPresentations(color: Color, context: ColorContext):
-  ProviderResult<ColorPresentation[]> {
-
-  const result: ColorPresentation[] = [];
-
-  const red = Math.trunc(color.red * 255);
-  const green = Math.trunc(color.green * 255);
-  const blue = Math.trunc(color.blue * 255);
-  const alpha = Math.trunc(color.alpha * 255);
-  const appendAlpha = alpha === 255 ? false : true;
-  const alwaysShowAlpha = workspace.getConfiguration("item-filter").get("alwaysShowAlpha");
-
-  let colorString = `${red} ${green} ${blue}`;
-  if (alwaysShowAlpha || appendAlpha) colorString += ` ${alpha}`;
-
-  result.push({
-    label: "Color Picker",
-    textEdit: {
-      newText: colorString,
-      range: context.range,
-      newEol: context.document.eol
-    }
-  });
-
-  return result;
-}
 
 function createSoundDecorations(sounds: SoundInformation[]): DecorationOptions[] {
   const result: DecorationOptions[] = [];
@@ -145,8 +91,7 @@ export async function activate(context: ExtensionContext) {
     soundDecorationCache.delete(uri);
   }));
 
-  const serverModule = context.asAbsolutePath(path.join("out", "server",
-    "serverMain.js"));
+  const serverModule = path.join(buildRoot, "server", "serverMain.js");
   const debugOptions = { execArgv: ["--nolazy", "--inspect=6009"] };
 
   const serverOptions: ServerOptions = {
@@ -163,15 +108,13 @@ export async function activate(context: ExtensionContext) {
     }
   };
 
-  client = new LanguageClient("filter", localize("filter.server-name",
-    "Item Filter Language Server"), serverOptions, clientOptions);
+  client = new LanguageClient("filter", "Item Filter Language Server",
+    serverOptions, clientOptions);
 
   const disposable = client.start();
   context.subscriptions.push(disposable);
 
   await client.onReady();
-  context.subscriptions.push(languages.registerColorProvider(documentSelector,
-    { provideDocumentColors, provideColorPresentations }));
 
   client.onNotification(SoundNotification.type, params => {
     const decorations = createSoundDecorations(params.sounds);

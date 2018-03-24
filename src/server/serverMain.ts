@@ -5,15 +5,13 @@
  * ===========================================================================*/
 
 import {
-  createConnection, IConnection, IPCMessageReader,
-  IPCMessageWriter, TextDocument, TextDocuments, InitializeResult, ServerCapabilities
+  createConnection, ColorPresentation, ColorPresentationRequest, DocumentColorRequest,
+  IConnection, IPCMessageReader, IPCMessageWriter, TextDocument, TextDocuments,
+  InitializeResult, ServerCapabilities
 } from "vscode-languageserver";
-import {
-  ServerCapabilities as CPServerCapabilities, DocumentColorRequest
-} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
 
 import { ConfigurationValues, SoundNotification } from "../types";
-import { equalArrays, splitLines, runSafe } from "../helpers";
+import { equalArrays, splitLines, runSafe } from "./helpers";
 import { getCompletionSuggestions } from "./completion-provider";
 import { getHoverResult } from "./hover-provider";
 import { ItemFilter } from "./item-filter";
@@ -46,7 +44,7 @@ async function processItemFilter(document: TextDocument): Promise<void> {
 }
 
 connection.onInitialize((_param): InitializeResult => {
-  const capabilities: ServerCapabilities & CPServerCapabilities = {
+  const capabilities: ServerCapabilities = {
     textDocumentSync: documents.syncKind,
     completionProvider: {},
     colorProvider: true,
@@ -127,6 +125,32 @@ connection.onRequest(DocumentColorRequest.type, async params => {
     } else {
       return [];
     }
+  }, [], `Error while computing color presentations for ${params.textDocument.uri}`);
+});
+
+connection.onRequest(ColorPresentationRequest.type, params => {
+  return runSafe(async () => {
+    const result: ColorPresentation[] = [];
+
+    const color = params.color;
+    const red = Math.trunc(color.red * 255);
+    const green = Math.trunc(color.green * 255);
+    const blue = Math.trunc(color.blue * 255);
+    const alpha = Math.trunc(color.alpha * 255);
+    const appendAlpha = alpha === 255 ? false : true;
+
+    let colorString = `${red} ${green} ${blue}`;
+    if (config.alwaysShowAlpha || appendAlpha) colorString += ` ${alpha}`;
+
+    result.push({
+      label: "Color Picker",
+      textEdit: {
+        newText: colorString,
+        range: params.range
+      }
+    });
+
+    return result;
   }, [], `Error while computing color presentations for ${params.textDocument.uri}`);
 });
 

@@ -85,7 +85,7 @@ export class TokenParser {
    * @param regex The regular expression to use to parse the value.
    * @return Returns a ParseResult if a value was found, otherwise null.
    */
-  parseSingleValue(regex: RegExp): ParseResult<string>|undefined {
+  parseSingleValue(regex: RegExp): ParseResult<string> | undefined {
     const regexResult = regex.exec(this.text);
     if (!regexResult) return undefined;
 
@@ -108,7 +108,7 @@ export class TokenParser {
   }
 
   /** Parses a number if one is next on the line. */
-  nextNumber(): ParseResult<number>|undefined {
+  nextNumber(): ParseResult<number> | undefined {
     const result = this.parseSingleValue(numberRegex);
 
     if (result) {
@@ -121,7 +121,7 @@ export class TokenParser {
   }
 
   /** Parses a boolean if one is next on the line. */
-  nextBoolean(): ParseResult<boolean>|undefined {
+  nextBoolean(): ParseResult<boolean> | undefined {
     const result = this.parseSingleValue(booleanRegex);
 
     // Booleans are case-insensitive, and may be surrounded by either single or
@@ -136,7 +136,7 @@ export class TokenParser {
   }
 
   /** Parses an next operator if one is next on the line. */
-  nextOperator(): ParseResult<string>|undefined {
+  nextOperator(): ParseResult<string> | undefined {
     return this.parseSingleValue(operatorRegex);
   }
 
@@ -144,7 +144,7 @@ export class TokenParser {
    * Parses a word if one is next on the line.
    * A word is considered a string of letters from any langauge.
    */
-  nextWord(): ParseResult<string>|undefined {
+  nextWord(): ParseResult<string> | undefined {
     return this.parseSingleValue(wordRegex);
   }
 
@@ -152,7 +152,7 @@ export class TokenParser {
    * Parses a string if one is next on the line.
    * Strings containing multiple words must be contained within double quotation marks.
    */
-  nextString(): ParseResult<string>|undefined {
+  nextString(): ParseResult<string> | undefined {
     const result = this.parseSingleValue(stringRegex);
 
     if (result) {
@@ -168,7 +168,7 @@ export class TokenParser {
    * Parses a comment if one is next on the line.
    * A comment consumes the remainder of the line.
    */
-  parseComment(): ParseResult<string>|undefined {
+  parseComment(): ParseResult<string> | undefined {
     return this.parseSingleValue(commentRegex);
   }
 }

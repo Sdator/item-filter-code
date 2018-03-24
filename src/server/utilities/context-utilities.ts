@@ -4,8 +4,6 @@
  * license information.
  * ===========================================================================*/
 
-// Utilities for working with lines within an item filter.
-
 import { Position, Range } from "vscode-languageserver";
 
 export const whitespaceRegex = /^\s*$/;

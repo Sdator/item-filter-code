@@ -7,17 +7,18 @@
 // Just like in the completion provider, we only need to establish the context
 // within the current line.
 
+import * as path from "path";
 import { Hover, Position } from "vscode-languageserver";
 
+import { dataRoot } from "../common";
 import { UniqueData, UniqueItem, ItemData, FilterData } from "../types";
-import { bypassEqOperator, getKeyword, getStringRangeAtPosition } from "./line-utilities";
+import { bypassEqOperator, getKeyword, getStringRangeAtPosition } from "./utilities";
 
-const itemData: ItemData = require("../items.json");
-const filterData: FilterData = require("../filter.json");
-const uniqueData: UniqueData = require("../uniques.json");
+const itemData: ItemData = require(path.join(dataRoot, "items.json"));
+const filterData: FilterData = require(path.join(dataRoot, "filter.json"));
+const uniqueData: UniqueData = require(path.join(dataRoot, "uniques.json"));
 
 export function getHoverResult(text: string, position: Position): Hover | null {
-
   const keywordResult = getKeyword(text, position.line);
   if (!keywordResult) return null;
 

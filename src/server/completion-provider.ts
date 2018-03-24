@@ -13,23 +13,22 @@
 // Filtering suggestions based on block constraints would be intrusive and
 // is better handled through diagnostics.
 
-// TODO(glen): measure performance regarding filtering beforehand vs. just
-//  letting VSCode do so. JSONRPC should have enough throughput that sending
-//  over ~2000 suggestions shouldn't be an issue.
+import * as path from "path";
 
 import {
   CompletionItem, CompletionItemKind, Position, Range
 } from "vscode-languageserver";
 
+import { dataRoot } from "../common";
 import { ConfigurationValues, ItemData, FilterData, SuggestionData } from "../types";
 import {
   whitespaceRegex, whitespaceCharacterRegex, bypassEqOperator, bypassOperator,
   getKeyword, getStringRangeAtPosition
-} from "./line-utilities";
+} from "./utilities";
 
-const itemData: ItemData = require("../items.json");
-const filterData: FilterData = require("../filter.json");
-const suggestionData: SuggestionData = require("../suggestions.json");
+const itemData: ItemData = require(path.join(dataRoot, "items.json"));
+const filterData: FilterData = require(path.join(dataRoot, "filter.json"));
+const suggestionData: SuggestionData = require(path.join(dataRoot, "suggestions.json"));
 
 /**
  * Synchronously returns completion suggestions for the given position in the

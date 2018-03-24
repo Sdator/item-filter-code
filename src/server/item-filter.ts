@@ -5,16 +5,15 @@
  * ===========================================================================*/
 
 import * as assert from "assert";
-import { Diagnostic, Range, DiagnosticSeverity } from "vscode-languageserver";
-import {
-  ColorInformation
-} from "vscode-languageserver-protocol/lib/protocol.colorProvider.proposed";
+import * as path from "path";
+import { ColorInformation, Diagnostic, Range, DiagnosticSeverity } from "vscode-languageserver";
 
+import { dataRoot } from "../common";
 import { ConfigurationValues, FilterData, SoundInformation } from "../types";
-import { getOrdinal, splitLines } from "../helpers";
-import { LineValidator } from "./line-validator";
+import { getOrdinal, splitLines } from "./helpers";
+import { LineParser } from "./parsers/line-parser";
 
-const filterData: FilterData = require("../filter.json");
+const filterData: FilterData = require(path.join(dataRoot, "filter.json"));
 
 export interface FilterParseResult {
   colorInformation: ColorInformation[];
@@ -58,7 +57,7 @@ export class ItemFilter {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const lineParser = new LineValidator(config, context, line, i);
+      const lineParser = new LineParser(config, context, line, i);
       lineParser.parse();
 
       if (!lineParser.keyword) continue;
@@ -82,7 +81,7 @@ export class ItemFilter {
     return result;
   }
 
-  private performBlockDiagnostics(context: BlockContext, parser: LineValidator) {
+  private performBlockDiagnostics(context: BlockContext, parser: LineParser) {
     if (parser.keyword !== "Show" && parser.keyword !== "Hide") {
       if (context.blockFound) {
         const ruleLimit = filterData.ruleLimits[parser.keyword];

@@ -10,19 +10,21 @@
 import * as path from "path";
 import * as cp from "child_process";
 
+import { dataRoot, projectRoot } from "../common";
+
 import { workspace } from "vscode";
 
 interface SoundFile {
   [key: string]: string;
 }
 
-const soundData: SoundFile = require("../sounds.json");
+const soundData: SoundFile = require(path.join(dataRoot, "sounds.json"));
 
 export function playSound(identifier: string, volume: number) {
   // Sound identifiers can be whitelisted, so just don't attempt to play any
   // sounds that we don't bundle.
   const soundFilePart = soundData[identifier];
-  const soundPath = path.join(__dirname, "..", "..", "media", "sounds", soundFilePart);
+  const soundPath = path.join(projectRoot, "media", "sounds", soundFilePart);
 
   // GGG uses a scale of 0 to 300 for volume.
   const percentage = volume / 300;
@@ -33,7 +35,7 @@ export function playSound(identifier: string, volume: number) {
   let player: string;
   let args: string[];
   if (process.platform === "win32") {
-    const mpgPath = path.join(__dirname, "..", "..", "tools", "mpg123.exe");
+    const mpgPath = path.join(projectRoot, "tools", "mpg123.exe");
     player = mpgPath;
     args = ["-q", "-f", `${scaledSamples}`, soundPath];
   } else if (process.platform === "linux") {

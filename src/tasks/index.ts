@@ -17,18 +17,18 @@ import * as yaml from "js-yaml";
 
 import rimraf = require("rimraf");
 
-export const rootDir = path.join(__dirname, "..", "..");
-const buildDir = path.join(rootDir, "out");
+import { buildRoot, projectRoot } from "../common";
+import { ItemData, TestRunnerOptions } from "../types";
 
 /** Deletes every known temporary file from the project. */
 export function clean(): void {
   const temporaryDirs: string[] = [
-    buildDir,
-    path.join(rootDir, "coverage"),
+    buildRoot,
+    path.join(projectRoot, "coverage"),
   ];
 
   const temporaryFiles: string[] = [
-    path.join(rootDir, "yarn-error.log"),
+    path.join(projectRoot, "yarn-error.log"),
   ];
 
   for (const dir of temporaryDirs) {
@@ -40,19 +40,10 @@ export function clean(): void {
   }
 }
 
-interface CoverageConfigFile {
-  enabled: boolean;
-  relativeSourcePath: string;
-  relativeCoverageDir: string;
-  ignorePatterns: string[];
-  reports: string[];
-  verbose: boolean;
-}
-
 /** Toggles coverage reporting for our tests on or off. */
 export function toggleCoverage(on: boolean): void {
-  const outputFile = path.join(buildDir, "coverconfig.json");
-  const contents: CoverageConfigFile = {
+  const outputFile = path.join(buildRoot, "coverconfig.json");
+  const contents: TestRunnerOptions = {
     enabled: on,
     relativeSourcePath: "../client",
     relativeCoverageDir: "../../coverage",
@@ -68,21 +59,13 @@ export function toggleCoverage(on: boolean): void {
     verbose: false
   };
 
-  if (!fs.existsSync(buildDir)) mkdirp.sync(buildDir);
+  if (!fs.existsSync(buildRoot)) mkdirp.sync(buildRoot);
   fs.writeFileSync(outputFile, JSON.stringify(contents));
-}
-
-interface ProcessedDataFormat {
-  classesToBases: { [key: string]: string[] };
-  basesToClasses: { [key: string]: string };
-  classes: string[];
-  sortedBases: string[];
-  sortedBasesIndices: number[];
 }
 
 function loadYAML(relPath: string): object {
   try {
-    const fullPath = path.join(rootDir, relPath);
+    const fullPath = path.join(projectRoot, relPath);
     return yaml.safeLoad(fs.readFileSync(fullPath, "utf8"));
   } catch (e) {
     const newMessage = e && e.message ? `${relPath}: ${e.message}` : `${relPath}: ${e}`;
@@ -103,30 +86,29 @@ export function preprocessData(): void {
   suggestionData = loadYAML(path.join("data", "suggestions.yaml"));
   itemData = loadYAML(path.join("data", "items.yaml")) as typeof itemData;
 
-  const outputDir = path.join(rootDir, "out");
-  mkdirp.sync(outputDir);
+  mkdirp.sync(buildRoot);
 
   // We don't need to process each of these, only output them to JSON.
   const filterDataContent = JSON.stringify(filterData);
-  const filterOutputFile = path.join(outputDir, "filter.json");
+  const filterOutputFile = path.join(buildRoot, "filter.json");
   fs.writeFile(filterOutputFile, filterDataContent, err => {
     if (err) throw err;
   });
 
   const soundDataContent = JSON.stringify(soundData);
-  const soundOutputFile = path.join(outputDir, "sounds.json");
+  const soundOutputFile = path.join(buildRoot, "sounds.json");
   fs.writeFile(soundOutputFile, soundDataContent, err => {
     if (err) throw err;
   });
 
   const uniqueDataContent = JSON.stringify(uniqueData);
-  const uniqueOutputFile = path.join(outputDir, "uniques.json");
+  const uniqueOutputFile = path.join(buildRoot, "uniques.json");
   fs.writeFile(uniqueOutputFile, uniqueDataContent, err => {
     if (err) throw err;
   });
 
   const suggestionDataContent = JSON.stringify(suggestionData);
-  const suggestionOutputFile = path.join(outputDir, "suggestions.json");
+  const suggestionOutputFile = path.join(buildRoot, "suggestions.json");
   fs.writeFile(suggestionOutputFile, suggestionDataContent, err => {
     if (err) throw err;
   });
@@ -137,7 +119,7 @@ export function preprocessData(): void {
   //  .classes -- an array containing every class.
   //  .sortedBases -- the item bases sorted by their length first, then alphabetical order.
   //  .sortedBasesIndices -- the indices for each character length within the sortedBases array.
-  const itemDataObject: ProcessedDataFormat = {
+  const itemDataObject: ItemData = {
     classesToBases: itemData,
     basesToClasses: {},
     classes: [],
@@ -187,7 +169,7 @@ export function preprocessData(): void {
   itemDataObject.sortedBases = itemBases;
 
   const itemDataContent = JSON.stringify(itemDataObject);
-  const itemDataOutputFile = path.join(outputDir, "items.json");
+  const itemDataOutputFile = path.join(buildRoot, "items.json");
   fs.writeFile(itemDataOutputFile, itemDataContent, err => {
     if (err) throw err;
   });
@@ -208,7 +190,7 @@ class PositionFormatter extends tslint.Formatters.AbstractFormatter {
 
     for (const failure of failures) {
       const fullPath = failure.getFileName();
-      const relPath = path.relative(path.join(__dirname, ".."), fullPath);
+      const relPath = path.relative(path.join(__dirname, "..", ".."), fullPath);
 
       const startPosition = failure.getStartPosition().getLineAndCharacter();
       const startLine = startPosition.line + 1;
@@ -230,12 +212,12 @@ class PositionFormatter extends tslint.Formatters.AbstractFormatter {
 }
 
 export function lintTypeScript(isCommandLine: boolean): number {
-  const tsconfig = path.join(rootDir, "tsconfig.json");
+  const tsconfig = path.join(projectRoot, "tsconfig.json");
   const content = fs.readFileSync(tsconfig, "utf8");
   const globs = JSON.parse(content).include;
 
-  const program = tslint.Linter.createProgram(tsconfig, rootDir);
-  const config = tslint.Configuration.findConfiguration("./tslint.yaml", rootDir).results;
+  const program = tslint.Linter.createProgram(tsconfig, projectRoot);
+  const config = tslint.Configuration.findConfiguration("./tslint.yaml", projectRoot).results;
   const options: tslint.ILinterOptions = {
     fix: false,
     formatter: isCommandLine ? "stylish" : PositionFormatter

@@ -41,34 +41,41 @@
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "dependencies": {
-    "vscode-languageclient": "^3.5.0",
-    "vscode-languageserver": "^3.5.0",
-    "vscode-nls": "^3.2.2"
+    "vscode-languageclient": "^4.0.0",
+    "vscode-languageserver": "^4.0.0"
   },
   "devDependencies": {
     "@glencfl/tslint-config": "^1.4.4",
     "@types/chai": "^4.1.2",
+    "@types/chai-as-promised": "^7.1.0",
     "@types/chokidar": "^1.7.5",
+    "@types/fs-extra": "^5.0.1",
     "@types/istanbul": "^0.4.29",
     "@types/js-yaml": "^3.10.1",
-    "@types/lodash": "^4.14.104",
+    "@types/lodash": "^4.14.106",
     "@types/mkdirp": "^0.5.2",
-    "@types/mocha": "^2.2.48",
+    "@types/mocha": "2.2.48",
     "@types/rimraf": "^2.0.2",
+    "@types/sinon": "^4.3.0",
+    "@types/sinon-chai": "^2.7.29",
     "chai": "^4.1.2",
-    "chokidar": "^2.0.2",
+    "chai-as-promised": "^7.1.1",
+    "chokidar": "^2.0.3",
     "decache": "^4.4.0",
+    "fs-extra": "^5.0.0",
     "istanbul": "^0.4.5",
-    "js-yaml": "^3.10.0",
+    "js-yaml": "^3.11.0",
     "lodash": "^4.17.5",
     "mkdirp": "^0.5.1",
-    "mocha": "^2.5.3",
-    "remap-istanbul": "^0.10.1",
+    "mocha": "2.5.3",
+    "remap-istanbul": "^0.11.0",
     "rimraf": "^2.6.2",
-    "ts-node": "^5.0.0",
+    "sinon": "^4.4.8",
+    "sinon-chai": "^3.0.0",
+    "ts-node": "^5.0.1",
     "tslint": "^5.9.1",
-    "typescript": "^2.7.1",
-    "vscode": "^1.1.13"
+    "typescript": "^2.7.2",
+    "vscode": "^1.1.14"
   },
   "engines": {
     "vscode": "^1.18.0"
@@ -138,7 +145,7 @@
           },
           "item-filter.performanceHints": {
             "title": "Performance Hints",
-            "description": "Whether or not to display performance hints within the editor.",
+            "description": "Whether to display performance hints within the editor.",
             "type": "boolean",
             "default": true,
             "scope": "window"

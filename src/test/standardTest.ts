@@ -4,15 +4,14 @@
  * license information.
  * ===========================================================================*/
 
-import { MochaSetupOptions } from "vscode/lib/testrunner";
+import * as path from "path";
 
-import * as testRunner from "./test-runner";
+process.env.CODE_TESTS_WORKSPACE = path.join(__dirname, "..", "..", "src", "test");
 
-const options: MochaSetupOptions = {
-  ui: "tdd",
-  useColors: true,
-  timeout: 25000
-};
+function start() {
+  console.log("*".repeat(100));
+  console.log("Start Standard tests");
+  require("../../node_modules/vscode/bin/test");
+}
 
-testRunner.configure(options, { coverageConfig: "../coverconfig.json" });
-module.exports = testRunner;
+start();

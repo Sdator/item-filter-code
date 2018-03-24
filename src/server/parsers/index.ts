@@ -4,15 +4,5 @@
  * license information.
  * ===========================================================================*/
 
-import { MochaSetupOptions } from "vscode/lib/testrunner";
-
-import * as testRunner from "./test-runner";
-
-const options: MochaSetupOptions = {
-  ui: "tdd",
-  useColors: true,
-  timeout: 25000
-};
-
-testRunner.configure(options, { coverageConfig: "../coverconfig.json" });
-module.exports = testRunner;
+export * from "./line-parser";
+export * from "./token-parser";

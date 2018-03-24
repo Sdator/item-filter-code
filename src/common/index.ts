@@ -4,15 +4,13 @@
  * license information.
  * ===========================================================================*/
 
-import { MochaSetupOptions } from "vscode/lib/testrunner";
+import * as path from "path";
 
-import * as testRunner from "./test-runner";
+/** The root path of the project. */
+export const projectRoot = path.join(__dirname, "..", "..");
 
-const options: MochaSetupOptions = {
-  ui: "tdd",
-  useColors: true,
-  timeout: 25000
-};
+/** The root path of the output directory. */
+export const buildRoot = path.join(projectRoot, "out");
 
-testRunner.configure(options, { coverageConfig: "../coverconfig.json" });
-module.exports = testRunner;
+/** The root path of the data file directory. */
+export const dataRoot = buildRoot;

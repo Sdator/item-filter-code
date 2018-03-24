@@ -10,6 +10,7 @@ import * as fs from "fs";
 import * as path from "path";
 
 import * as lib from "./index";
+import { projectRoot } from "../common";
 
 /** Preprocesses all data files each time there is a change. */
 function watchData() {
@@ -50,7 +51,7 @@ function watchData() {
 
 /** Lints all TypeScript files on a change. */
 function watchTypeScript() {
-  const tsconfig = path.join(lib.rootDir, "tsconfig.json");
+  const tsconfig = path.join(projectRoot, "tsconfig.json");
   const content = fs.readFileSync(tsconfig, "utf8");
   const globs = JSON.parse(content).include;
 
