@@ -4,8 +4,10 @@
  * license information.
  * ===========================================================================*/
 
+import * as path from "path";
 import { MochaSetupOptions } from "vscode/lib/testrunner";
 
+import { dataRoot } from "../common";
 import * as testRunner from "./test-runner";
 
 const options: MochaSetupOptions = {
@@ -14,5 +16,5 @@ const options: MochaSetupOptions = {
   timeout: 25000
 };
 
-testRunner.configure(options, { coverageConfig: "../coverconfig.json" });
+testRunner.configure(options, { coverageConfig: path.join(dataRoot, "coverconfig.json") });
 module.exports = testRunner;

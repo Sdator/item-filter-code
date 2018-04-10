@@ -101,6 +101,7 @@ Leather Belt:
   - name: Cyclopean Coil
     boss: The Elder
     location: Absence of Value and Meaning
+  - Gluttony
   - name: Headhunter
     league: Nemesis
   - Immortal Flesh
@@ -328,6 +329,7 @@ Sadist Garb:
   - Inpulsa's Broken Heart
   - Tinkerskin
 Saintly Chainmail:
+  - Chains of Command
   - Incandescent Heart
 Scholar's Robe:
   - Cloak of Flame

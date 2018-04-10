@@ -6,7 +6,9 @@
 
 import * as path from "path";
 
-process.env.CODE_TESTS_WORKSPACE = path.join(__dirname, "..", "..", "src", "test");
+import { projectRoot } from "../common";
+
+process.env.CODE_TESTS_WORKSPACE = path.join(projectRoot, "src", "test");
 
 function start() {
   console.log("*".repeat(100));
