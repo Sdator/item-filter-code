@@ -66,7 +66,12 @@ export function toggleCoverage(on: boolean): void {
 function loadYAML(relPath: string): object {
   try {
     const fullPath = path.join(projectRoot, relPath);
-    return yaml.safeLoad(fs.readFileSync(fullPath, "utf8"));
+    const result = yaml.safeLoad(fs.readFileSync(fullPath, "utf8"));
+    if (result) {
+      return result;
+    } else {
+      throw new Error(`failed to load YAML file at path: ${relPath}`);
+    }
   } catch (e) {
     const newMessage = e && e.message ? `${relPath}: ${e.message}` : `${relPath}: ${e}`;
     throw new Error(newMessage);
@@ -74,16 +79,11 @@ function loadYAML(relPath: string): object {
 }
 
 export function preprocessData(): void {
-  let filterData: object;
-  let soundData: object;
-  let uniqueData: object;
-  let suggestionData: object;
+  const filterData = loadYAML(path.join("data", "filter.yaml"));
+  const soundData = loadYAML(path.join("data", "sounds.yaml"));
+  const uniqueData = loadYAML(path.join("data", "uniques.yaml"));
+  const suggestionData = loadYAML(path.join("data", "suggestions.yaml"));
   let itemData: { [key: string]: string[] };
-
-  filterData = loadYAML(path.join("data", "filter.yaml"));
-  soundData = loadYAML(path.join("data", "sounds.yaml"));
-  uniqueData = loadYAML(path.join("data", "uniques.yaml"));
-  suggestionData = loadYAML(path.join("data", "suggestions.yaml"));
   itemData = loadYAML(path.join("data", "items.yaml")) as typeof itemData;
 
   mkdirp.sync(buildRoot);
