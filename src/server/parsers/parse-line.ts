@@ -35,6 +35,7 @@ export interface BaseLineParseResult {
   sound?: SoundInformation;
 }
 
+/** The result of parsing an item filter line containing a keyword. */
 export interface KeywordedLineParseResult extends BaseLineParseResult {
   /** The keyword of the parsed line. */
   keyword: string;

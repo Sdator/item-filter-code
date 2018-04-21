@@ -78,7 +78,7 @@
     "vscode": "^1.1.14"
   },
   "engines": {
-    "vscode": "^1.18.0"
+    "vscode": "^1.20.0"
   },
   "activationEvents": [
     "onLanguage:item-filter"

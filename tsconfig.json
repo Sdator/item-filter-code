@@ -6,6 +6,7 @@
     "lib": [
       "es2016"
     ],
+    "newLine": "LF",
     "sourceMap": true,
     "rootDir": "src",
     "strict": true,

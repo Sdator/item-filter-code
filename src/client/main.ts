@@ -58,7 +58,7 @@ function createSoundDecorations(sounds: SoundInformation[]): DecorationOptions[]
   return result;
 }
 
-function playSoundCommand({identifier, volume}: PlaySoundOptions): void {
+function playSoundCommand({ identifier, volume }: PlaySoundOptions): void {
   playSound(identifier, parseInt(volume, 10));
 }
 

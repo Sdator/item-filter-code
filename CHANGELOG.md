@@ -2,6 +2,11 @@
 
 The history of changes to the extension.
 
+### Version 1.8.0 (TBD)
+- Added the two uniques added in Path of Exile version 3.2.2.
+- Updated from the proposed color picker API to the officially released API.
+  + This has bumped the required Visual Studio Code version to 1.20.0, released in January of 2018.
+
 ### Version 1.7.0 (March 15th, 2018)
 - Added support for the new DisableDropSound rule.
 - Fixed a performance oversight, resulting in a 5x speedup when parsing large item filters.
