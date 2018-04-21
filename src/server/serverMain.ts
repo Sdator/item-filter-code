@@ -103,9 +103,6 @@ connection.onCompletion(params => {
   }, [], `Error while computing autocompletion results for ${params.textDocument.uri}`);
 });
 
-// The return type with no results (null) was clarified in November, 2017.
-// The current definitions don't seem to have that updated type information yet.
-// @ts-ignore
 connection.onHover(params => {
   return runSafe(async () => {
     const document = documents.get(params.textDocument.uri);

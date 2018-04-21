@@ -11,7 +11,7 @@ import { ColorInformation, Diagnostic, Range, DiagnosticSeverity } from "vscode-
 import { dataRoot } from "../common";
 import { ConfigurationValues, FilterData, SoundInformation } from "../types";
 import { getOrdinal, splitLines } from "./helpers";
-import { LineParser } from "./parsers/line-parser";
+import { parseLine, isKeywordedLineParseResult, KeywordedLineParseResult } from "./parsers";
 
 const filterData: FilterData = require(path.join(dataRoot, "filter.json"));
 
@@ -57,53 +57,55 @@ export class ItemFilter {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const lineParser = new LineParser(config, context, line, i);
-      lineParser.parse();
+      const parseResult = parseLine(config, context, line, i);
 
-      if (!lineParser.keyword) continue;
-      if (lineParser.knownKeyword) {
-        this.performBlockDiagnostics(context, lineParser);
-      }
+      if (isKeywordedLineParseResult(parseResult)) {
+        if (parseResult.knownKeyword) {
+          this.performBlockDiagnostics(context, parseResult);
+        }
 
-      if (lineParser.diagnostics.length > 0) {
-        result.diagnostics.push.apply(result.diagnostics, lineParser.diagnostics);
-      }
+        if (parseResult.diagnostics.length > 0) {
+          result.diagnostics.push.apply(result.diagnostics, parseResult.diagnostics);
+        }
 
-      if (lineParser.color) {
-        result.colorInformation.push(lineParser.color);
-      }
+        if (parseResult.color) {
+          result.colorInformation.push(parseResult.color);
+        }
 
-      if (lineParser.sound) {
-        result.soundInformation.push(lineParser.sound);
+        if (parseResult.sound) {
+          result.soundInformation.push(parseResult.sound);
+        }
+      } else {
+        continue;
       }
     }
 
     return result;
   }
 
-  private performBlockDiagnostics(context: BlockContext, parser: LineParser) {
-    if (parser.keyword !== "Show" && parser.keyword !== "Hide") {
+  private performBlockDiagnostics(context: BlockContext, parse: KeywordedLineParseResult) {
+    if (parse.keyword !== "Show" && parse.keyword !== "Hide") {
       if (context.blockFound) {
-        const ruleLimit = filterData.ruleLimits[parser.keyword];
+        const ruleLimit = filterData.ruleLimits[parse.keyword];
         assert(ruleLimit !== undefined);
 
-        const occurrences = context.previousRules.get(parser.keyword);
+        const occurrences = context.previousRules.get(parse.keyword);
         if (occurrences !== undefined && occurrences >= ruleLimit) {
-          parser.diagnostics.push({
+          parse.diagnostics.push({
             message: `${getOrdinal(occurrences + 1)} occurrence of the` +
-              ` ${parser.keyword} rule within a block with a limit of ${ruleLimit}.`,
-            range: parser.keywordRange,
+              ` ${parse.keyword} rule within a block with a limit of ${ruleLimit}.`,
+            range: parse.keywordRange,
             severity: DiagnosticSeverity.Warning,
             source: context.source
           });
         }
 
-        context.previousRules.set(parser.keyword, occurrences === undefined ? 1 : occurrences);
+        context.previousRules.set(parse.keyword, occurrences === undefined ? 1 : occurrences);
       } else {
         // We have a rule without an enclosing block.
-        parser.diagnostics.push({
-          message: `Block rule ${parser.keyword} found outside of a Hide or Show block.`,
-          range: parser.lineRange,
+        parse.diagnostics.push({
+          message: `Block rule ${parse.keyword} found outside of a Hide or Show block.`,
+          range: parse.lineRange,
           severity: DiagnosticSeverity.Error,
           source: context.source
         });
