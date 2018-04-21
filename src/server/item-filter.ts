@@ -21,11 +21,14 @@ export interface FilterParseResult {
   diagnostics: Diagnostic[];
 }
 
-export interface BlockContext {
+export interface FilterContext {
   config: ConfigurationValues;
   source: "item-filter";
-  root?: Range;
   blockFound: boolean;
+}
+
+export interface BlockContext {
+  root?: Range;
   classes: string[];
   previousRules: Map<string, number>;
 }
@@ -47,21 +50,24 @@ export class ItemFilter {
       diagnostics: []
     };
 
-    const context: BlockContext = {
+    const filterContext: FilterContext = {
       config,
       source: "item-filter",
       blockFound: false,
+    };
+
+    const blockContext: BlockContext = {
       classes: [],
       previousRules: new Map()
     };
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const parseResult = parseLine(config, context, line, i);
+      const parseResult = parseLine(config, filterContext, blockContext, line, i);
 
       if (isKeywordedLineParseResult(parseResult)) {
         if (parseResult.knownKeyword) {
-          this.performBlockDiagnostics(context, parseResult);
+          this.performBlockDiagnostics(filterContext, blockContext, parseResult);
         }
 
         if (parseResult.diagnostics.length > 0) {
@@ -83,35 +89,37 @@ export class ItemFilter {
     return result;
   }
 
-  private performBlockDiagnostics(context: BlockContext, parse: KeywordedLineParseResult) {
+  private performBlockDiagnostics(filterContext: FilterContext,
+    blockContext: BlockContext, parse: KeywordedLineParseResult) {
+
     if (parse.keyword !== "Show" && parse.keyword !== "Hide") {
-      if (context.blockFound) {
+      if (filterContext.blockFound) {
         const ruleLimit = filterData.ruleLimits[parse.keyword];
         assert(ruleLimit !== undefined);
 
-        const occurrences = context.previousRules.get(parse.keyword);
+        const occurrences = blockContext.previousRules.get(parse.keyword);
         if (occurrences !== undefined && occurrences >= ruleLimit) {
           parse.diagnostics.push({
             message: `${getOrdinal(occurrences + 1)} occurrence of the` +
               ` ${parse.keyword} rule within a block with a limit of ${ruleLimit}.`,
             range: parse.keywordRange,
             severity: DiagnosticSeverity.Warning,
-            source: context.source
+            source: filterContext.source
           });
         }
 
-        context.previousRules.set(parse.keyword, occurrences === undefined ? 1 : occurrences);
+        blockContext.previousRules.set(parse.keyword, occurrences === undefined ? 1 : occurrences);
       } else {
         // We have a rule without an enclosing block.
         parse.diagnostics.push({
           message: `Block rule ${parse.keyword} found outside of a Hide or Show block.`,
           range: parse.lineRange,
           severity: DiagnosticSeverity.Error,
-          source: context.source
+          source: filterContext.source
         });
       }
     } else {
-      context.blockFound = true;
+      filterContext.blockFound = true;
     }
   }
 }
