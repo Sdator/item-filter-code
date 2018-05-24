@@ -6,7 +6,7 @@
 
 import { TokenParser } from "../../server/parsers/token-parser";
 
-const assert = global.assert;
+declare const assert: Chai.Assert;
 
 suite("LineParser.constructor()", () => {
   test("sets LineParser.textStartIndex correctly", () => {

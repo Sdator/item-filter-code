@@ -10,6 +10,7 @@ import {
   InitializeResult, ServerCapabilities
 } from "vscode-languageserver";
 
+import { isConfiguration } from "../common";
 import { ConfigurationValues, SoundNotification } from "../types";
 import { equalArrays, splitLines, runSafe } from "./helpers";
 import { getCompletionSuggestions } from "./completion-provider";
@@ -69,7 +70,9 @@ documents.onDidClose(event => {
 
 connection.onDidChangeConfiguration(change => {
   return runSafe(async () => {
-    const newConfig = <ConfigurationValues>change.settings["item-filter"];
+    if (!isConfiguration(change.settings)) return;
+    const newConfig = change.settings["item-filter"];
+
     let update = false;
     if (!equalArrays(config.baseWhitelist, newConfig.baseWhitelist)) update = true;
     if (!equalArrays(config.classWhitelist, newConfig.classWhitelist)) update = true;
@@ -97,18 +100,26 @@ connection.onDidChangeConfiguration(change => {
 connection.onCompletion(params => {
   return runSafe(async () => {
     const document = documents.get(params.textDocument.uri);
-    const lines = splitLines(document.getText());
-    const row = params.position.line;
-    return getCompletionSuggestions(config, lines[row], params.position);
+    if (document) {
+      const lines = splitLines(document.getText());
+      const row = params.position.line;
+      return getCompletionSuggestions(config, lines[row], params.position);
+    } else {
+      return [];
+    }
   }, [], `Error while computing autocompletion results for ${params.textDocument.uri}`);
 });
 
 connection.onHover(params => {
   return runSafe(async () => {
     const document = documents.get(params.textDocument.uri);
-    const lines = splitLines(document.getText());
-    const row = params.position.line;
-    return getHoverResult(lines[row], params.position);
+    if (document) {
+      const lines = splitLines(document.getText());
+      const row = params.position.line;
+      return getHoverResult(lines[row], params.position);
+    } else {
+      return null;
+    }
   }, null, `Error while computing hover for ${params.textDocument.uri}`);
 });
 

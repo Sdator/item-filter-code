@@ -13,7 +13,7 @@ import { ConfigurationValues, FilterData, SoundInformation } from "../types";
 import { getOrdinal, splitLines } from "./helpers";
 import { parseLine, isKeywordedLineParseResult, KeywordedLineParseResult } from "./parsers";
 
-const filterData: FilterData = require(path.join(dataRoot, "filter.json"));
+const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
 
 export interface FilterParseResult {
   colorInformation: ColorInformation[];

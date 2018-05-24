@@ -8,6 +8,10 @@ import { Range } from "vscode-languageserver";
 
 export { SoundNotification, SoundNotificationParams } from "./notifications";
 
+export interface Configuration {
+  "item-filter": ConfigurationValues;
+}
+
 export interface ConfigurationValues {
   baseWhitelist: string[];
   classWhitelist: string[];
@@ -47,16 +51,6 @@ export interface FilterData {
     },
     stringIdentifiers: { [key: string]: string }
   };
-}
-
-export interface TestRunnerOptions {
-  enabled?: boolean;
-  relativeCoverageDir: string;
-  relativeSourcePath: string;
-  ignorePatterns: string[];
-  includePid?: boolean;
-  reports?: string[];
-  verbose?: boolean;
 }
 
 export interface UniqueItem {

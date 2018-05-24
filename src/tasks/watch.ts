@@ -6,11 +6,9 @@
 
 import * as _ from "lodash";
 import * as chokidar from "chokidar";
-import * as fs from "fs";
-import * as path from "path";
 
 import * as lib from "./index";
-import { projectRoot } from "../common";
+import { isError } from "../common";
 
 /** Preprocesses all data files each time there is a change. */
 function watchData() {
@@ -23,7 +21,7 @@ function watchData() {
     try {
       lib.preprocessData();
     } catch (e) {
-      if (e && e.message) {
+      if (isError(e)) {
         console.log(e.message);
       } else {
         console.log(e);
@@ -51,9 +49,7 @@ function watchData() {
 
 /** Lints all TypeScript files on a change. */
 function watchTypeScript() {
-  const tsconfig = path.join(projectRoot, "tsconfig.json");
-  const content = fs.readFileSync(tsconfig, "utf8");
-  const globs = JSON.parse(content).include;
+  const globs = ["src/**/*.ts"];
 
   const capture = () => {
     console.log("TSLint Pulse Start\n");

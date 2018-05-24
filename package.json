@@ -16,7 +16,7 @@
   },
   "categories": [
     "Linters",
-    "Languages"
+    "Programming Languages"
   ],
   "keywords": [
     "item filter",
@@ -35,47 +35,32 @@
     "watch": "ts-node src/tasks/watch",
     "lint": "ts-node src/tasks/lint",
     "clean": "ts-node src/tasks/clean",
-    "coverage:on": "ts-node src/tasks/cov on",
-    "coverage:off": "ts-node src/tasks/cov off",
-    "test": "node ./out/test/standardTest.js",
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "dependencies": {
-    "vscode-languageclient": "^4.1.3",
-    "vscode-languageserver": "^4.1.2"
+    "vscode-languageclient": "^4.1.4",
+    "vscode-languageserver": "^4.1.3"
   },
   "devDependencies": {
-    "@glencfl/tslint-config": "^1.4.5",
+    "@glencfl/tslint-config": "^1.5.0",
     "@types/chai": "^4.1.3",
-    "@types/chai-as-promised": "^7.1.0",
     "@types/chokidar": "^1.7.5",
-    "@types/fs-extra": "^5.0.2",
-    "@types/istanbul": "^0.4.30",
     "@types/js-yaml": "^3.11.1",
-    "@types/lodash": "^4.14.107",
+    "@types/lodash": "^4.14.109",
     "@types/mkdirp": "^0.5.2",
-    "@types/mocha": "2.2.48",
+    "@types/mocha": "5.2.0",
     "@types/rimraf": "^2.0.2",
-    "@types/sinon": "^4.3.1",
-    "@types/sinon-chai": "^2.7.29",
     "chai": "^4.1.2",
-    "chai-as-promised": "^7.1.1",
     "chokidar": "^2.0.3",
-    "decache": "^4.4.0",
-    "fs-extra": "^5.0.0",
-    "istanbul": "^0.4.5",
     "js-yaml": "^3.11.0",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.10",
     "mkdirp": "^0.5.1",
-    "mocha": "2.5.3",
-    "remap-istanbul": "^0.11.0",
+    "mocha": "5.2.0",
     "rimraf": "^2.6.2",
-    "sinon": "^4.5.0",
-    "sinon-chai": "^3.0.0",
-    "ts-node": "^6.0.0",
-    "tslint": "^5.9.1",
+    "ts-node": "^6.0.5",
+    "tslint": "^5.10.0",
     "typescript": "^2.8.3",
-    "vscode": "^1.1.14"
+    "vscode": "^1.1.18"
   },
   "engines": {
     "vscode": "^1.20.0"

@@ -3,7 +3,7 @@
 The history of changes to the extension.
 
 ### Version 1.8.0 (TBD)
-- Added the two uniques added in Path of Exile version 3.2.2.
+- Added the two uniques from Path of Exile v3.2.2: Gluttony and Chains of Command.
 - Updated from the proposed color picker API to the officially released API.
   + This has bumped the required Visual Studio Code version to 1.20.0, released in January of 2018.
 

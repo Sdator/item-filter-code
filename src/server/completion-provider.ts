@@ -26,9 +26,9 @@ import {
   getKeyword, getStringRangeAtPosition
 } from "./utilities";
 
-const itemData: ItemData = require(path.join(dataRoot, "items.json"));
-const filterData: FilterData = require(path.join(dataRoot, "filter.json"));
-const suggestionData: SuggestionData = require(path.join(dataRoot, "suggestions.json"));
+const itemData = <ItemData> require(path.join(dataRoot, "items.json"));
+const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
+const suggestionData = <SuggestionData> require(path.join(dataRoot, "suggestions.json"));
 
 /**
  * Synchronously returns completion suggestions for the given position in the

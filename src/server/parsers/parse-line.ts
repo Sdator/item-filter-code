@@ -14,8 +14,8 @@ import { stylizedArrayJoin } from "../helpers";
 import { BlockContext, FilterContext } from "../item-filter";
 import { TokenParser, ParseResult } from "./token-parser";
 
-const itemData: ItemData = require(path.join(dataRoot, "items.json"));
-const filterData: FilterData = require(path.join(dataRoot, "filter.json"));
+const itemData = <ItemData> require(path.join(dataRoot, "items.json"));
+const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
 
 /** The result of parsing an item filter line. */
 export interface BaseLineParseResult {

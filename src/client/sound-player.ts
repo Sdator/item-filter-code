@@ -18,7 +18,7 @@ interface SoundFile {
   [key: string]: string;
 }
 
-const soundData: SoundFile = require(path.join(dataRoot, "sounds.json"));
+const soundData = <SoundFile> require(path.join(dataRoot, "sounds.json"));
 
 export function playSound(identifier: string, volume: number) {
   // Sound identifiers can be whitelisted, so just don't attempt to play any
