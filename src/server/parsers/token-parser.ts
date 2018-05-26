@@ -18,20 +18,23 @@ const textRegex = /\S+/;
 const eolRegex = /\r|\n/;
 const surroundingWSRegex = /^(\s*)(.*\S)\s*$/;
 
-export interface ParseResult<T> {
+export interface TokenParseResult<T> {
   value: T;
   range: Range;
 }
 
 /** Parses item filter tokens from a line. */
 export class TokenParser {
+  // TODO(glen): start making these private, instead favoring accessor functions
+  //  that return ranges.
   text: string;
   readonly originalLength: number;
   readonly row: number;
   readonly textStartIndex: number;
   readonly textEndIndex: number;
   currentIndex: number;
-  empty: boolean;
+
+  private empty: boolean;
 
   constructor(text: string, row: number) {
     if (eolRegex.test(text)) throw new Error("string spans multiple lines");
@@ -56,10 +59,58 @@ export class TokenParser {
   }
 
   /**
-   * Returns whether or not the internal text value would be considered a
-   * comment by Path of Exile.
+   * Returns a range spanning all text on the line, with both leading and trailing
+   * whitespace removed.
    */
-  isCommented() {
+  getTextRange(): Range {
+    return {
+      start: {
+        line: this.row,
+        character: this.textStartIndex
+      },
+      end: {
+        line: this.row,
+        character: this.textEndIndex
+      }
+    };
+  }
+
+  /**
+   * Returns a range spanning the remaining text on the line, with the trailing
+   * whitespace removed.
+   */
+  getRemainingTextRange(): Range {
+    return {
+      start: {
+        line: this.row,
+        character: this.currentIndex
+      },
+      end: {
+        line: this.row,
+        character: this.textEndIndex
+      }
+    };
+  }
+
+  /**
+   * Returns a range spanning from the start of the text on the line to the
+   * end of the line, with whitespace included.
+   */
+  getTextStartToEndRange(): Range {
+    return {
+      start: {
+        line: this.row,
+        character: this.textStartIndex
+      },
+      end: {
+        line: this.row,
+        character: this.originalLength
+      }
+    };
+  }
+
+  /** Returns whether the internal text would be considered a comment by Path of Exile. */
+  isCommented(): boolean {
     const result = this.text.search(commentRegex);
     if (result === -1) {
       return false;
@@ -68,11 +119,13 @@ export class TokenParser {
     }
   }
 
-  /**
-   * Returns whether or not the internal text string would be ignored entirely
-   * by Path of Exile.
-   */
-  isIgnored() {
+  /** Returns whether the internal text consists only of whitespace. */
+  isEmpty(): boolean {
+    return this.empty;
+  }
+
+  /** Returns whether the internal text would be ignored entirely by Path of Exile. */
+  isIgnored(): boolean {
     if (this.empty || this.isCommented()) {
       return true;
     } else {
@@ -85,7 +138,7 @@ export class TokenParser {
    * @param regex The regular expression to use to parse the value.
    * @return Returns a ParseResult if a value was found, otherwise null.
    */
-  parseSingleValue(regex: RegExp): ParseResult<string> | undefined {
+  parseSingleValue(regex: RegExp): TokenParseResult<string> | undefined {
     const regexResult = regex.exec(this.text);
     if (!regexResult) return undefined;
 
@@ -108,7 +161,7 @@ export class TokenParser {
   }
 
   /** Parses a number if one is next on the line. */
-  nextNumber(): ParseResult<number> | undefined {
+  nextNumber(): TokenParseResult<number> | undefined {
     const result = this.parseSingleValue(numberRegex);
 
     if (result) {
@@ -121,7 +174,7 @@ export class TokenParser {
   }
 
   /** Parses a boolean if one is next on the line. */
-  nextBoolean(): ParseResult<boolean> | undefined {
+  nextBoolean(): TokenParseResult<boolean> | undefined {
     const result = this.parseSingleValue(booleanRegex);
 
     // Booleans are case-insensitive, and may be surrounded by either single or
@@ -136,7 +189,7 @@ export class TokenParser {
   }
 
   /** Parses an next operator if one is next on the line. */
-  nextOperator(): ParseResult<string> | undefined {
+  nextOperator(): TokenParseResult<string> | undefined {
     return this.parseSingleValue(operatorRegex);
   }
 
@@ -144,7 +197,7 @@ export class TokenParser {
    * Parses a word if one is next on the line.
    * A word is considered a string of letters from any langauge.
    */
-  nextWord(): ParseResult<string> | undefined {
+  nextWord(): TokenParseResult<string> | undefined {
     return this.parseSingleValue(wordRegex);
   }
 
@@ -152,7 +205,7 @@ export class TokenParser {
    * Parses a string if one is next on the line.
    * Strings containing multiple words must be contained within double quotation marks.
    */
-  nextString(): ParseResult<string> | undefined {
+  nextString(): TokenParseResult<string> | undefined {
     const result = this.parseSingleValue(stringRegex);
 
     if (result) {
@@ -168,7 +221,7 @@ export class TokenParser {
    * Parses a comment if one is next on the line.
    * A comment consumes the remainder of the line.
    */
-  parseComment(): ParseResult<string> | undefined {
+  parseComment(): TokenParseResult<string> | undefined {
     return this.parseSingleValue(commentRegex);
   }
 }

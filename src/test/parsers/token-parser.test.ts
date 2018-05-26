@@ -4,7 +4,7 @@
  * license information.
  * ===========================================================================*/
 
-import { TokenParser } from "../server/parsers";
+import { TokenParser } from "../../server/parsers";
 
 declare const assert: Chai.Assert;
 
@@ -65,7 +65,7 @@ suite("LineParser.constructor()", () => {
 
   test("correctly identifies an empty string as such", () => {
     const p = new TokenParser("", 0);
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly identifies a commneted string as such", () => {
@@ -77,99 +77,99 @@ suite("LineParser.constructor()", () => {
 suite("LineParser.empty -> boolean", () => {
   test("correctly handles an empty line", () => {
     const p = new TokenParser("", 0);
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles a space-only line", () => {
     const p = new TokenParser("  ", 0);
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles a tab-only line", () => {
     const p = new TokenParser("\t\t", 0);
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles a mixed-whitespace line", () => {
     const p = new TokenParser(" \t ", 0);
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles whitespace led by a number", () => {
     const p = new TokenParser("42 \t", 0);
     p.nextNumber();
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles a lone boolean", () => {
     const p = new TokenParser("True", 0);
     p.nextBoolean();
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles whitespace led by an operator", () => {
     const p = new TokenParser(">= \t ", 0);
     p.nextOperator();
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles whitespace led by a word", () => {
     const p = new TokenParser("text ", 0);
     p.nextWord();
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles whitespace led by a string", () => {
     const p = new TokenParser(`"Test Text" \t`, 0);
     p.nextString();
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("correctly handles a single word", () => {
     const p = new TokenParser("Test", 0);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
   });
 
   test("correctly handles a word with leading space characters", () => {
     const p = new TokenParser("  Test", 0);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
   });
 
   test("correctly handles a word with a leading tab character", () => {
     const p = new TokenParser("\tTest", 0);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
   });
 
   test("correctly handles all filter-specific unicode characters", () => {
     const p = new TokenParser("ö", 0);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
   });
 
   test("correctly handles filter-specific unicode characters with leading " +
     "spaces", () => {
       const p = new TokenParser("   ö", 0);
-      assert.isFalse(p.empty);
+      assert.isFalse(p.isEmpty());
     });
 
   test("correctly handles filter-specific unicode characters with a leading " +
     "tab", () => {
       const p = new TokenParser("\tö", 0);
-      assert.isFalse(p.empty);
+      assert.isFalse(p.isEmpty());
     });
 
   test("thinks of Path of Exile comments as normal text", () => {
     const p = new TokenParser("#", 0);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
   });
 
   test("works properly when processing a string of many elements", () => {
     const p = new TokenParser(`42 Test "Test Value" \t`, 0);
     p.nextNumber();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     p.nextString();
-    assert(p.empty);
+    assert(p.isEmpty());
   });
 
   test("throws when given multiple lines", () => {
@@ -302,7 +302,7 @@ suite("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -318,7 +318,7 @@ suite("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 3);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 3);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -334,7 +334,7 @@ suite("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 3);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 3);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -350,7 +350,7 @@ suite("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, " test");
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -366,7 +366,7 @@ suite("LineParser.nextNumber() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, " # test");
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
@@ -383,28 +383,28 @@ suite("LineParser.nextNumber() -> ParseResult", () => {
       assert.strictEqual(currentResult.range.end.character, 5);
       assert.strictEqual(p.text, " ö");
       assert.strictEqual(p.currentIndex, 5);
-      assert.isFalse(p.empty);
+      assert.isFalse(p.isEmpty());
       assert.isFalse(p.isCommented());
     });
 
   test("correctly handles lines with a word", () => {
     const p = new TokenParser("test", 0);
     p.nextNumber();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("correctly handles a number led by a word", () => {
     const p = new TokenParser("test 42", 0);
     p.nextNumber();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("correctly handles mixed number, text strings", () => {
     const p = new TokenParser("42test", 0);
     p.nextNumber();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -412,14 +412,14 @@ suite("LineParser.nextNumber() -> ParseResult", () => {
     "characters", () => {
       const p = new TokenParser("42ö", 0);
       p.nextNumber();
-      assert.isFalse(p.empty);
+      assert.isFalse(p.isEmpty());
       assert.isFalse(p.isCommented());
     });
 
   test("correctly handles a number led by a comment", () => {
     const p = new TokenParser("# 42", 0);
     p.nextNumber();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
@@ -464,7 +464,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 1);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 1);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -480,7 +480,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 1);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 1);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -496,7 +496,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 1);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 1);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -512,7 +512,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -528,7 +528,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -544,7 +544,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -560,7 +560,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 1);
     assert.strictEqual(p.text, " ");
     assert.strictEqual(p.currentIndex, 1);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -576,7 +576,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, " ");
     assert.strictEqual(p.currentIndex, 2);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -592,7 +592,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, "\t");
     assert.strictEqual(p.currentIndex, 2);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -608,7 +608,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 1);
     assert.strictEqual(p.text, " ö");
     assert.strictEqual(p.currentIndex, 1);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -624,21 +624,21 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 1);
     assert.strictEqual(p.text, " # Test");
     assert.strictEqual(p.currentIndex, 1);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
   test("correctly ignores an operaotr surrounded by text", () => {
     const p = new TokenParser("a > b", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("ignores operators suffixed by a word", () => {
     const p = new TokenParser(">test", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -646,7 +646,7 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     "character", () => {
       const p = new TokenParser(">ö", 0);
       p.nextOperator();
-      assert.isFalse(p.empty);
+      assert.isFalse(p.isEmpty());
       assert.isFalse(p.isCommented());
     });
 
@@ -654,63 +654,63 @@ suite("LineParser.nextOperator() -> ParseResult", () => {
     "character", () => {
       const p = new TokenParser("ö>", 0);
       p.nextOperator();
-      assert.isFalse(p.empty);
+      assert.isFalse(p.isEmpty());
       assert.isFalse(p.isCommented());
     });
 
   test("ignores operators prefixed and suffixed by characters", () => {
     const p = new TokenParser("a>b", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider multiple '>' characters to be an operator", () => {
     const p = new TokenParser(">>", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider multiple '<' characters to be an operator", () => {
     const p = new TokenParser("<<", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test('does not consider "=<" to be an operator', () => {
     const p = new TokenParser("=<", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test('does not consider "==" to be an operator', () => {
     const p = new TokenParser("==", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("ignores operators surrounded by double quotes", () => {
     const p = new TokenParser('">"', 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("ignores operators surrounded by single quotes", () => {
     const p = new TokenParser("'<'", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("correctly handles an operator led by a comment", () => {
     const p = new TokenParser("#Test >", 0);
     p.nextOperator();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
@@ -756,7 +756,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -773,7 +773,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 5);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -790,7 +790,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 5);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -807,7 +807,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, " ");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -824,7 +824,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "\t");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -841,7 +841,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -859,7 +859,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
       assert.strictEqual(currentResult.range.end.character, 2);
       assert.strictEqual(p.text, "");
       assert.strictEqual(p.currentIndex, 2);
-      assert(p.empty);
+      assert(p.isEmpty());
       assert.isFalse(p.isCommented());
     });
 
@@ -877,7 +877,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
       assert.strictEqual(currentResult.range.end.character, 4);
       assert.strictEqual(p.text, "");
       assert.strictEqual(p.currentIndex, 4);
-      assert(p.empty);
+      assert(p.isEmpty());
       assert.isFalse(p.isCommented());
     });
 
@@ -894,7 +894,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, "\tword");
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -911,7 +911,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, " \t42");
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -928,7 +928,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, ' "Test String"');
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -945,7 +945,7 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, " #Comment");
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
@@ -980,63 +980,63 @@ suite("LineParser.nextWord() -> ParseResult", () => {
   test("does not consider pound as a valid character", () => {
     const p = new TokenParser("#", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
   test("does not consider a word prefixed with pound as valid", () => {
     const p = new TokenParser(" #test", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
   test("does not consider numbers as characters of a word", () => {
     const p = new TokenParser("test42", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not ignore leading numbers to match a trailing word", () => {
     const p = new TokenParser("42test", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given text with mixed words and numbers", () => {
     const p = new TokenParser("test42test", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider double quotation marks to be a word", () => {
     const p = new TokenParser('"', 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not ignore leading quotes to match a trailing word", () => {
     const p = new TokenParser('"Test', 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider a word wrapped in double quotes as valid", () => {
     const p = new TokenParser('"Test"', 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider single quotation marks to be a word", () => {
     const p = new TokenParser("'", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1044,63 +1044,63 @@ suite("LineParser.nextWord() -> ParseResult", () => {
     "word", () => {
       const p = new TokenParser("'Test", 0);
       p.nextWord();
-      assert.isFalse(p.empty);
+      assert.isFalse(p.isEmpty());
       assert.isFalse(p.isCommented());
     });
 
   test("does not consider a word wrapped in single quotes as valid", () => {
     const p = new TokenParser("'Test'", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("ignores a string followed by a word", () => {
     const p = new TokenParser('"test" test', 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("correctly ignores a word led by a comment", () => {
     const p = new TokenParser("# Test", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
   test("does not consider the '<' operator as a valid character", () => {
     const p = new TokenParser("test<value", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider the '>' operator as a valid character", () => {
     const p = new TokenParser("test>value", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider the '>=' operator as a valid character", () => {
     const p = new TokenParser("test>=value", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider the '<=' operator as a valid character", () => {
     const p = new TokenParser("test<=value", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not consider the '=' operator as a valid character", () => {
     const p = new TokenParser("test=value", 0);
     p.nextWord();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1125,7 +1125,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1142,7 +1142,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, " value");
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1159,7 +1159,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1176,7 +1176,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1193,7 +1193,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "\t ");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1210,7 +1210,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1227,7 +1227,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 7);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 7);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1244,7 +1244,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 2);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1261,7 +1261,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, "\t ");
     assert.strictEqual(p.currentIndex, 4);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1278,7 +1278,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 11);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 11);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1295,7 +1295,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, " test text");
     assert.strictEqual(p.currentIndex, 6);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1312,7 +1312,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 5);
     assert.strictEqual(p.text, " test");
     assert.strictEqual(p.currentIndex, 5);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1329,7 +1329,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 2);
     assert.strictEqual(p.text, ' "test"');
     assert.strictEqual(p.currentIndex, 2);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1346,7 +1346,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 11);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 11);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1364,7 +1364,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
       assert.strictEqual(currentResult.range.end.character, 13);
       assert.strictEqual(p.text, " test");
       assert.strictEqual(p.currentIndex, 13);
-      assert.isFalse(p.empty);
+      assert.isFalse(p.isEmpty());
       assert.isFalse(p.isCommented());
     });
 
@@ -1381,7 +1381,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 7);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 7);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1398,7 +1398,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 7);
     assert.strictEqual(p.text, " \t");
     assert.strictEqual(p.currentIndex, 7);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1415,7 +1415,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 9);
     assert.strictEqual(p.text, " 321");
     assert.strictEqual(p.currentIndex, 9);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1432,7 +1432,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, " # Value");
     assert.strictEqual(p.currentIndex, 6);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
@@ -1449,7 +1449,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, ' "42"');
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1466,7 +1466,7 @@ suite("LineParser.nextString() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 8);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 8);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1501,70 +1501,70 @@ suite("LineParser.nextString() -> ParseResult", () => {
   test("fails when given neither a word or string", () => {
     const p = new TokenParser("", 0);
     p.nextString();
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given a word containing a quotation mark", () => {
     const p = new TokenParser('test"test', 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("failes when given a string conjoined with a word", () => {
     const p = new TokenParser('"test"test', 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given a word conjoined with a string", () => {
     const p = new TokenParser('test"test"', 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not support single-quotation mark strings", () => {
     const p = new TokenParser("'test'", 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not support single quote strings led by spaces", () => {
     const p = new TokenParser(" 'test'", 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not support single quote strings led by tabs", () => {
     const p = new TokenParser("/t'test'", 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given a stray followed by a word", () => {
     const p = new TokenParser("> test", 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given an operator joined by a word", () => {
     const p = new TokenParser("<test", 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given an operator attached to a string", () => {
     const p = new TokenParser('>"test"', 0);
     p.nextString();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1589,7 +1589,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1606,7 +1606,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 5);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1623,7 +1623,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 4);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1640,7 +1640,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 5);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1657,7 +1657,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1674,7 +1674,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 7);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 7);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1691,7 +1691,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 5);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 5);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1708,7 +1708,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1725,7 +1725,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 7);
     assert.strictEqual(p.text, "\t ");
     assert.strictEqual(p.currentIndex, 7);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1742,7 +1742,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 4);
     assert.strictEqual(p.text, " test");
     assert.strictEqual(p.currentIndex, 4);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1759,7 +1759,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 5);
     assert.strictEqual(p.text, '\t"test"');
     assert.strictEqual(p.currentIndex, 5);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1776,7 +1776,7 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 5);
     assert.strictEqual(p.text, " # Test");
     assert.strictEqual(p.currentIndex, 5);
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
@@ -1811,70 +1811,70 @@ suite("LineParser.nextBoolean() -> ParseResult", () => {
   test("correctly handles a boolean led by a comment", () => {
     const p = new TokenParser("# True", 0);
     p.nextBoolean();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert(p.isCommented());
   });
 
   test("fails when given a word", () => {
     const p = new TokenParser("test", 0);
     p.nextBoolean();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given a valid value led by a word", () => {
     const p = new TokenParser("test true", 0);
     p.nextBoolean();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given a valid string value led by a word", () => {
     const p = new TokenParser('test "true"', 0);
     p.nextBoolean();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given a valid value led by a string", () => {
     const p = new TokenParser('"test" true', 0);
     p.nextBoolean();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given only a number", () => {
     const p = new TokenParser("42", 0);
     p.nextBoolean();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not use a naive regex for false", () => {
     const p = new TokenParser("TALSE", 0);
     p.nextBoolean();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("does not use a naive regex for true", () => {
     const p = new TokenParser("frue", 0);
     p.nextBoolean();
-    assert.isFalse(p.empty);
+    assert.isFalse(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given an empty line", () => {
     const p = new TokenParser("", 0);
     p.nextBoolean();
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
   test("fails when given a line containing only whitespace", () => {
     const p = new TokenParser(" \t", 0);
     p.nextBoolean();
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1900,7 +1900,7 @@ suite("LineParser.parseComment() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1917,7 +1917,7 @@ suite("LineParser.parseComment() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 8);
     assert.strictEqual(p.text, "");
     assert.strictEqual(p.currentIndex, 8);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1934,7 +1934,7 @@ suite("LineParser.parseComment() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 6);
     assert.strictEqual(p.text, "  ");
     assert.strictEqual(p.currentIndex, 6);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 
@@ -1951,7 +1951,7 @@ suite("LineParser.parseComment() -> ParseResult", () => {
     assert.strictEqual(currentResult.range.end.character, 11);
     assert.strictEqual(p.text, "  ");
     assert.strictEqual(p.currentIndex, 11);
-    assert(p.empty);
+    assert(p.isEmpty());
     assert.isFalse(p.isCommented());
   });
 });
