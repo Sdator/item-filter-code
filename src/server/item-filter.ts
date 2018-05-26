@@ -11,7 +11,7 @@ import { ColorInformation, Diagnostic, Range, DiagnosticSeverity } from "vscode-
 import { dataRoot } from "../common";
 import { ConfigurationValues, FilterData, SoundInformation } from "../types";
 import { getOrdinal, splitLines } from "./helpers";
-import { parseLine, isKeywordedLineParseResult, KeywordedLineParseResult } from "./parsers";
+import { parseLine, isKeywordedParseLineResult, KeywordedParseLineResult } from "./parsers";
 
 const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
 
@@ -65,7 +65,7 @@ export class ItemFilter {
       const line = lines[i];
       const parseResult = parseLine(config, filterContext, blockContext, line, i);
 
-      if (isKeywordedLineParseResult(parseResult)) {
+      if (isKeywordedParseLineResult(parseResult)) {
         if (parseResult.knownKeyword) {
           this.performBlockDiagnostics(filterContext, blockContext, parseResult);
         }
@@ -90,7 +90,7 @@ export class ItemFilter {
   }
 
   private performBlockDiagnostics(filterContext: FilterContext,
-    blockContext: BlockContext, parse: KeywordedLineParseResult) {
+    blockContext: BlockContext, parse: KeywordedParseLineResult) {
 
     if (parse.keyword !== "Show" && parse.keyword !== "Hide") {
       if (filterContext.blockFound) {

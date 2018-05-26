@@ -1,4 +1,7 @@
 {
+  "autoClosingPairs": [
+    { "open": "\"", "close": "\"", "notIn": ["string", "comment"] },
+  ],
   "comments": {
     "lineComment": "#"
   },

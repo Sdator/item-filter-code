@@ -4,5 +4,6 @@
  * license information.
  * ===========================================================================*/
 
-export * from "./parse-line";
+export * from "./context-parser";
+export * from "./line-parser";
 export * from "./token-parser";

@@ -3,9 +3,17 @@
 The history of changes to the extension.
 
 ### Version 1.8.0 (TBD)
+- Added the initial support for Patch of Exile version 3.3 and the Incursion league.
 - Added the two uniques from Path of Exile v3.2.2: Gluttony and Chains of Command.
+- Both the completion provider and hover provider now take into account the previously entered values on the line.
+- Rules taking a boolean value, such as the Corrupted rule, now properly report trailing text as an error.
+- A closing double quotation mark will now automatically be inserted when editing within item filters.
+- Completion suggestions will now be provided immediately upon entering a double quotation mark.
+- Bosses now go by their shorthand names in order to minimize clutter within the hover tooltips.
 - Updated from the proposed color picker API to the officially released API.
-  + This has bumped the required Visual Studio Code version to 1.20.0, released in January of 2018.
+  + Visual Studio Code 1.20.0 (released in January of 2018) or newer is now required by the extension.
+
+As with every major Path of Exile release, the unrevealed uniques will be added to the extension once all are discovered.
 
 ### Version 1.7.0 (March 15th, 2018)
 - Added support for the new DisableDropSound rule.

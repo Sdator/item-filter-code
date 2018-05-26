@@ -11,7 +11,7 @@ import {
 } from "vscode";
 
 import {
-  LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
+  DocumentFilter, LanguageClient, LanguageClientOptions, ServerOptions, TransportKind
 } from "vscode-languageclient";
 
 import { buildRoot } from "../common";
@@ -99,10 +99,13 @@ export async function activate(context: ExtensionContext) {
     debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
   };
 
-  const documentSelector = ["item-filter"];
+  const vanilla: DocumentFilter = {
+    language: "item-filter",
+    scheme: "file"
+  };
 
   const clientOptions: LanguageClientOptions = {
-    documentSelector,
+    documentSelector: [vanilla],
     synchronize: {
       configurationSection: "item-filter"
     }

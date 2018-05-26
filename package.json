@@ -2,7 +2,7 @@
   "name": "item-filter-code",
   "description": "Support for editing Path of Exile item filters within Visual Studio Code.",
   "displayName": "Item Filter Code",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "author": "Glen Marker",
   "publisher": "GlenCFL",
   "license": "MIT",
@@ -78,7 +78,7 @@
         "extensions": [
           ".filter"
         ],
-        "configuration": "./languages/item-filter.json"
+        "configuration": "./language-configuration.json"
       }
     ],
     "grammars": [

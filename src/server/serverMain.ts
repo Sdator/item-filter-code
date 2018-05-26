@@ -47,7 +47,9 @@ async function processItemFilter(document: TextDocument): Promise<void> {
 connection.onInitialize((_param): InitializeResult => {
   const capabilities: ServerCapabilities = {
     textDocumentSync: documents.syncKind,
-    completionProvider: {},
+    completionProvider: {
+      triggerCharacters: ['"']
+    },
     colorProvider: true,
     hoverProvider: true
   };

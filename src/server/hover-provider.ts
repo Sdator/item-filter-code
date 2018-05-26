@@ -12,26 +12,25 @@ import { Hover, Position } from "vscode-languageserver";
 
 import { dataRoot } from "../common";
 import { UniqueData, UniqueItem, ItemData, FilterData } from "../types";
-import { bypassEqOperator, getKeyword, getStringRangeAtPosition } from "./utilities";
+import { ContextParser } from "./parsers";
 
 const itemData = <ItemData> require(path.join(dataRoot, "items.json"));
 const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
 const uniqueData = <UniqueData> require(path.join(dataRoot, "uniques.json"));
 
 export function getHoverResult(text: string, position: Position): Hover | null {
-  const keywordResult = getKeyword(text, position.line);
-  if (!keywordResult) return null;
+  const parser = new ContextParser(text, position);
+  const keyword = parser.getKeyword();
+  if (keyword == null) return null;
 
-  const [keyword, keywordRange] = keywordResult;
-  const currentIndex = keywordRange.end.character;
-
-  if (keywordRange.start.character > position.character) return null;
-  else if (keywordRange.end.character > position.character) {
-    const keywordDescription = filterData.keywordDescriptions[keyword];
+  if (parser.isBeforeKeyword()) {
+    return null;
+  } else if (parser.isWithinKeyword()) {
+    const keywordDescription = filterData.keywordDescriptions[keyword.text];
     if (keywordDescription) {
       const keywordHover: Hover = {
         contents: keywordDescription,
-        range: keywordRange
+        range: keyword.range
       };
 
       return keywordHover;
@@ -40,27 +39,23 @@ export function getHoverResult(text: string, position: Position): Hover | null {
     }
   }
 
-  if (keywordRange.end.character >= position.character) return null;
-
-  switch (keyword) {
+  switch (keyword.text) {
     case "BaseType":
-      return getBaseTypeHover(position, text, currentIndex);
+      return getBaseTypeHover(parser);
     case "Class":
-      return getClassHover(position, text, currentIndex);
+      return getClassHover(parser);
     default:
       return null;
   }
 }
 
-function getBaseTypeHover(position: Position, text: string, index: number): Hover | null {
-  const valueIndex = bypassEqOperator(text, index);
+function getBaseTypeHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator(true);
 
-  if (valueIndex === undefined || position.character < valueIndex) {
-    return null;
-  }
+  if (parser.isBeforeCurrentIndex()) return null;
 
-  const valueRange = getStringRangeAtPosition(position, text, valueIndex);
-  let baseType = text.slice(valueRange.start.character, valueRange.end.character);
+  const range = parser.getStringRangeAtRequestPosition();
+  let baseType = parser.getStringAtRange(range);
 
   // The range will include quotation marks, if there are any. We need to get rid
   // of them, as we store items without them in the data files.
@@ -69,7 +64,6 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
   const endIndex = baseType[length - 1] === `"` ? length - 1 : length;
   baseType = baseType.slice(startIndex, endIndex);
 
-  // We're essentially buffering directly into a markdown string.
   let output = "";
 
   const itemClasses: string[] = [];
@@ -145,22 +139,20 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
   } else {
     const result: Hover = {
       contents: output,
-      range: valueRange
+      range
     };
 
     return result;
   }
 }
 
-function getClassHover(position: Position, text: string, index: number): Hover | null {
-  const valueIndex = bypassEqOperator(text, index);
+function getClassHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator(true);
 
-  if (valueIndex === undefined || position.character < valueIndex) {
-    return null;
-  }
+  if (parser.isBeforeCurrentIndex()) return null;
 
-  const valueRange = getStringRangeAtPosition(position, text, valueIndex);
-  let classType = text.slice(valueRange.start.character, valueRange.end.character);
+  const range = parser.getStringRangeAtRequestPosition();
+  let classType = parser.getStringAtRange(range);
 
   // Trim the quotation marks.
   const length = classType.length;
@@ -201,7 +193,7 @@ function getClassHover(position: Position, text: string, index: number): Hover |
   } else {
     const result: Hover = {
       contents: output,
-      range: valueRange
+      range
     };
 
     return result;

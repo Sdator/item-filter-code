@@ -93,7 +93,7 @@ Heavy Belt:
   - Belt of the Deceiver
   - Bisco's Leash
   - name: Doryani's Invitation
-    boss: Atziri, Queen of the Vaal
+    boss: Atziri
     location: The Apex of Sacrifice
   - Dyadian Dawn
   - Meginord's Girdle
@@ -197,7 +197,7 @@ Two-Stone Ring:
       - Nemesis
   - Call of the Brotherhood
   - name: Rigwald's Crest
-    boss: Rigwald, the Wolven King
+    boss: Rigwald
     league: Talisman
 Unset Ring:
   - name: Angler's Plait
@@ -239,7 +239,7 @@ Spike-Point Arrow Quiver:
 Two-Point Arrow Quiver:
   - Asphyxia's Wrath
   - name: Rigwald's Quills
-    boss: Rigwald, the Wolven King
+    boss: Rigwald
     league: Talisman
   - Skirmish
 
@@ -250,7 +250,7 @@ Assassin's Garb:
   - Cospri's Will
 Blood Raiment:
   - name: Saqawal's Nest
-    boss: Saqawal, First of the Sky
+    boss: Saqawal
     league: Bestiary
 Buckskin Tunic:
   - Ashrend
@@ -303,7 +303,7 @@ Glorious Plate:
   - Kaom's Heart
 Golden Plate:
   - name: Craiceann's Carapace
-    boss: Craiceann, First of the Deep
+    boss: Craiceann
     league: Bestiary
   - Greed's Embrace
 Holy Chainmail:
@@ -323,7 +323,7 @@ Plate Vest:
   - Bramblejack
 Sacrificial Garb:
   - name: Atziri's Splendour
-    boss: Atziri, Queen of the Vaal
+    boss: Atziri
     location: The Alluring Abyss
 Sadist Garb:
   - Inpulsa's Broken Heart
@@ -355,7 +355,7 @@ Strapped Leather:
 Triumphant Lamellar:
   - Cherrubim's Maleficence
   - name: Farrul's Fur
-    boss: Farrul, First of the Plains
+    boss: Farrul
     league: Bestiary
 Vaal Regalia:
   - The Beast Fur Shawl
@@ -364,7 +364,7 @@ Varnished Coat:
 Widowsilk Robe:
   - Doedre's Skin
   - name: Fenumus' Shroud
-    boss: Fenumus, First of the Night
+    boss: Fenumus
     league: Bestiary
   - Infernal Mantle
 Wyrmscale Doublet:
@@ -384,7 +384,7 @@ Arcanist Slippers:
     location: The Pale Court
 Assassin's Boots:
   - name: Fenumus' Spinnerets
-    boss: Fenumus, First of the Night
+    boss: Fenumus
     league: Bestiary
 Bronzescale Boots:
   - Lioneye's Paws
@@ -404,14 +404,14 @@ Goathide Boots:
   - Victario's Flight
 Goliath Greaves:
   - name: Craiceann's Tracks
-    boss: Craiceann, First of the Deep
+    boss: Craiceann
     league: Bestiary
   - name: The Infinite Pursuit
     league: Breach
     location: Uul-Netol's Domain
 Hydrascale Boots:
   - name: Saqawal's Talons
-    boss: Saqawal, First of the Sky
+    boss: Saqawal
     league: Bestiary
 Ironscale Boots:
   - Dusktoe
@@ -450,10 +450,10 @@ Silk Slippers:
   - Bones of Ullr
 Slink Boots:
   - name: Atziri's Step
-    boss: Atziri, Queen of the Vaal
+    boss: Atziri
     location: The Apex of Sacrifice
   - name: Farrul's Chase
-    boss: Farrul, First of the Plains
+    boss: Farrul
     league: Bestiary
 Soldier Boots:
   - Alberon's Warpath
@@ -482,7 +482,7 @@ Ancient Gauntlets:
     location: The Lord's Labyrinth
 Arcanist Gloves:
   - name: Grip of the Council
-    boss: Volkuur, the Unbreathing Queen
+    boss: Volkuur
     league: Prophecy
 Assassin's Mitts:
   - name: Blasphemer's Grasp
@@ -499,7 +499,7 @@ Bronzescale Gauntlets:
       - Ambush
 Carnal Mitts:
   - name: Fenumus' Weave
-    boss: Fenumus, First of the Night
+    boss: Fenumus
     league: Bestiary
   - The Embalmer
 Chain Gloves:
@@ -524,7 +524,7 @@ Goliath Gauntlets:
   - Empire's Grasp
 Hydrascale Gauntlets:
   - name: Farrul's Pounce
-    boss: Farrul, First of the Plains
+    boss: Farrul
     league: Bestiary
 Iron Gauntlets:
   - Lochtonial Caress
@@ -547,7 +547,7 @@ Silk Gloves:
   - Asenath's Gentle Touch
 Soldier Gloves:
   - name: Saqawal's Winds
-    boss: Saqawal, First of the Sky
+    boss: Saqawal
     league: Bestiary
   - Southbound
 Sorcerer Gloves:
@@ -563,12 +563,12 @@ Strapped Mitts:
   - Facebreaker
 Titan Gauntlets:
   - name: Craiceann's Pincers
-    boss: Craiceann, First of the Deep
+    boss: Craiceann
     league: Bestiary
   - Veruso's Battering Rams
 Vaal Gauntlets:
   - name: Atziri's Acuity
-    boss: Atziri, Queen of the Vaal
+    boss: Atziri
     location: The Alluring Abyss
   - Doryani's Fist
 Zealot Gloves:
@@ -610,10 +610,10 @@ Great Helmet:
   - Veil of the Night
 Harlequin Mask:
   - name: Farrul's Bite
-    boss: Farrul, First of the Plains
+    boss: Farrul
     league: Bestiary
   - name: Mind of the Council
-    boss: Inya, the Unbearable Whispers
+    boss: Inya
     league: Prophecy
 Hubris Circlet:
   - Crown of Eyes
@@ -643,7 +643,7 @@ Lunaris Circlet:
   - Doedre's Scorn
 Magistrate Crown:
   - name: Craiceann's Chitin
-    boss: Craiceann, First of the Deep
+    boss: Craiceann
     league: Bestiary
 Mind Cage:
   - Rime Gaze
@@ -652,7 +652,7 @@ Mind Cage:
 Necromancer Circlet:
   - Chitus' Apex
   - name: Fenumus' Toxins
-    boss: Fenumus, First of the Night
+    boss: Fenumus
     league: Bestiary
 Nightmare Bascinet:
   - The Bringer of Rain
@@ -683,7 +683,7 @@ Siege Helmet:
     location: Xoph's Domain
 Silken Hood:
   - name: Saqawal's Flock
-    boss: Saqawal, First of the Sky
+    boss: Saqawal
     league: Bestiary
   - Starkonja's Head
 Sinner Tricorne:
@@ -698,7 +698,7 @@ Ursine Pelt:
   - Rat's Nest
 Vaal Mask:
   - name: The Vertex
-    boss: Atziri, Queen of the Vaal
+    boss: Atziri
     location: The Alluring Abyss
 Vine Circlet:
   - Crown of Thorns
@@ -824,7 +824,7 @@ Poleaxe:
   - Wideswing
 Royal Axe:
   - name: Rigwald's Savagery
-    boss: Rigwald, the Wolven King
+    boss: Rigwald
     league: Talisman
 Shadow Axe:
   - Reaper's Pursuit
@@ -836,7 +836,7 @@ Tomahawk:
   - Moonbender's Wing
 Vaal Axe:
   - name: Atziri's Disfavour
-    boss: Atziri, Queen of the Vaal
+    boss: Atziri
     location: The Alluring Abyss
   - Hezmana's Bloodlust
 Vaal Hatchet:
@@ -883,7 +883,7 @@ Short Bow:
   - Quill Rain
 Spine Bow:
   - name: Reach of the Council
-    boss: Yriel, the Feral Lord
+    boss: Yriel
     league: Prophecy
   - Voltaxic Rift
 
@@ -965,7 +965,7 @@ Bronze Sceptre:
   - Axiom Perpetuum
 Carnal Sceptre:
   - name: Breath of the Council
-    boss: Eber, the Plaguemaw
+    boss: Eber
     league: Prophecy
 Crystal Sceptre:
   - Nycta's Lantern
@@ -1030,7 +1030,7 @@ Void Sceptre:
     boss: The Elder
     location: Absence of Value and Meaning
   - name: Doryani's Catalyst
-    boss: Atziri, Queen of the Vaal
+    boss: Atziri
     location: The Apex of Sacrifice
   - Mon'tregul's Grasp
 War Hammer:
@@ -1140,7 +1140,7 @@ Midnight Blade:
   - name: Razor of the Seventh Sun
     boss: Guardian of the Phoenix
   - name: Rigwald's Command
-    boss: Rigwald, the Wolven King
+    boss: Rigwald
     league: Talisman
 Ornate Sword:
   - Queen's Decree
@@ -1201,7 +1201,7 @@ Tornado Wand:
 # Flasks ======================================================================
 Amethyst Flask:
   - name: Atziri's Promise
-    boss: Atziri, Queen of the Vaal
+    boss: Atziri
     location: The Apex of Sacrifice
 Bismuth Flask:
   - The Wise Oak

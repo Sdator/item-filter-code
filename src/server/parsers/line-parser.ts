@@ -18,7 +18,7 @@ const itemData = <ItemData> require(path.join(dataRoot, "items.json"));
 const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
 
 /** The result of parsing an item filter line. */
-export interface BaseLineParseResult {
+export interface BaseParseLineResult {
   /** The line number of the parsed line. */
   row: number;
 
@@ -36,7 +36,7 @@ export interface BaseLineParseResult {
 }
 
 /** The result of parsing an item filter line containing a keyword. */
-export interface KeywordedLineParseResult extends BaseLineParseResult {
+export interface KeywordedParseLineResult extends BaseParseLineResult {
   /** The keyword of the parsed line. */
   keyword: string;
 
@@ -47,12 +47,12 @@ export interface KeywordedLineParseResult extends BaseLineParseResult {
   knownKeyword: boolean;
 }
 
-export type LineParseResult = BaseLineParseResult | KeywordedLineParseResult;
+export type ParseLineResult = BaseParseLineResult | KeywordedParseLineResult;
 
 /** A bundle of all data relevant when dealing with the current line. */
 export interface LineInformation {
   /** The ongoing result of parsing the current line. */
-  result: KeywordedLineParseResult;
+  result: KeywordedParseLineResult;
 
   /** The configuration variables for the extension. */
   config: ConfigurationValues;
@@ -67,8 +67,8 @@ export interface LineInformation {
   parser: TokenParser;
 }
 
-export function isKeywordedLineParseResult(obj: object): obj is KeywordedLineParseResult {
-  return (<KeywordedLineParseResult>obj).keyword != null;
+export function isKeywordedParseLineResult(obj: object): obj is KeywordedParseLineResult {
+  return (<KeywordedParseLineResult>obj).keyword != null;
 }
 
 function reportUnknownKeyword(line: LineInformation): void {
@@ -229,6 +229,10 @@ function parseBooleanRule(line: LineInformation): void {
       severity: DiagnosticSeverity.Error,
       source: line.filterContext.source
     });
+  }
+
+  if (!line.parser.empty && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, DiagnosticSeverity.Error);
   }
 }
 
@@ -706,10 +710,10 @@ function parseBaseTypeRule(line: LineInformation) {
 }
 
 export function parseLine(config: ConfigurationValues, filterContext: FilterContext,
-  blockContext: BlockContext, text: string, row: number): LineParseResult {
+  blockContext: BlockContext, text: string, row: number): ParseLineResult {
 
   const parser = new TokenParser(text, row);
-  const baseResult: BaseLineParseResult = {
+  const baseResult: BaseParseLineResult = {
     row,
     lineRange: {
       start: { line: parser.row, character: parser.textStartIndex },
@@ -718,7 +722,6 @@ export function parseLine(config: ConfigurationValues, filterContext: FilterCont
     diagnostics: [],
   };
 
-  // TODO(glen): implement isEmpty() with the parser revamp.
   if (parser.empty || parser.isCommented()) return baseResult;
 
   const keywordResult = parser.nextWord();
@@ -732,7 +735,7 @@ export function parseLine(config: ConfigurationValues, filterContext: FilterCont
     return baseResult;
   }
 
-  const keywordedResult: KeywordedLineParseResult = {
+  const keywordedResult: KeywordedParseLineResult = {
     row,
     lineRange: baseResult.lineRange,
     diagnostics: baseResult.diagnostics,

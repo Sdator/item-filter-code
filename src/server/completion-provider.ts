@@ -21,14 +21,13 @@ import {
 
 import { dataRoot } from "../common";
 import { ConfigurationValues, ItemData, FilterData, SuggestionData } from "../types";
-import {
-  whitespaceRegex, whitespaceCharacterRegex, bypassEqOperator, bypassOperator,
-  getKeyword, getStringRangeAtPosition
-} from "./utilities";
+import { whitespaceRegex, ContextParser } from "./parsers";
 
 const itemData = <ItemData> require(path.join(dataRoot, "items.json"));
-const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
+const filterData = <FilterData>require(path.join(dataRoot, "filter.json"));
 const suggestionData = <SuggestionData> require(path.join(dataRoot, "suggestions.json"));
+
+const whitespaceCharacterRegex = /\s/;
 
 /**
  * Synchronously returns completion suggestions for the given position in the
@@ -39,30 +38,28 @@ const suggestionData = <SuggestionData> require(path.join(dataRoot, "suggestions
 export function getCompletionSuggestions(config: ConfigurationValues, lineText: string,
   position: Position): CompletionItem[] {
 
-  const keywordResult = getKeyword(lineText, position.line);
+  const parser = new ContextParser(lineText, position);
+  const keyword = parser.getKeyword();
 
-  if (keywordResult) {
-    const [keyword, keywordRange] = keywordResult;
-
-    if (position.character < keywordRange.start.character) {
+  if (keyword) {
+    if (position.character < keyword.range.start.character) {
       return getKeywordCompletions(config, position);
-    } else if (position.character <= keywordRange.end.character) {
-      const start: Position = { line: position.line, character: keywordRange.start.character };
-      const end: Position = { line: position.line, character: keywordRange.end.character };
+    } else if (position.character <= keyword.range.end.character) {
+      const start: Position = { line: position.line, character: keyword.range.start.character };
+      const end: Position = { line: position.line, character: keyword.range.end.character };
       return getKeywordCompletions(config, start, end);
     }
 
-    const currentIndex = keywordRange.end.character;
-    switch (keyword) {
+    switch (keyword.text) {
       case "Class":
-        return getClassCompletions(config, position, lineText, currentIndex);
+        return getClassCompletions(config, parser);
       case "BaseType":
-        return getBaseCompletions(config, position, lineText, currentIndex);
+        return getBaseCompletions(config, parser);
       case "PlayAlertSound":
       case "PlayAlertSoundPositional":
-        return getAlertSoundCompletions(config, position, lineText, currentIndex);
+        return getAlertSoundCompletions(config, parser);
       case "Rarity":
-        return getRarityCompletions(position, lineText, currentIndex);
+        return getRarityCompletions(parser);
       case "Identified":
       case "Corrupted":
       case "ElderItem":
@@ -70,7 +67,7 @@ export function getCompletionSuggestions(config: ConfigurationValues, lineText: 
       case "ShapedMap":
       case "ElderMap":
       case "DisableDropSound":
-        return getBooleanCompletions(position, lineText, currentIndex);
+        return getBooleanCompletions(parser);
       default:
         return [];
     }
@@ -175,47 +172,28 @@ function completionForStringRange(text: string, range: Range): CompletionItem {
   };
 }
 
-function getClassCompletions(config: ConfigurationValues, pos: Position, text: string,
-  index: number): CompletionItem[] {
+function getClassCompletions(config: ConfigurationValues, parser: ContextParser): CompletionItem[] {
+  parser.bypassOperator(true);
+
+  if (parser.isBeforeCurrentIndex()) return [];
+
+  const range = parser.getStringRangeAtRequestPosition();
 
   const result: CompletionItem[] = [];
-  const valueIndex = bypassEqOperator(text, index);
-
-  if (valueIndex === undefined || pos.character < valueIndex) {
-    for (const c in itemData.classesToBases) {
-      result.push({
-        label: c,
-        insertText: `"${c}"`,
-        kind: CompletionItemKind.Value
-      });
-    }
-
-    for (const wlc of config.classWhitelist) {
-      result.push({
-        label: wlc,
-        insertText: `"${wlc}"`,
-        kind: CompletionItemKind.Reference
-      });
-    }
-
-    return result;
-  }
-
-  const valueRange = getStringRangeAtPosition(pos, text, valueIndex);
 
   for (const c in itemData.classesToBases) {
-    result.push(completionForStringRange(c, valueRange));
+    result.push(completionForStringRange(c, range));
   }
 
   for (const wlc of config.classWhitelist) {
-    const suggestion = completionForStringRange(wlc, valueRange);
+    const suggestion = completionForStringRange(wlc, range);
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
   }
 
   for (const extraSuggestion of suggestionData.extraClasses) {
     if (typeof(extraSuggestion) === "string") {
-      result.push(completionForStringRange(extraSuggestion, valueRange));
+      result.push(completionForStringRange(extraSuggestion, range));
     } else {
       result.push({
         label: `${extraSuggestion.name}`,
@@ -223,7 +201,7 @@ function getClassCompletions(config: ConfigurationValues, pos: Position, text: s
         kind: CompletionItemKind.Text,
         textEdit: {
           newText: `${extraSuggestion.text}`,
-          range: valueRange
+          range
         }
       });
     }
@@ -232,47 +210,27 @@ function getClassCompletions(config: ConfigurationValues, pos: Position, text: s
   return result;
 }
 
-function getBaseCompletions(config: ConfigurationValues, pos: Position, text: string,
-  index: number): CompletionItem[] {
+function getBaseCompletions(config: ConfigurationValues, parser: ContextParser): CompletionItem[] {
+  parser.bypassOperator(true);
+
+  if (parser.isBeforeCurrentIndex()) return [];
+
+  const range = parser.getStringRangeAtRequestPosition();
 
   const result: CompletionItem[] = [];
-  const valueIndex = bypassEqOperator(text, index);
-
-  if (valueIndex === undefined || pos.character < valueIndex) {
-    for (const c of itemData.sortedBases) {
-      result.push({
-        label: c,
-        insertText: `"${c}"`,
-        kind: CompletionItemKind.Value
-      });
-    }
-
-    for (const wlb of config.baseWhitelist) {
-      result.push({
-        label: wlb,
-        insertText: `"${wlb}"`,
-        kind: CompletionItemKind.Reference
-      });
-    }
-
-    return result;
-  }
-
-  const valueRange = getStringRangeAtPosition(pos, text, valueIndex);
-
   for (const b of itemData.sortedBases) {
-    result.push(completionForStringRange(b, valueRange));
+    result.push(completionForStringRange(b, range));
   }
 
   for (const wlb of config.baseWhitelist) {
-    const suggestion = completionForStringRange(wlb, valueRange);
+    const suggestion = completionForStringRange(wlb, range);
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
   }
 
   for (const extraSuggestion of suggestionData.extraBases) {
-    if (typeof(extraSuggestion) === "string") {
-      result.push(completionForStringRange(extraSuggestion, valueRange));
+    if (typeof (extraSuggestion) === "string") {
+      result.push(completionForStringRange(extraSuggestion, range));
     } else {
       result.push({
         label: `${extraSuggestion.name}`,
@@ -280,7 +238,7 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position, text: st
         kind: CompletionItemKind.Text,
         textEdit: {
           newText: `${extraSuggestion.text}`,
-          range: valueRange
+          range
         }
       });
     }
@@ -289,51 +247,18 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position, text: st
   return result;
 }
 
-function getAlertSoundCompletions(config: ConfigurationValues, pos: Position, text: string,
-  index: number): CompletionItem[] {
+function getAlertSoundCompletions(config: ConfigurationValues, parser: ContextParser):
+  CompletionItem[] {
+
+  parser.bypassOperator(true);
+
+  if (parser.isBeforeCurrentIndex() || !parser.isFirstValue()) {
+    return [];
+  }
+
+  const range = parser.getStringRangeAtRequestPosition();
 
   const result: CompletionItem[] = [];
-  const valueIndex = bypassEqOperator(text, index);
-
-  if (valueIndex === undefined || pos.character < valueIndex) {
-    for (const id in filterData.sounds.stringIdentifiers) {
-      const label = filterData.sounds.stringIdentifiers[id];
-      result.push({
-        label,
-        insertText: id,
-        kind: CompletionItemKind.Variable
-      });
-    }
-
-    for (const wls of config.soundWhitelist) {
-      result.push({
-        label: wls,
-        kind: CompletionItemKind.Reference
-      });
-    }
-
-    return result;
-  }
-
-  // Get the range for the first value. The first value can only be either a
-  // number or a word (without quotations).
-  const startIndex = valueIndex;
-  let endIndex: number | undefined;
-  for (let i = startIndex; i < text.length; i++) {
-    const c = text[i];
-    if (whitespaceCharacterRegex.test(c)) {
-      endIndex = i - 1;
-      break;
-    }
-  }
-  if (endIndex === undefined) endIndex = text.length - 1;
-  if (pos.character > endIndex + 1) return result;
-
-  const range: Range = {
-    start: { line: pos.line, character: startIndex },
-    end: { line: pos.line, character: endIndex + 1 }
-  };
-
   for (const id in filterData.sounds.stringIdentifiers) {
     const label = filterData.sounds.stringIdentifiers[id];
     result.push({
@@ -361,26 +286,14 @@ function getAlertSoundCompletions(config: ConfigurationValues, pos: Position, te
   return result;
 }
 
-function getRarityCompletions(pos: Position, text: string, index: number): CompletionItem[] {
+function getRarityCompletions(parser: ContextParser): CompletionItem[] {
+  parser.bypassOperator();
+
+  if (parser.isBeforeCurrentIndex() || !parser.isFirstValue()) return [];
+
+  const range = parser.getStringRangeAtRequestPosition();
+
   const result: CompletionItem[] = [];
-  const valueIndex = bypassOperator(text, index);
-
-  if (valueIndex === undefined || pos.character < valueIndex) {
-    for (const rarity of filterData.rarities) {
-      result.push({
-        label: rarity,
-        kind: CompletionItemKind.Variable
-      });
-    }
-
-    return result;
-  }
-
-  // A rarity can appear with or without the quotation marks.
-  const valuePosition: Position = { line: pos.line, character: valueIndex };
-  const range = getStringRangeAtPosition(valuePosition, text, valueIndex);
-  if (pos.character > range.end.character) return result;
-
   for (const r of filterData.rarities) {
     result.push({
       label: r,
@@ -391,30 +304,16 @@ function getRarityCompletions(pos: Position, text: string, index: number): Compl
       }
     });
   }
-
   return result;
 }
 
-function getBooleanCompletions(pos: Position, text: string, index: number): CompletionItem[] {
+function getBooleanCompletions(parser: ContextParser): CompletionItem[] {
+  parser.bypassOperator(true);
+
+  if (parser.isBeforeCurrentIndex() || !parser.isFirstValue()) return [];
+
   const result: CompletionItem[] = [];
-  const valueIndex = bypassOperator(text, index);
-
-  if (valueIndex === undefined || pos.character < valueIndex) {
-    for (const bool of filterData.booleans) {
-      result.push({
-        label: bool,
-        kind: CompletionItemKind.Variable
-      });
-    }
-
-    return result;
-  }
-
-  // A boolean can appear with or without quotation marks.
-  const valuePosition: Position = { line: pos.line, character: valueIndex };
-  const range = getStringRangeAtPosition(valuePosition, text, valueIndex);
-  if (pos.character > range.end.character) return result;
-
+  const range = parser.getStringRangeAtRequestPosition();
   for (const bool of filterData.booleans) {
     result.push({
       label: bool,
@@ -425,6 +324,5 @@ function getBooleanCompletions(pos: Position, text: string, index: number): Comp
       }
     });
   }
-
   return result;
 }
