@@ -142,6 +142,13 @@
             "default": false,
             "scope": "window"
           },
+          "item-filter.alwaysInsertQuotes": {
+            "title": "Always Insert Quotations",
+            "description": "When autocompleting string values, always surround the value with quotation marks.",
+            "type": "boolean",
+            "default": true,
+            "scope": "window"
+          },
           "item-filter.linuxMPGAvailable": {
             "title": "Linux MPG Availability",
             "description": "Set this to true to indicate that you have installed mpg123 onto your system and that it is available within your PATH environment variable.",

@@ -28,6 +28,7 @@ const filterData = <FilterData>require(path.join(dataRoot, "filter.json"));
 const suggestionData = <SuggestionData> require(path.join(dataRoot, "suggestions.json"));
 
 const whitespaceCharacterRegex = /\s/;
+const spaceRegex = / /;
 
 /**
  * Synchronously returns completion suggestions for the given position in the
@@ -160,13 +161,15 @@ function getKeywordCompletions(config: ConfigurationValues, pos: Position,
   return result;
 }
 
-function completionForStringRange(text: string, range: Range): CompletionItem {
+function completionForStringRange(config: ConfigurationValues, text: string,
+  range: Range): CompletionItem {
+
   return {
     label: `${text}`,
     filterText: `"${text}"`,
     kind: CompletionItemKind.Value,
     textEdit: {
-      newText: `"${text}"`,
+      newText: spaceRegex.test(text) || config.alwaysInsertQuotes ? `"${text}"` : `${text}`,
       range
     }
   };
@@ -182,18 +185,18 @@ function getClassCompletions(config: ConfigurationValues, parser: ContextParser)
   const result: CompletionItem[] = [];
 
   for (const c in itemData.classesToBases) {
-    result.push(completionForStringRange(c, range));
+    result.push(completionForStringRange(config, c, range));
   }
 
   for (const wlc of config.classWhitelist) {
-    const suggestion = completionForStringRange(wlc, range);
+    const suggestion = completionForStringRange(config, wlc, range);
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
   }
 
   for (const extraSuggestion of suggestionData.extraClasses) {
     if (typeof(extraSuggestion) === "string") {
-      result.push(completionForStringRange(extraSuggestion, range));
+      result.push(completionForStringRange(config, extraSuggestion, range));
     } else {
       result.push({
         label: `${extraSuggestion.name}`,
@@ -219,18 +222,18 @@ function getBaseCompletions(config: ConfigurationValues, parser: ContextParser):
 
   const result: CompletionItem[] = [];
   for (const b of itemData.sortedBases) {
-    result.push(completionForStringRange(b, range));
+    result.push(completionForStringRange(config, b, range));
   }
 
   for (const wlb of config.baseWhitelist) {
-    const suggestion = completionForStringRange(wlb, range);
+    const suggestion = completionForStringRange(config, wlb, range);
     suggestion.kind = CompletionItemKind.Reference;
     result.push(suggestion);
   }
 
   for (const extraSuggestion of suggestionData.extraBases) {
     if (typeof (extraSuggestion) === "string") {
-      result.push(completionForStringRange(extraSuggestion, range));
+      result.push(completionForStringRange(config, extraSuggestion, range));
     } else {
       result.push({
         label: `${extraSuggestion.name}`,

@@ -48,16 +48,16 @@ export class LineParser {
   sound?: SoundInformation;
 
   /** The configuration variables for the extension. */
-  private config: ConfigurationValues;
+  private readonly config: ConfigurationValues;
 
   /** Data associated with only the current block within the item filter. */
-  private blockContext: BlockContext;
+  private readonly blockContext: BlockContext;
 
   /** Data associated with the entirety of the item filter. */
-  private filterContext: FilterContext;
+  private readonly filterContext: FilterContext;
 
   /** The token parser being used to parse the current line. */
-  private parser: TokenParser;
+  private readonly parser: TokenParser;
 
   /** Whether this text has already been parsed. */
   private parsed: boolean;
@@ -97,7 +97,7 @@ export class LineParser {
       text: keywordResult.value,
       range: keywordResult.range,
       known: true
-    }
+    };
 
     switch (this.keyword.text) {
       case "Show":

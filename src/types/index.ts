@@ -19,6 +19,7 @@ export interface ConfigurationValues {
   soundWhitelist: string[];
   performanceHints: boolean;
   alwaysShowAlpha: boolean;
+  alwaysInsertQuotes: boolean;
 }
 
 export type Result<T> = T | Promise<T>;

@@ -4,6 +4,7 @@ coverage/**
 data/**
 docs/**
 examples/**
+out/tasks/**
 src/**
 .codecov.yml
 .gitignore
