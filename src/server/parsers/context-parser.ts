@@ -7,6 +7,8 @@
 import * as assert from "assert";
 import { Position, Range } from "vscode-languageserver";
 
+import { TokenParser } from "./index";
+
 export const whitespaceRegex = /^\s*$/;
 const keywordRegex = /^(\s*)([A-Z]+)(?=\s|$)/i;
 
@@ -125,6 +127,47 @@ export class ContextParser {
 
     this.currentIndex += remainingCharacters;
     return this.currentIndex;
+  }
+
+  /** Returns the range of the next word within the text, if it exists. */
+  getNextNumberRange(): Range | undefined {
+    assert(this.attemptedKeywordParse, "should have parsed the keyword beforehand");
+    assert(this.attemptedOperatorParse, "should have parsed the operator beforehand");
+    assert(!this.isBeforeCurrentIndex(), "expected to be able to scan backwards to the " +
+      "current index.");
+
+    const tokenParser = new TokenParser(this.text.slice(this.currentIndex),
+      this.requestPosition.line);
+    const number = tokenParser.nextNumber();
+
+    if (number) {
+      number.range.start.character += this.currentIndex;
+      number.range.end.character += this.currentIndex;
+      this.currentIndex += tokenParser.currentIndex;
+      return number.range;
+    } else {
+      return undefined;
+    }
+  }
+
+  getNextStringRange(): Range | undefined {
+    assert(this.attemptedKeywordParse, "should have parsed the keyword beforehand");
+    assert(this.attemptedOperatorParse, "should have parsed the operator beforehand");
+    assert(!this.isBeforeCurrentIndex(), "expected to be able to scan backwards to the " +
+      "current index.");
+
+    const tokenParser = new TokenParser(this.text.slice(this.currentIndex),
+      this.requestPosition.line);
+    const str = tokenParser.nextString();
+
+    if (str) {
+      str.range.start.character += this.currentIndex;
+      str.range.end.character += this.currentIndex;
+      this.currentIndex += tokenParser.currentIndex;
+      return str.range;
+    } else {
+      return undefined;
+    }
   }
 
   /**
@@ -295,6 +338,15 @@ export class ContextParser {
       return this.keyword.range.start.character <= this.requestPosition.character &&
         this.keyword.range.end.character > this.requestPosition.character;
     }
+  }
+
+  /** Returns whether the request positions falls within the given range. */
+  isWithinRange(range: Range): boolean {
+    assert(this.attemptedKeywordParse, "should have parsed the keyword beforehand");
+    assert(this.attemptedOperatorParse, "should have parsed the operator beforehand");
+
+    return this.requestPosition.character >= range.start.character &&
+    this.requestPosition.character <= range.end.character;
   }
 
   /**

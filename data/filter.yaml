@@ -85,7 +85,7 @@ ruleRanges:
     max: 100
   Quality:
     min: 0
-    max: 20
+    max: 30
   Sockets:
     min: 0
     max: 6

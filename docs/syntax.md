@@ -11,7 +11,7 @@ Keyword | Operator | Values | Case Sensitive
 --- | --- | --- | ---
 ItemLevel | All | 0-100 | No
 DropLevel | All | 0-100 | No
-Quality | All | 0-20 | No
+Quality | All | 0-30 | No
 Rarity | All | One of the following strings: Normal, Magic, Rare, Unique | Yes
 Class | Equality | String from the list of Classes | Yes
 BaseType | Equality | String from the list of Bases | Yes

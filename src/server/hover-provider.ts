@@ -8,7 +8,7 @@
 // within the current line.
 
 import * as path from "path";
-import { Hover, Position } from "vscode-languageserver";
+import { Hover, Position, Range } from "vscode-languageserver";
 
 import { dataRoot } from "../common";
 import { UniqueData, UniqueItem, ItemData, FilterData } from "../types";
@@ -40,11 +40,44 @@ export function getHoverResult(text: string, position: Position): Hover | null {
   }
 
   switch (keyword.text) {
+    case "ItemLevel":
+    case "DropLevel":
+      return getLevelHover(parser);
+    case "Quality":
+      return getQualityHover(parser);
+    case "Sockets":
+      return getSocketsHover(parser);
+    case "LinkedSockets":
+      return getLinkedSocketsHover(parser);
+    case "Height":
+      return getHeightHover(parser);
+    case "Width":
+      return getWidthHover(parser);
+    case "Rarity":
+      return getRarityHover(parser);
+    case "SocketGroup":
+      return getSocketGroupHover(parser);
+    case "Identified":
+    case "Corrupted":
+    case "ElderItem":
+    case "ShaperItem":
+    case "ShapedMap":
+    case "ElderMap":
+    case "DisableDropSound":
+      return getBooleanHover(parser);
+      case "Class":
+      return getClassHover(parser);
     case "BaseType":
       return getBaseTypeHover(parser);
-    case "Class":
-      return getClassHover(parser);
+    case "PlayAlertSound":
+    case "PlayAlertSoundPositional":
+      return getSoundHover(parser);
+    case "SetFontSize":
+      return getFontSizeHover(parser);
     default:
+      // We're missing color values, but this is intentional. The color picker
+      // in Visual Studio Code becomes very jittery when hover information is
+      // provided to it, with it often flipping its anchor orientation completely.
       return null;
   }
 }
@@ -137,6 +170,11 @@ function getBaseTypeHover(parser: ContextParser): Hover | null {
   if (output === "") {
     return null;
   } else {
+    output += "\n\nA base type to be captured by the closing block. As a string value, " +
+      "if the base type consists of a multi-word value, then it must be encapsulated " +
+      "in quotation marks. This value can be partial, with all item bases containing that " +
+      "partial string then being matched."
+
     const result: Hover = {
       contents: output,
       range
@@ -191,6 +229,11 @@ function getClassHover(parser: ContextParser): Hover | null {
   if (output === "") {
     return null;
   } else {
+    output += "\n\nAn item class to be captured by the closing block. As a string value, " +
+      "if the item class consists of a multi-word value, then it must be encapsulated " +
+      "in quotation marks. This value can be partial, with all item classes containing " +
+      "that partial string then being matched."
+
     const result: Hover = {
       contents: output,
       range
@@ -198,4 +241,180 @@ function getClassHover(parser: ContextParser): Hover | null {
 
     return result;
   }
+}
+
+function getLevelHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator();
+
+  const range = expectNumber(parser);
+  if (range == null) return null;
+
+  return {
+    contents: "A level, which can be any number from 0 to 100.",
+    range
+  };
+}
+
+function getSocketsHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator();
+
+  const range = expectNumber(parser);
+  if (range == null) return null;
+
+  return {
+    contents: "The number of sockets on the item, which can be any number from 0 to 6.",
+    range
+  };
+}
+
+function getQualityHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator();
+
+  const range = expectNumber(parser);
+  if (range == null) return null;
+
+  return {
+    contents: "The quality of the item, which can be any number from 0 to 30."
+  };
+}
+
+function getLinkedSocketsHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator();
+
+  const range = expectNumber(parser);
+  if (range == null) return null;
+
+  return {
+    contents: "The number of linked sockets on the item, which can be either 0 or " +
+      "a number from 2 to 6.",
+    range
+  };
+}
+
+function getHeightHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator();
+
+  const range = expectNumber(parser);
+  if (range == null) return null;
+
+  return {
+    contents: "The height of the item within the inventory, which can be a number from 1 to 4.",
+    range
+  };
+}
+
+function getWidthHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator();
+
+  const range = expectNumber(parser);
+  if (range == null) return null;
+
+  return {
+    contents: "The height of the item within the inventory, which can be a number from 1 to 2.",
+    range
+  };
+}
+
+function getRarityHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator();
+
+  if (parser.isBeforeCurrentIndex()) return null;
+
+  const range = parser.getWordRangeAtRequestPosition();
+
+  return {
+    contents: "The rarity of the item, which is a string such as `Rare` or `Unique`.",
+    range
+  };
+}
+
+function getSocketGroupHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator(true);
+
+  if (parser.isBeforeCurrentIndex()) return null;
+
+  const range = parser.getWordRangeAtRequestPosition();
+
+  return {
+    contents: "The colors of the sockets within the item, with each character of " +
+      "the string representing the color of a single socket.\n\n" +
+      "The most common socket group being `RGB`, which indicates that the item " +
+      "has one red socket, one green socket, and one blue socket. The second most " +
+      "common socket group being `WWWWWW`, which indicates that the item has six " +
+      "white sockets.",
+    range
+  };
+}
+
+function getBooleanHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator(true);
+
+  if (parser.isBeforeCurrentIndex()) return null;
+
+  const range = parser.getWordRangeAtRequestPosition();
+
+  return {
+    contents: "A boolean with two possible values: `True` or `False`.",
+    range
+  };
+}
+
+function getSoundHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator(true);
+
+  if (parser.isBeforeCurrentIndex()) return null;
+
+  const identifierRange = parser.getNextStringRange();
+  if (identifierRange) {
+    if (parser.isWithinRange(identifierRange)) {
+      return {
+        contents: "The identifier for the alert sound, which can either a number " +
+          "from 1 to 16 or a string.\n\nThe only current sounds using a string identifier " +
+          "would be those in the Shaper set, which includes identifiers such as `ShVaal` " +
+          "and `ShMirror`.",
+        range: identifierRange
+      };
+    }
+  } else {
+    return null;
+  }
+
+  const volumeRange = expectNumber(parser);
+  if (volumeRange == null) {
+    return null;
+  } else {
+    return {
+      contents: "The volume level for the alert sound, which can be a number from 0 to 300.",
+      range: volumeRange
+    };
+  }
+}
+
+function getFontSizeHover(parser: ContextParser): Hover | null {
+  parser.bypassOperator(true);
+
+  const range = expectNumber(parser);
+  if (range == null) return null;
+
+  return {
+    contents: "The size to use for the font, which can be any number from 18 to 45.",
+    range
+  };
+}
+
+/**
+ * Attempts to parse a number from the line, returning that number is successful.
+ * @param parser The context parser being used for this hover request.
+ */
+function expectNumber(parser: ContextParser): Range | null {
+  if (parser.isBeforeCurrentIndex()) return null;
+
+  const range = parser.getNextNumberRange();
+  if (range == null) return null;
+  const text = parser.getStringAtRange(range);
+  const value = parseInt(text, 10);
+
+  if (isNaN(value)) return null;
+
+  return range;
 }

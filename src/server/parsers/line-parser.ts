@@ -113,9 +113,6 @@ export class LineParser {
       case "Width":
         this.parseSingleNumberRule(this.keyword);
         break;
-      case "SetFontSize":
-        this.parseSingleNumberRule(this.keyword, true);
-        break;
       case "Rarity":
         this.parseRarityRule(this.keyword);
         break;
@@ -131,20 +128,23 @@ export class LineParser {
       case "DisableDropSound":
         this.parseBooleanRule(this.keyword);
         break;
-      case "SetBorderColor":
-      case "SetTextColor":
-      case "SetBackgroundColor":
-        this.parseColorRule(this.keyword);
-        break;
       case "Class":
         this.parseClassRule(this.keyword);
         break;
       case "BaseType":
         this.parseBaseTypeRule(this.keyword);
         break;
+      case "SetBorderColor":
+      case "SetTextColor":
+      case "SetBackgroundColor":
+        this.parseColorRule(this.keyword);
+        break;
       case "PlayAlertSound":
       case "PlayAlertSoundPositional":
         this.parseSoundRule(this.keyword);
+        break;
+      case "SetFontSize":
+        this.parseSingleNumberRule(this.keyword, true);
         break;
       default:
         let whitelistedKeyword = false;

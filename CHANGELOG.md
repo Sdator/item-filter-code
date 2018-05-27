@@ -6,6 +6,7 @@ The history of changes to the extension.
 - Added the initial support for Patch of Exile version 3.3 and the Incursion league.
 - Added the two uniques from Path of Exile v3.2.2: Gluttony and Chains of Command.
 - Both the completion provider and hover provider now take into account the previously entered values on the line.
+- The hover provider has been expanded upon, with all values except for colors now having a tooltip.
 - Rules taking a boolean value, such as the Corrupted rule, now properly report trailing text as an error.
 - The double quotation mark character is now automatically closed within item filters.
 - Completion suggestions will now be provided immediately upon entering a double quotation mark.
@@ -14,6 +15,7 @@ The history of changes to the extension.
   + Visual Studio Code 1.20.0 (released in January of 2018) or newer is now required by the extension.
 - A new configuration value, `item-filter.alwaysInsertQuotes`, has been added. When set to false, autocompleted
 values consisting of a single word, such as `Earthquake`, will no longer be surrounded by quotation marks.
+- Quality rules can now have a value up to a maximum of 30, up from 20.
 
 As with every major Path of Exile release, the unrevealed uniques will be added to the extension once all are discovered.
 
