@@ -11,7 +11,7 @@ import { ColorInformation, Diagnostic, Range, DiagnosticSeverity } from "vscode-
 import { dataRoot } from "../common";
 import { ConfigurationValues, FilterData, SoundInformation } from "../types";
 import { getOrdinal, splitLines } from "./helpers";
-import { LineParser } from "./parsers";
+import { isKeywordedParseLineResult, parseLine, KeywordedParseLineResult } from "./line-parsing";
 
 const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
 
@@ -63,20 +63,26 @@ export class ItemFilter {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const parser = new LineParser(config, filterContext, blockContext, line, i);
-      parser.parse();
+      const parse = parseLine(config, filterContext, blockContext, line, i);
 
-      performBlockDiagnostics(filterContext, blockContext, parser);
-      if (parser.diagnostics.length > 0) {
-        result.diagnostics.push.apply(result.diagnostics, parser.diagnostics);
-      }
+      if (isKeywordedParseLineResult(parse)) {
+        if (parse.knownKeyword) {
+          performBlockDiagnostics(filterContext, blockContext, parse);
+        }
 
-      if (parser.color) {
-        result.colorInformation.push(parser.color);
-      }
+        if (parse.diagnostics.length > 0) {
+          result.diagnostics.push.apply(result.diagnostics, parse.diagnostics);
+        }
 
-      if (parser.sound) {
-        result.soundInformation.push(parser.sound);
+        if (parse.color) {
+          result.colorInformation.push(parse.color);
+        }
+
+        if (parse.sound) {
+          result.soundInformation.push(parse.sound);
+        }
+      } else {
+        continue;
       }
     }
 
@@ -85,37 +91,34 @@ export class ItemFilter {
 }
 
 function performBlockDiagnostics(filterContext: FilterContext, blockContext: BlockContext,
-  parser: LineParser) {
+  parse: KeywordedParseLineResult) {
 
-  if (parser.keyword == null || !parser.keyword.known) return;
-
-  if (parser.keyword.text === "Show" || parser.keyword.text === "Hide") {
+  if (parse.keyword === "Show" || parse.keyword === "Hide") {
     filterContext.blockFound = true;
     return;
   }
 
   if (filterContext.blockFound) {
-    const ruleLimit = filterData.ruleLimits[parser.keyword.text];
+    const ruleLimit = filterData.ruleLimits[parse.keyword];
     assert(ruleLimit !== undefined);
 
-    const occurrences = blockContext.previousRules.get(parser.keyword.text);
+    const occurrences = blockContext.previousRules.get(parse.keyword);
     if (occurrences !== undefined && occurrences >= ruleLimit) {
-      parser.diagnostics.push({
+      parse.diagnostics.push({
         message: `${getOrdinal(occurrences + 1)} occurrence of the` +
-          ` ${parser.keyword.text} rule within a block with a limit of ${ruleLimit}.`,
-        range: parser.keyword.range,
+          ` ${parse.keyword} rule within a block with a limit of ${ruleLimit}.`,
+        range: parse.keywordRange,
         severity: DiagnosticSeverity.Warning,
         source: filterContext.source
       });
     }
 
-    blockContext.previousRules.set(parser.keyword.text,
-      occurrences === undefined ? 1 : occurrences);
+    blockContext.previousRules.set(parse.keyword, occurrences === undefined ? 1 : occurrences);
   } else {
     // We have a rule without an enclosing block.
-    parser.diagnostics.push({
-      message: `Block rule ${parser.keyword.text} found outside of a Hide or Show block.`,
-      range: parser.lineRange,
+    parse.diagnostics.push({
+      message: `Block rule ${parse.keyword} found outside of a Hide or Show block.`,
+      range: parse.lineRange,
       severity: DiagnosticSeverity.Error,
       source: filterContext.source
     });

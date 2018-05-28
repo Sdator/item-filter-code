@@ -36,12 +36,12 @@ export class TokenParser {
 
   private empty: boolean;
 
-  constructor(text: string, row: number) {
+  constructor(text: string, row: number, startingIndex = 0) {
     if (eolRegex.test(text)) throw new Error("string spans multiple lines");
 
-    this.text = text;
+    this.text = startingIndex === 0 ? text : text.slice(startingIndex);
     this.row = row;
-    this.currentIndex = 0;
+    this.currentIndex = startingIndex;
     this.originalLength = text.length;
 
     if (textRegex.test(text)) {

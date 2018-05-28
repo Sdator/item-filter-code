@@ -19,7 +19,9 @@ export interface ConfigurationValues {
   soundWhitelist: string[];
   performanceHints: boolean;
   alwaysShowAlpha: boolean;
-  alwaysInsertQuotes: boolean;
+  itemValueQuotes: boolean;
+  booleanQuotes: boolean;
+  rarityQuotes: boolean;
 }
 
 export type Result<T> = T | Promise<T>;
@@ -73,7 +75,7 @@ interface Suggestion {
 
 export interface SuggestionData {
   extraBases: Array<string | Suggestion>;
-  extraClasses: Array<string | Suggestion>;
+  extraClasses: string[];
 }
 
 export interface SoundInformation {

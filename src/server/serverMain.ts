@@ -26,7 +26,9 @@ let config: ConfigurationValues = {
   soundWhitelist: [],
   performanceHints: true,
   alwaysShowAlpha: false,
-  alwaysInsertQuotes: true
+  itemValueQuotes: true,
+  booleanQuotes: false,
+  rarityQuotes: false
 };
 
 const connection: IConnection = createConnection(new IPCMessageReader(process),

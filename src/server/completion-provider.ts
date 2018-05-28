@@ -21,11 +21,11 @@ import {
 
 import { dataRoot } from "../common";
 import { ConfigurationValues, ItemData, FilterData, SuggestionData } from "../types";
-import { whitespaceRegex, ContextParser } from "./parsers";
+import * as parser from "./context-parsing";
 
-const itemData = <ItemData> require(path.join(dataRoot, "items.json"));
+const itemData = <ItemData>require(path.join(dataRoot, "items.json"));
 const filterData = <FilterData>require(path.join(dataRoot, "filter.json"));
-const suggestionData = <SuggestionData> require(path.join(dataRoot, "suggestions.json"));
+const suggestionData = <SuggestionData>require(path.join(dataRoot, "suggestions.json"));
 
 const whitespaceCharacterRegex = /\s/;
 const spaceRegex = / /;
@@ -39,28 +39,30 @@ const spaceRegex = / /;
 export function getCompletionSuggestions(config: ConfigurationValues, lineText: string,
   position: Position): CompletionItem[] {
 
-  const parser = new ContextParser(lineText, position);
-  const keyword = parser.getKeyword();
+  const keywordResult = parser.getKeyword(lineText, position.character);
 
-  if (keyword) {
-    if (position.character < keyword.range.start.character) {
+  if (keywordResult) {
+    const [keyword, keywordRange] = keywordResult;
+
+    if (position.character < keywordRange.start.character) {
       return getKeywordCompletions(config, position);
-    } else if (position.character <= keyword.range.end.character) {
-      const start: Position = { line: position.line, character: keyword.range.start.character };
-      const end: Position = { line: position.line, character: keyword.range.end.character };
+    } else if (position.character <= keywordRange.end.character) {
+      const start: Position = { line: position.line, character: keywordRange.start.character };
+      const end: Position = { line: position.line, character: keywordRange.end.character };
       return getKeywordCompletions(config, start, end);
     }
 
-    switch (keyword.text) {
+    const currentIndex = keywordRange.end.character;
+    switch (keyword) {
       case "Class":
-        return getClassCompletions(config, parser);
+        return getClassCompletions(config, position, lineText, currentIndex);
       case "BaseType":
-        return getBaseCompletions(config, parser);
+        return getBaseCompletions(config, position, lineText, currentIndex);
       case "PlayAlertSound":
       case "PlayAlertSoundPositional":
-        return getAlertSoundCompletions(config, parser);
+        return getAlertSoundCompletions(config, position, lineText, currentIndex);
       case "Rarity":
-        return getRarityCompletions(parser);
+        return getRarityCompletions(config, position, lineText, currentIndex);
       case "Identified":
       case "Corrupted":
       case "ElderItem":
@@ -68,12 +70,12 @@ export function getCompletionSuggestions(config: ConfigurationValues, lineText: 
       case "ShapedMap":
       case "ElderMap":
       case "DisableDropSound":
-        return getBooleanCompletions(parser);
+        return getBooleanCompletions(config, position, lineText, currentIndex);
       default:
         return [];
     }
   } else {
-    const isEmpty = whitespaceRegex.test(lineText);
+    const isEmpty = parser.whitespaceRegex.test(lineText);
     if (isEmpty) return getKeywordCompletions(config, position);
 
     let foundContent = false;
@@ -161,171 +163,201 @@ function getKeywordCompletions(config: ConfigurationValues, pos: Position,
   return result;
 }
 
-function completionForStringRange(config: ConfigurationValues, text: string,
-  range: Range): CompletionItem {
+function completionForStringRange(text: string, range: Range, useQuotes: boolean):
+  CompletionItem {
 
   return {
-    label: `${text}`,
+    label: text,
     filterText: `"${text}"`,
     kind: CompletionItemKind.Value,
     textEdit: {
-      newText: spaceRegex.test(text) || config.alwaysInsertQuotes ? `"${text}"` : `${text}`,
+      newText: spaceRegex.test(text) || useQuotes ? `"${text}"` : `${text}`,
       range
     }
   };
 }
 
-function getClassCompletions(config: ConfigurationValues, parser: ContextParser): CompletionItem[] {
-  parser.bypassOperator(true);
-
-  if (parser.isBeforeCurrentIndex()) return [];
-
-  const range = parser.getStringRangeAtRequestPosition();
+function getClassCompletions(config: ConfigurationValues, pos: Position,
+  text: string, index: number): CompletionItem[] {
 
   const result: CompletionItem[] = [];
 
-  for (const c in itemData.classesToBases) {
-    result.push(completionForStringRange(config, c, range));
-  }
+  const valueIndex = parser.bypassEqOperator(text, index);
 
-  for (const wlc of config.classWhitelist) {
-    const suggestion = completionForStringRange(config, wlc, range);
-    suggestion.kind = CompletionItemKind.Reference;
-    result.push(suggestion);
-  }
-
-  for (const extraSuggestion of suggestionData.extraClasses) {
-    if (typeof(extraSuggestion) === "string") {
-      result.push(completionForStringRange(config, extraSuggestion, range));
-    } else {
-      result.push({
-        label: `${extraSuggestion.name}`,
-        filterText: `"${extraSuggestion.name}"`,
-        kind: CompletionItemKind.Text,
-        textEdit: {
-          newText: `${extraSuggestion.text}`,
-          range
-        }
-      });
+  const pushCompletions = (range: Range) => {
+    for (const c in itemData.classesToBases) {
+      result.push(completionForStringRange(c, range, config.itemValueQuotes));
     }
-  }
 
-  return result;
-}
-
-function getBaseCompletions(config: ConfigurationValues, parser: ContextParser): CompletionItem[] {
-  parser.bypassOperator(true);
-
-  if (parser.isBeforeCurrentIndex()) return [];
-
-  const range = parser.getStringRangeAtRequestPosition();
-
-  const result: CompletionItem[] = [];
-  for (const b of itemData.sortedBases) {
-    result.push(completionForStringRange(config, b, range));
-  }
-
-  for (const wlb of config.baseWhitelist) {
-    const suggestion = completionForStringRange(config, wlb, range);
-    suggestion.kind = CompletionItemKind.Reference;
-    result.push(suggestion);
-  }
-
-  for (const extraSuggestion of suggestionData.extraBases) {
-    if (typeof (extraSuggestion) === "string") {
-      result.push(completionForStringRange(config, extraSuggestion, range));
-    } else {
-      result.push({
-        label: `${extraSuggestion.name}`,
-        filterText: `"${extraSuggestion.name}"`,
-        kind: CompletionItemKind.Text,
-        textEdit: {
-          newText: `${extraSuggestion.text}`,
-          range
-        }
-      });
+    for (const wlc of config.classWhitelist) {
+      const suggestion = completionForStringRange(wlc, range, config.itemValueQuotes);
+      suggestion.kind = CompletionItemKind.Reference;
+      result.push(suggestion);
     }
+
+    for (const extraSuggestion of suggestionData.extraClasses) {
+      const suggestion = completionForStringRange(extraSuggestion, range, config.itemValueQuotes);
+      suggestion.kind = CompletionItemKind.Text;
+      result.push(suggestion);
+    }
+  };
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    const range: Range = {
+      start: { line: pos.line, character: pos.character },
+      end: { line: pos.line, character: pos.character }
+    };
+    pushCompletions(range);
+  } else {
+    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    pushCompletions(range);
   }
 
   return result;
 }
 
-function getAlertSoundCompletions(config: ConfigurationValues, parser: ContextParser):
-  CompletionItem[] {
-
-  parser.bypassOperator(true);
-
-  if (parser.isBeforeCurrentIndex() || !parser.isFirstValue()) {
-    return [];
-  }
-
-  const range = parser.getStringRangeAtRequestPosition();
+function getBaseCompletions(config: ConfigurationValues, pos: Position,
+  text: string, index: number): CompletionItem[] {
 
   const result: CompletionItem[] = [];
-  for (const id in filterData.sounds.stringIdentifiers) {
-    const label = filterData.sounds.stringIdentifiers[id];
-    result.push({
-      label,
-      filterText: id,
-      textEdit: {
-        newText: id,
-        range
-      },
 
-      kind: CompletionItemKind.Variable
-    });
-  }
+  const valueIndex = parser.bypassEqOperator(text, index);
 
-  for (const wls of config.soundWhitelist) {
-    result.push({
-      label: wls,
-      textEdit: {
-        newText: wls,
-        range
+  const pushCompletions = (range: Range) => {
+    for (const c of itemData.sortedBases) {
+      result.push(completionForStringRange(c, range, config.itemValueQuotes));
+    }
+
+    for (const wlb of config.baseWhitelist) {
+      const suggestion = completionForStringRange(wlb, range, config.itemValueQuotes);
+      suggestion.kind = CompletionItemKind.Reference;
+      result.push(suggestion);
+    }
+
+    for (const extraSuggestion of suggestionData.extraBases) {
+      if (typeof extraSuggestion === "string") {
+        const suggestion = completionForStringRange(extraSuggestion, range,
+          config.itemValueQuotes);
+        suggestion.kind = CompletionItemKind.Text;
+        result.push(suggestion);
+      } else {
+        result.push({
+          label: `${extraSuggestion.name}`,
+          filterText: `"${extraSuggestion.name}"`,
+          kind: CompletionItemKind.Text,
+          textEdit: {
+            newText: `${extraSuggestion.text}`,
+            range
+          }
+        });
       }
-    });
+    }
+  };
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    const range: Range = {
+      start: { line: pos.line, character: pos.character },
+      end: { line: pos.line, character: pos.character }
+    };
+    pushCompletions(range);
+  } else {
+    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    pushCompletions(range);
   }
 
   return result;
 }
 
-function getRarityCompletions(parser: ContextParser): CompletionItem[] {
-  parser.bypassOperator();
-
-  if (parser.isBeforeCurrentIndex() || !parser.isFirstValue()) return [];
-
-  const range = parser.getStringRangeAtRequestPosition();
+function getAlertSoundCompletions(config: ConfigurationValues, pos: Position,
+  text: string, index: number): CompletionItem[] {
 
   const result: CompletionItem[] = [];
-  for (const r of filterData.rarities) {
-    result.push({
-      label: r,
-      kind: CompletionItemKind.Variable,
-      textEdit: {
-        newText: r,
-        range
-      }
-    });
+
+  const valueIndex = parser.bypassEqOperator(text, index);
+
+  const pushCompletions = (range: Range) => {
+    for (const id in filterData.sounds.stringIdentifiers) {
+      const label = filterData.sounds.stringIdentifiers[id];
+      const suggestion = completionForStringRange(id, range, false);
+      suggestion.label = label;
+      result.push(suggestion);
+    }
+
+    for (const wls of config.soundWhitelist) {
+      result.push(completionForStringRange(wls, range, false));
+    }
+  };
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    const range: Range = {
+      start: { line: pos.line, character: pos.character },
+      end: { line: pos.line, character: pos.character }
+    };
+    pushCompletions(range);
+  } else if (!parser.isNextValue(pos, text, valueIndex)) {
+    return result;
+  } else {
+    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    pushCompletions(range);
   }
+
   return result;
 }
 
-function getBooleanCompletions(parser: ContextParser): CompletionItem[] {
-  parser.bypassOperator(true);
-
-  if (parser.isBeforeCurrentIndex() || !parser.isFirstValue()) return [];
+function getRarityCompletions(config: ConfigurationValues, pos: Position,
+  text: string, index: number): CompletionItem[] {
 
   const result: CompletionItem[] = [];
-  const range = parser.getStringRangeAtRequestPosition();
-  for (const bool of filterData.booleans) {
-    result.push({
-      label: bool,
-      kind: CompletionItemKind.Value,
-      textEdit: {
-        newText: bool,
-        range
-      }
-    });
+
+  const valueIndex = parser.bypassOperator(text, index);
+
+  const pushCompletions = (range: Range) => {
+    for (const rarity of filterData.rarities) {
+      result.push(completionForStringRange(rarity, range, config.rarityQuotes));
+    }
+  };
+
+  if (valueIndex === undefined || pos.character < valueIndex) {
+    const range: Range = {
+      start: { line: pos.line, character: pos.character },
+      end: { line: pos.line, character: pos.character }
+    };
+    pushCompletions(range);
+  } else if (!parser.isNextValue(pos, text, valueIndex)) {
+    return result;
+  } else {
+    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    pushCompletions(range);
   }
+
+  return result;
+}
+
+function getBooleanCompletions(config: ConfigurationValues, pos: Position,
+  text: string, index: number): CompletionItem[] {
+
+  const result: CompletionItem[] = [];
+
+  const valueIndex = parser.bypassEqOperator(text, index);
+
+  const pushCompletions = (range: Range) => {
+    for (const bool of filterData.booleans) {
+      result.push(completionForStringRange(bool, range, config.booleanQuotes));
+    }
+  };
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    const range: Range = {
+      start: { line: pos.line, character: pos.character },
+      end: { line: pos.line, character: pos.character }
+    };
+    pushCompletions(range);
+  } else if (!parser.isNextValue(pos, text, valueIndex)) {
+    return result;
+  } else {
+    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    pushCompletions(range);
+  }
+
   return result;
 }

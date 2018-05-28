@@ -41,3 +41,7 @@ SetFontSize | Equality | 18-45 | No | N/A
 > String: a value that can optionally be surrounded by quotation marks, possibly multiple words.
 
 > Word: a single word that cannot be surrounded by quotation marks.
+
+## Notes
+
+- The word value for either `PlayAlertSound` or `PlayAlertSoundPositional` must *not* be surrounded by quotation marks.

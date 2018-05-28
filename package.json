@@ -142,11 +142,25 @@
             "default": false,
             "scope": "window"
           },
-          "item-filter.alwaysInsertQuotes": {
-            "title": "Always Insert Quotations",
-            "description": "When autocompleting string values, always surround the value with quotation marks.",
+          "item-filter.itemValueQuotes": {
+            "title": "Item Value Quotes",
+            "description": "When autocompleting string values for the Class and BaseType rules, always surround the value with quotation marks.",
             "type": "boolean",
             "default": true,
+            "scope": "window"
+          },
+          "item-filter.booleanQuotes": {
+            "title": "Boolean Value Quotes",
+            "description": "When autocompleting the value for boolean rules, such as Corrupted, always surround the value with quotation marks.",
+            "type": "boolean",
+            "default": false,
+            "scope": "window"
+          },
+          "item-filter.rarityQuotes": {
+            "title": "Rarity Value Quotes",
+            "description": "When autocompleting the value for the Rarity rule, always surround the value with quotation marks.",
+            "type": "boolean",
+            "default": false,
             "scope": "window"
           },
           "item-filter.linuxMPGAvailable": {

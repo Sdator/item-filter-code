@@ -4,7 +4,7 @@
  * license information.
  * ===========================================================================*/
 
-import { TokenParser } from "../../server/parsers";
+import { TokenParser } from "../../server/token-parsing";
 
 declare const assert: Chai.Assert;
 

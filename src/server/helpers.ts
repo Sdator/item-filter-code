@@ -6,7 +6,7 @@
 
 import { Position } from "vscode-languageserver";
 
-import { isError } from "../../common";
+import { isError } from "../common";
 
 export function assertUnreachable(_: never): never {
   throw new Error("Should never hit this assertion at runtime.");

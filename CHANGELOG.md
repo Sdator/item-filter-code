@@ -11,11 +11,15 @@ The history of changes to the extension.
 - The double quotation mark character is now automatically closed within item filters.
 - Completion suggestions will now be provided immediately upon entering a double quotation mark.
 - Bosses now go by their shorthand names in order to minimize clutter within the hover tooltips.
+- Quality rules can now have a value up to a maximum of 30, up from 20.
+- Rarity rule values now behave similarly to other string values.
+- The values for boolean rules, such as Corrupted, now behave similarly to other string values.
+- Several new configuration variables have been added in order to control the automatic insertion of
+quotation marks when autocompleting values.
+  + Note that the identifier for sound rules, such as PlayAlertSound, cannot be surrounded by quotation marks,
+  as that is an error within the game.
 - Updated from the proposed color picker API to the officially released API.
   + Visual Studio Code 1.20.0 (released in January of 2018) or newer is now required by the extension.
-- A new configuration value, `item-filter.alwaysInsertQuotes`, has been added. When set to false, autocompleted
-values consisting of a single word, such as `Earthquake`, will no longer be surrounded by quotation marks.
-- Quality rules can now have a value up to a maximum of 30, up from 20.
 
 As with every major Path of Exile release, the unrevealed uniques will be added to the extension once all are discovered.
 
