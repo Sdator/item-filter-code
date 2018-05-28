@@ -18,7 +18,7 @@ import * as yaml from "js-yaml";
 import rimraf = require("rimraf");
 
 import { buildRoot, isError, projectRoot } from "../common";
-import { ItemData } from "../types";
+import { ItemData, TestRunnerOptions } from "../types";
 
 /** Deletes every known temporary file from the project. */
 export function clean(): void {
@@ -40,6 +40,29 @@ export function clean(): void {
   }
 }
 
+/** Toggles coverage reporting for our tests on or off. */
+export function toggleCoverage(on: boolean): void {
+  const outputFile = path.join(buildRoot, "coverconfig.json");
+  const contents: TestRunnerOptions = {
+    enabled: on,
+    relativeSourcePath: "../server",
+    relativeCoverageDir: "../../coverage",
+    ignorePatterns: ["**/node_modules/**"],
+    reports: [
+      "text-summary",
+      "json-summary",
+      "json",
+      "html",
+      "lcov",
+      "lcovonly"
+    ],
+    verbose: false
+  };
+
+  if (!fs.existsSync(buildRoot)) mkdirp.sync(buildRoot);
+  fs.writeFileSync(outputFile, JSON.stringify(contents));
+}
+
 function loadYAML(relPath: string): object {
   try {
     const fullPath = path.join(projectRoot, relPath);
@@ -52,7 +75,7 @@ function loadYAML(relPath: string): object {
   } catch (e) {
     if (isError(e)) {
       throw new Error(`${relPath}: ${e.message}`);
-    } else if (typeof(e) === "string") {
+    } else if (typeof (e) === "string") {
       throw new Error(`${relPath}: ${e}`);
     } else {
       throw e;

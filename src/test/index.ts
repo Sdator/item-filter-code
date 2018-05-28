@@ -14,5 +14,5 @@ const options: MochaSetupOptions = {
   timeout: 25000
 };
 
-testRunner.configure(options);
+testRunner.configure(options, { coverageConfig: "../coverconfig.json" });
 module.exports = testRunner;

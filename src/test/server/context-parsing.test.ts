@@ -4,17 +4,57 @@
  * license information.
  * ===========================================================================*/
 
+import { Range } from "vscode-languageserver";
+
 import { getNextValueRange, isNextValue } from "../../server/context-parsing";
 
 declare const assert: Chai.Assert;
 
 suite("Context Parsing -> getNextValueRange()", () => {
   test("correctly handles a word value", () => {
-    const range = getNextValueRange("test", 0, 0);
+    const range = getNextValueRange("test", 0, 0) as Range;
     assert.isDefined(range);
-    assert.isTrue(range != null && range.start.character === 0);
-    assert.isTrue(range != null && range.end.character === 3);
+    assert.isTrue(range.start.character === 0);
+    assert.isTrue(range.end.character === 3);
   });
+
+  test("correctly handles a word with leading whitespace");
+  test("correctly handles a word with trailing whitespace");
+  test("correctly handles a word with surrounding whitespace");
+  test("correctly handles multiple words");
+
+  test("correctly handles a number value", () => {
+    const range = getNextValueRange("42", 0, 0) as Range;
+    assert.isDefined(range);
+    assert.strictEqual(range.start.character, 0);
+    assert.strictEqual(range.end.character, 1);
+  });
+
+  test("correctly handles a number with leading whitespace");
+  test("correctly handles a number with trailing whitespace");
+  test("correctly handles a number with surrounding whitespace");
+  test("correctly handles multiple numbers");
+
+  test("correctly handles a string value", () => {
+    const range = getNextValueRange('"test"', 0, 0) as Range;
+    assert.isDefined(range);
+    assert.strictEqual(range.start.character, 0);
+    assert.strictEqual(range.end.character, 5);
+  });
+
+  test("correctly handles a string with leading whitespace");
+  test("correctly handles a string with trailing whitespace");
+  test("correctly handles a string with surrounding whitespace");
+  test("correctly handles multiple strings");
+
+  test("correctly handles string containing only whitespace", () => {
+    const range = getNextValueRange("   ", 0, 0);
+    assert.isUndefined(range);
+  });
+
+  test("correctly adjusts based on the given index");
+
+  test("correctly handles an off-the-end index");
 });
 
 suite("Context Parsing -> isNextValue()", () => {
@@ -194,7 +234,7 @@ suite("Context Parsing -> isNextValue()", () => {
     assert.isTrue(isNextValue({ line: 0, character: 6 }, text, index));
   });
 
-  test("correctly handles an off the end position", () => {
+  test("correctly handles an off-the-end position", () => {
     const index = 0;
     const text = "Test";
 
@@ -202,7 +242,7 @@ suite("Context Parsing -> isNextValue()", () => {
     assert.isFalse(isNextValue({ line: 0, character: 100 }, text, index));
   });
 
-  test("correctly handles an off the end index", () => {
+  test("correctly handles an off-the-end index", () => {
     const text = "Test";
 
     assert.isFalse(isNextValue({ line: 0, character: 0 }, text, 4));

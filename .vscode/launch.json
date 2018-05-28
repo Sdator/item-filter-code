@@ -31,11 +31,14 @@
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
+        "${workspaceFolder}/src/test",
         "--extensionDevelopmentPath=${workspaceFolder}",
         "--extensionTestsPath=${workspaceFolder}/out/test"
       ],
+      "stopOnEntry": false,
+      "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/out/test/**/*.js"
+        "${workspaceFolder}/out/**/*.js"
       ]
     }
   ]
