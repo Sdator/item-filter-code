@@ -8,7 +8,7 @@
 // within the current line.
 
 import * as path from "path";
-import { Hover, Position } from "vscode-languageserver";
+import { Hover, Position, Range } from "vscode-languageserver";
 
 import { dataRoot } from "../common";
 import { UniqueData, UniqueItem, ItemData, FilterData } from "../types";
@@ -87,13 +87,23 @@ export function getHoverResult(text: string, position: Position): Hover | null {
 }
 
 function getBaseTypeHover(position: Position, text: string, index: number): Hover | null {
-  const valueIndex = parser.bypassEqOperator(text, index);
+  let valueIndex = parser.bypassEqOperator(text, index);
 
   if (valueIndex === undefined || position.character < valueIndex) {
     return null;
   }
 
-  const valueRange = parser.getStringRangeAtPosition(position, text, valueIndex);
+  while (!parser.isNextValue(position, text, valueIndex)) {
+    const valueRange = parser.getNextValueRange(text, position.line, valueIndex);
+    if (valueRange) {
+      valueIndex = valueRange.end.character + 1;
+    } else {
+      return null;
+    }
+  }
+
+  const valueRange = parser.getNextValueRange(text, position.line, valueIndex) as Range;
+  valueRange.end.character++;
   let baseType = text.slice(valueRange.start.character, valueRange.end.character);
 
   // The range will include quotation marks, if there are any. We need to get rid
@@ -192,13 +202,23 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
 }
 
 function getClassHover(position: Position, text: string, index: number): Hover | null {
-  const valueIndex = parser.bypassEqOperator(text, index);
+  let valueIndex = parser.bypassEqOperator(text, index);
 
   if (valueIndex === undefined || position.character < valueIndex) {
     return null;
   }
 
-  const valueRange = parser.getStringRangeAtPosition(position, text, valueIndex);
+  while (!parser.isNextValue(position, text, valueIndex)) {
+    const valueRange = parser.getNextValueRange(text, position.line, valueIndex);
+    if (valueRange) {
+      valueIndex = valueRange.end.character + 1;
+    } else {
+      return null;
+    }
+  }
+
+  const valueRange = parser.getNextValueRange(text, position.line, valueIndex) as Range;
+  valueRange.end.character++;
   let classType = text.slice(valueRange.start.character, valueRange.end.character);
 
   // Trim the quotation marks.
@@ -259,7 +279,8 @@ function getSoundHover(pos: Position, text: string, index: number): Hover | null
   if (valueIndex == null || pos.character < valueIndex) return null;
 
   if (parser.isNextValue(pos, text, valueIndex)) {
-    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
+    range.end.character++;
     result = {
       contents: "The identifier for the alert sound, which can either a number " +
         "from 1 to 16 or a string.\n\nThe only current sounds using a string identifier " +
@@ -272,7 +293,8 @@ function getSoundHover(pos: Position, text: string, index: number): Hover | null
     if (firstValueRange == null) return result;
 
     if (parser.isNextValue(pos, text, firstValueRange.end.character + 1)) {
-      const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+      const range = parser.getNextValueRange(text, pos.character, valueIndex) as Range;
+      range.end.character++;
       result = {
         contents: "The volume level for the alert sound, which can be a number from 0 to 300.",
         range
@@ -351,7 +373,8 @@ function getSingleValueHover(pos: Position, text: string, index: number, content
 
   if (valueIndex != null && pos.character >= valueIndex) {
     if (parser.isNextValue(pos, text, valueIndex)) {
-      const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+      const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
+      range.end.character++;
       result = {
         contents,
         range

@@ -27,6 +27,7 @@ const itemData = <ItemData>require(path.join(dataRoot, "items.json"));
 const filterData = <FilterData>require(path.join(dataRoot, "filter.json"));
 const suggestionData = <SuggestionData>require(path.join(dataRoot, "suggestions.json"));
 
+const whitespaceRegex = /^\s*$/;
 const whitespaceCharacterRegex = /\s/;
 const spaceRegex = / /;
 
@@ -75,7 +76,7 @@ export function getCompletionSuggestions(config: ConfigurationValues, lineText: 
         return [];
     }
   } else {
-    const isEmpty = parser.whitespaceRegex.test(lineText);
+    const isEmpty = whitespaceRegex.test(lineText);
     if (isEmpty) return getKeywordCompletions(config, position);
 
     let foundContent = false;
@@ -182,7 +183,7 @@ function getClassCompletions(config: ConfigurationValues, pos: Position,
 
   const result: CompletionItem[] = [];
 
-  const valueIndex = parser.bypassEqOperator(text, index);
+  let valueIndex = parser.bypassEqOperator(text, index);
 
   const pushCompletions = (range: Range) => {
     for (const c in itemData.classesToBases) {
@@ -209,7 +210,22 @@ function getClassCompletions(config: ConfigurationValues, pos: Position,
     };
     pushCompletions(range);
   } else {
-    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    while (!parser.isNextValue(pos, text, valueIndex)) {
+      const valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+      if (valueRange) {
+        valueIndex = valueRange.end.character + 1;
+      } else {
+        pushCompletions({
+          start: { line: pos.line, character: pos.character },
+          end: { line: pos.line, character: pos.character }
+        });
+
+        return result;
+      }
+    }
+
+    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
+    range.end.character++;
     pushCompletions(range);
   }
 
@@ -221,7 +237,7 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position,
 
   const result: CompletionItem[] = [];
 
-  const valueIndex = parser.bypassEqOperator(text, index);
+  let valueIndex = parser.bypassEqOperator(text, index);
 
   const pushCompletions = (range: Range) => {
     for (const c of itemData.sortedBases) {
@@ -261,7 +277,22 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position,
     };
     pushCompletions(range);
   } else {
-    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    while (!parser.isNextValue(pos, text, valueIndex)) {
+      const valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+      if (valueRange) {
+        valueIndex = valueRange.end.character + 1;
+      } else {
+        pushCompletions({
+          start: { line: pos.line, character: pos.character },
+          end: { line: pos.line, character: pos.character }
+        });
+
+        return result;
+      }
+    }
+
+    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
+    range.end.character++;
     pushCompletions(range);
   }
 
@@ -297,7 +328,8 @@ function getAlertSoundCompletions(config: ConfigurationValues, pos: Position,
   } else if (!parser.isNextValue(pos, text, valueIndex)) {
     return result;
   } else {
-    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
+    range.end.character++;
     pushCompletions(range);
   }
 
@@ -326,7 +358,8 @@ function getRarityCompletions(config: ConfigurationValues, pos: Position,
   } else if (!parser.isNextValue(pos, text, valueIndex)) {
     return result;
   } else {
-    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
+    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
+    range.end.character++;
     pushCompletions(range);
   }
 
@@ -355,8 +388,11 @@ function getBooleanCompletions(config: ConfigurationValues, pos: Position,
   } else if (!parser.isNextValue(pos, text, valueIndex)) {
     return result;
   } else {
-    const range = parser.getStringRangeAtPosition(pos, text, valueIndex);
-    pushCompletions(range);
+    const range = parser.getNextValueRange(text, pos.line, valueIndex);
+    if (range) {
+      range.end.character++;
+      pushCompletions(range);
+    }
   }
 
   return result;
