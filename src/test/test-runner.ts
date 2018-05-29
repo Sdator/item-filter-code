@@ -1,8 +1,8 @@
 // This file is originally from the following repository:
 //  https://github.com/DonJayamanne/pythonVSCode
 
-// tslint:disable-no-any
-// tslint:disable-no-unsafe-any
+// tslint:disable:no-any
+// tslint:disable:no-unsafe-any
 
 import * as fs from "fs-extra";
 import * as glob from "glob";

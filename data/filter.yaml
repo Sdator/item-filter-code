@@ -2,8 +2,8 @@
 keywordDescriptions:
   Show: "If all conditions are matched, show the item and do any actions specified."
   Hide: "If all conditions are matched, hide the item and do any actions specified."
-  ItemLevel: "The item level that the item was generated at."
-  DropLevel: "The level that the item begins dropping at."
+  ItemLevel: "The item level at which the item was generated at."
+  DropLevel: "The level at which the item begins dropping at."
   Quality: "The amount of quality on the item."
   Rarity: "The rarity of the item."
   Class: "The item class of the item. Specifying part of a class name is allowed and will match any classes with that text in the name."

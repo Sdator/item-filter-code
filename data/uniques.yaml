@@ -200,8 +200,7 @@ Two-Stone Ring:
     boss: Rigwald
     league: Talisman
 Unset Ring:
-  - name: Angler's Plait
-    league: Meme
+  - Angler's Plait
   - name: Brinerot Mark
     league: Warbands
   - Essence Worm
@@ -951,10 +950,8 @@ Stiletto:
 
 # Fishing Rods ================================================================
 Fishing Rod:
-  - name: Reefbane
-    league: Meme
-  - name: Song of the Sirens
-    league: Meme
+  - Reefbane
+  - Song of the Sirens
 
 # Maces =======================================================================
 Auric Mace:

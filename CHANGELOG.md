@@ -2,7 +2,7 @@
 
 The history of changes to the extension.
 
-### Version 1.8.0 (TBD)
+### Version 1.8.0 (May 30th, 2018)
 - Added the initial support for Patch of Exile version 3.3 and the Incursion league.
 - Added the two uniques from Path of Exile v3.2.2: Gluttony and Chains of Command.
 - Both the completion provider and hover provider now take into account the previously entered values on the line.

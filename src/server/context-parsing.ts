@@ -28,7 +28,7 @@ export function bypassEqOperator(text: string, index: number): number | undefine
   let equalityFound = false;
   for (let i = index; i < text.length; i++) {
     const character = text.charAt(i);
-    if (character === '=') {
+    if (character === "=") {
       if (equalityFound) {
         return undefined;
       } else {
@@ -66,7 +66,7 @@ export function bypassOperator(text: string, index: number): number | undefined 
         operatorFound = true;
         i++;
       }
-    } else if (character === '=' || character === '>' || character ==='<') {
+    } else if (character === "=" || character === ">" || character === "<") {
       if (operatorFound) {
         return undefined;
       } else {
