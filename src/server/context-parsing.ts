@@ -178,16 +178,11 @@ export function getNextValueRange(text: string, line: number, index: number): Ra
 }
 
 /**
- * Returns whether the given position lies within the next value within the text,
- * starting at the given index.
- * @param pos The position at which we expect the next value.
- * @param text The text for the line.
- * @param index The current index within that line.
+ * Returns whether a position lies within the given value range.
+ * @param valueRange The range of the value that may contain the position.
+ * @param pos The position of the request.
  */
-export function isNextValue(pos: Position, text: string, index: number): boolean {
-  if (pos.character > text.length) return false;
-
-  const range = getNextValueRange(text, pos.line, index);
-  if (range == null) return false;
-  return pos.character >= range.start.character && pos.character <= range.end.character + 1;
+export function isNextValue(valueRange: Range, pos: Position): boolean {
+  return pos.character >= valueRange.start.character &&
+    pos.character <= valueRange.end.character + 1;
 }

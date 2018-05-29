@@ -93,16 +93,17 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
     return null;
   }
 
-  while (!parser.isNextValue(position, text, valueIndex)) {
-    const valueRange = parser.getNextValueRange(text, position.line, valueIndex);
+  let valueRange: Range | undefined;
+  do {
+    valueRange = parser.getNextValueRange(text, position.line, valueIndex);
+
     if (valueRange) {
       valueIndex = valueRange.end.character + 1;
     } else {
       return null;
     }
-  }
+  } while (!parser.isNextValue(valueRange, position));
 
-  const valueRange = parser.getNextValueRange(text, position.line, valueIndex) as Range;
   valueRange.end.character++;
   let baseType = text.slice(valueRange.start.character, valueRange.end.character);
 
@@ -208,16 +209,17 @@ function getClassHover(position: Position, text: string, index: number): Hover |
     return null;
   }
 
-  while (!parser.isNextValue(position, text, valueIndex)) {
-    const valueRange = parser.getNextValueRange(text, position.line, valueIndex);
+  let valueRange: Range | undefined;
+  do {
+    valueRange = parser.getNextValueRange(text, position.line, valueIndex);
+
     if (valueRange) {
       valueIndex = valueRange.end.character + 1;
     } else {
       return null;
     }
-  }
+  } while (!parser.isNextValue(valueRange, position));
 
-  const valueRange = parser.getNextValueRange(text, position.line, valueIndex) as Range;
   valueRange.end.character++;
   let classType = text.slice(valueRange.start.character, valueRange.end.character);
 
@@ -275,31 +277,34 @@ function getClassHover(position: Position, text: string, index: number): Hover |
 function getSoundHover(pos: Position, text: string, index: number): Hover | null {
   let result: Hover | null = null;
 
-  const valueIndex = parser.bypassEqOperator(text, index);
-  if (valueIndex == null || pos.character < valueIndex) return null;
+  let valueIndex = parser.bypassEqOperator(text, index);
+  if (valueIndex == null || pos.character < valueIndex) return result;
 
-  if (parser.isNextValue(pos, text, valueIndex)) {
-    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
-    range.end.character++;
+  const firstValueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+
+  if (firstValueRange == null) {
+    return result;
+  } else if (parser.isNextValue(firstValueRange, pos)) {
+    firstValueRange.end.character++;
     result = {
       contents: "The identifier for the alert sound, which can either a number " +
         "from 1 to 16 or a string.\n\nThe only current sounds using a string identifier " +
         "would be those in the Shaper set, which includes identifiers such as `ShVaal` " +
         "and `ShMirror`.",
-      range
+      range: firstValueRange
     };
-  } else { // if is the value after that..
-    const firstValueRange = parser.getNextValueRange(text, pos.line, valueIndex);
-    if (firstValueRange == null) return result;
+    return result;
+  }
 
-    if (parser.isNextValue(pos, text, firstValueRange.end.character + 1)) {
-      const range = parser.getNextValueRange(text, pos.character, valueIndex) as Range;
-      range.end.character++;
-      result = {
-        contents: "The volume level for the alert sound, which can be a number from 0 to 300.",
-        range
-      };
-    }
+  valueIndex = firstValueRange.end.character + 1;
+  const secondValueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+
+  if (secondValueRange != null && parser.isNextValue(secondValueRange, pos)) {
+    secondValueRange.end.character++;
+    result = {
+      contents: "The volume level for the alert sound, which can be a number from 0 to 300.",
+      range: secondValueRange
+    };
   }
 
   return result;
@@ -372,12 +377,13 @@ function getSingleValueHover(pos: Position, text: string, index: number, content
     parser.bypassOperator(text, index);
 
   if (valueIndex != null && pos.character >= valueIndex) {
-    if (parser.isNextValue(pos, text, valueIndex)) {
-      const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
-      range.end.character++;
+    const valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+
+    if (valueRange != null && parser.isNextValue(valueRange, pos)) {
+      valueRange.end.character++;
       result = {
         contents,
-        range
+        range: valueRange
       };
     }
   }

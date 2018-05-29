@@ -210,8 +210,10 @@ function getClassCompletions(config: ConfigurationValues, pos: Position,
     };
     pushCompletions(range);
   } else {
-    while (!parser.isNextValue(pos, text, valueIndex)) {
-      const valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+    let valueRange: Range | undefined;
+    do {
+      valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+
       if (valueRange) {
         valueIndex = valueRange.end.character + 1;
       } else {
@@ -222,11 +224,10 @@ function getClassCompletions(config: ConfigurationValues, pos: Position,
 
         return result;
       }
-    }
+    } while (!parser.isNextValue(valueRange, pos));
 
-    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
-    range.end.character++;
-    pushCompletions(range);
+    valueRange.end.character++;
+    pushCompletions(valueRange);
   }
 
   return result;
@@ -277,8 +278,10 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position,
     };
     pushCompletions(range);
   } else {
-    while (!parser.isNextValue(pos, text, valueIndex)) {
-      const valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+    let valueRange: Range | undefined;
+    do {
+      valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+
       if (valueRange) {
         valueIndex = valueRange.end.character + 1;
       } else {
@@ -289,11 +292,10 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position,
 
         return result;
       }
-    }
+    } while (!parser.isNextValue(valueRange, pos));
 
-    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
-    range.end.character++;
-    pushCompletions(range);
+    valueRange.end.character++;
+    pushCompletions(valueRange);
   }
 
   return result;
@@ -325,12 +327,12 @@ function getAlertSoundCompletions(config: ConfigurationValues, pos: Position,
       end: { line: pos.line, character: pos.character }
     };
     pushCompletions(range);
-  } else if (!parser.isNextValue(pos, text, valueIndex)) {
-    return result;
   } else {
-    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
-    range.end.character++;
-    pushCompletions(range);
+    const range = parser.getNextValueRange(text, pos.line, valueIndex);
+    if (range != null && parser.isNextValue(range, pos)) {
+      range.end.character++;
+      pushCompletions(range);
+    }
   }
 
   return result;
@@ -355,12 +357,12 @@ function getRarityCompletions(config: ConfigurationValues, pos: Position,
       end: { line: pos.line, character: pos.character }
     };
     pushCompletions(range);
-  } else if (!parser.isNextValue(pos, text, valueIndex)) {
-    return result;
   } else {
-    const range = parser.getNextValueRange(text, pos.line, valueIndex) as Range;
-    range.end.character++;
-    pushCompletions(range);
+    const range = parser.getNextValueRange(text, pos.line, valueIndex);
+    if (range != null && parser.isNextValue(range, pos)) {
+      range.end.character++;
+      pushCompletions(range);
+    }
   }
 
   return result;
@@ -385,11 +387,9 @@ function getBooleanCompletions(config: ConfigurationValues, pos: Position,
       end: { line: pos.line, character: pos.character }
     };
     pushCompletions(range);
-  } else if (!parser.isNextValue(pos, text, valueIndex)) {
-    return result;
   } else {
     const range = parser.getNextValueRange(text, pos.line, valueIndex);
-    if (range) {
+    if (range != null && parser.isNextValue(range, pos)) {
       range.end.character++;
       pushCompletions(range);
     }

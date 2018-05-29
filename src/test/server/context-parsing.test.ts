@@ -386,193 +386,191 @@ suite("Context Parsing -> getOpeningQuoteIndex", () => {
 
 suite("Context Parsing -> isNextValue()", () => {
   test("correctly handles a word value", () => {
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, "test", 0));
+    const range = parser.getNextValueRange("test", 0, 0) as Range;
+    assert.isDefined(range);
+
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
   });
 
   test("correctly handles a word value with leading whitespace", () => {
-    const index = 0;
-    const text = "  test";
+    const range = parser.getNextValueRange("  test", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isFalse(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 5 }, text, index));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 2 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 5 }));
   });
 
   test("correctly handles a word value with trailing whitespace", () => {
-    const index = 0;
-    const text = "test  ";
+    const range = parser.getNextValueRange("test  ", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 4 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 5 }, text, index));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 4 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 5 }));
   });
 
   test("correctly handles a word with surrounding whitespace", () => {
-    const index = 0;
-    const text = "  test  ";
+    const range = parser.getNextValueRange("  test  ", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isFalse(parser.isNextValue({ line: 0, character: 1 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 6 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 7 }, text, index));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 1 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 2 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 6 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 7 }));
   });
 
   test("correctly handles multiple word values", () => {
-    const index = 0;
-    const text = "test value";
+    const range = parser.getNextValueRange("test value", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 3 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 4 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 5 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 9 }, text, index));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 3 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 4 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 5 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 9 }));
   });
 
   test("correctly handles a number value", () => {
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, "42", 0));
+    const range = parser.getNextValueRange("42", 0, 0) as Range;
+    assert.isDefined(range);
+
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
   });
 
   test("correctly handles a number value with leading whitespace", () => {
-    const index = 0;
-    const text = "  42";
+    const range = parser.getNextValueRange("  42", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isFalse(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 3 }, text, index));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 2 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 3 }));
   });
 
   test("correctly handles a number value with trailing whitespace", () => {
-    const index = 0;
-    const text = "42  ";
+    const range = parser.getNextValueRange("42  ", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 3 }, text, index));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 2 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 3 }));
   });
 
   test("correctly handles a number with surrounding whitespace", () => {
-    const index = 0;
-    const text = "  42  ";
+    const range = parser.getNextValueRange("  42  ", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isFalse(parser.isNextValue({ line: 0, character: 1 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 3 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 4 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 5 }, text, index));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 1 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 2 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 3 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 4 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 5 }));
   });
 
   test("correctly handles multiple number values", () => {
-    const index = 0;
-    const text = "42 84";
+    const range = parser.getNextValueRange("42 84", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 1 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 3 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 4 }, text, index));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 1 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 2 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 3 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 4 }));
   });
 
   test("correctly handles a string value", () => {
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, '"Test"', 0));
+    const range = parser.getNextValueRange('"Test"', 0, 0) as Range;
+    assert.isDefined(range);
+
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
   });
 
   test("correctly handles a string value with leading whitespace", () => {
-    const index = 0;
-    const text = '  "Test"';
+    const range = parser.getNextValueRange('  "Test"', 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isFalse(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 7 }, text, index));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 2 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 7 }));
   });
 
   test("correctly handles a string value with trailing whitespace", () => {
-    const index = 0;
-    const text = '"Test"  ';
+    const range = parser.getNextValueRange('"Test"  ', 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 5 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 6 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 7 }, text, index));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 5 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 6 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 7 }));
   });
 
   test("correctly handles a string with surrounding whitespace", () => {
-    const index = 0;
-    const text = '  "Test"  ';
+    const range = parser.getNextValueRange('  "Test"  ', 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isFalse(parser.isNextValue({ line: 0, character: 1 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 7 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 8 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 9 }, text, index));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 1 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 2 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 7 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 8 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 9 }));
   });
 
   test("correctly handles multiple string values", () => {
-    const index = 0;
-    const text = '"Test" "Tset"';
+    const range = parser.getNextValueRange('"Test" "Tset"', 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 6 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 7 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 12 }, text, index));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 6 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 7 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 12 }));
   });
 
   test("correctly handles strings containing spaces", () => {
-    const index = 0;
-    const text = '"Test Value" Test';
+    const range = parser.getNextValueRange('"Test Value" Test', 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 5 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 6 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 11 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 12 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 13 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 16 }, text, index));
-  });
-
-  test("correctly handles a whitespace-only string", () => {
-    const index = 0;
-    const text = "          ";
-
-    assert.isFalse(parser.isNextValue({ line: 0, character: 0 }, text, index));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 5 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 6 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 11 }));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 12 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 13 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 16 }));
   });
 
   test("correctly adjusts based on the given index", () => {
     const text = "42 Test";
-
     let index = 0;
-    assert.isTrue(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 1 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 3 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 6 }, text, index));
+    const r1 = parser.getNextValueRange(text, 0, index) as Range;
+    assert.isDefined(r1);
+    assert.isTrue(parser.isNextValue(r1, { line: 0, character: 0 }));
+    assert.isTrue(parser.isNextValue(r1, { line: 0, character: 1 }));
+    assert.isTrue(parser.isNextValue(r1, { line: 0, character: 2 }));
+    assert.isFalse(parser.isNextValue(r1, { line: 0, character: 3 }));
+    assert.isFalse(parser.isNextValue(r1, { line: 0, character: 6 }));
 
     index = 3;
-    assert.isFalse(parser.isNextValue({ line: 0, character: 0 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 1 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 2 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 3 }, text, index));
-    assert.isTrue(parser.isNextValue({ line: 0, character: 6 }, text, index));
+    const r2 = parser.getNextValueRange(text, 0, index) as Range;
+    assert.isDefined(r2);
+    assert.isFalse(parser.isNextValue(r2, { line: 0, character: 0 }));
+    assert.isFalse(parser.isNextValue(r2, { line: 0, character: 1 }));
+    assert.isFalse(parser.isNextValue(r2, { line: 0, character: 2 }));
+    assert.isTrue(parser.isNextValue(r2, { line: 0, character: 3 }));
+    assert.isTrue(parser.isNextValue(r2, { line: 0, character: 6 }));
   });
 
   test("correctly associates positions at the end of a value", () => {
-    const index = 0;
-    const text = '"Test"  ';
+    const range = parser.getNextValueRange('"Test"  ', 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isTrue(parser.isNextValue({ line: 0, character: 6 }, text, index));
+    assert.isTrue(parser.isNextValue(range, { line: 0, character: 6 }));
   });
 
   test("correctly handles an out-of-range position", () => {
-    const index = 0;
-    const text = "Test";
+    const range = parser.getNextValueRange("Test", 0, 0) as Range;
+    assert.isDefined(range);
 
-    assert.isFalse(parser.isNextValue({ line: 0, character: 5 }, text, index));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 100 }, text, index));
-  });
-
-  test("correctly handles an out-of-range index", () => {
-    const text = "Test";
-
-    assert.isFalse(parser.isNextValue({ line: 0, character: 0 }, text, 4));
-    assert.isFalse(parser.isNextValue({ line: 0, character: 0 }, text, 100));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 5 }));
+    assert.isFalse(parser.isNextValue(range, { line: 0, character: 100 }));
   });
 });
