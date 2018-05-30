@@ -102,8 +102,12 @@ function performBlockDiagnostics(filterContext: FilterContext, blockContext: Blo
     const ruleLimit = filterData.ruleLimits[parse.keyword];
     assert(ruleLimit !== undefined);
 
-    const occurrences = blockContext.previousRules.get(parse.keyword);
-    if (occurrences !== undefined && occurrences >= ruleLimit) {
+    let occurrences = blockContext.previousRules.get(parse.keyword);
+    if (occurrences === undefined) {
+      occurrences = 0;
+    }
+
+    if (ruleLimit >= 1 && occurrences >= ruleLimit) {
       parse.diagnostics.push({
         message: `${getOrdinal(occurrences + 1)} occurrence of the` +
           ` ${parse.keyword} rule within a block with a limit of ${ruleLimit}.`,
@@ -113,7 +117,8 @@ function performBlockDiagnostics(filterContext: FilterContext, blockContext: Blo
       });
     }
 
-    blockContext.previousRules.set(parse.keyword, occurrences === undefined ? 1 : occurrences);
+    occurrences++;
+    blockContext.previousRules.set(parse.keyword, occurrences);
   } else {
     // We have a rule without an enclosing block.
     parse.diagnostics.push({

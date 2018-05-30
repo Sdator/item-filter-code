@@ -253,9 +253,6 @@
           "include": "#boolean-rules"
         },
         {
-          "include": "#mod-rules"
-        },
-        {
           "include": "#color-rules"
         },
         {
@@ -362,7 +359,7 @@
     "string-rules": {
       "patterns": [
         {
-          "begin": "^\\s*(Class|BaseType)(?=\\s)",
+          "begin": "^\\s*(Class|BaseType|HasExplicitMod)(?=\\s)",
           "end": "\\s*$",
           "captures": {
             "1": {
@@ -402,30 +399,6 @@
             },
             {
               "include": "#quoted-boolean"
-            }
-          ]
-        }
-      ]
-    },
-    "mod-rules": {
-      "patterns": [
-        {
-          "begin": "^\\s*(HasExplicitMod)(?=\\s)",
-          "end": "\\s*$",
-          "captures": {
-            "1": {
-              "name": "entity.name.function.filter"
-            }
-          },
-          "patterns": [
-            {
-              "include": "#equality-operator"
-            },
-            {
-              "include": "#word"
-            },
-            {
-              "include": "#string"
             }
           ]
         }

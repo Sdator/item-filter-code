@@ -163,7 +163,7 @@
             "title": "Limited Mod Pool",
             "description": "For the HasExplicitMod rule, only allow mods from either Warbands or Incursion within item filters.",
             "type": "boolean",
-            "default": true,
+            "default": false,
             "scope": "window"
           },
           "item-filter.itemValueQuotes": {

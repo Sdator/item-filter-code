@@ -213,77 +213,6 @@ function parseBooleanRule(line: LineInformation): void {
   }
 }
 
-function parseModRule(line: LineInformation): void {
-  const operatorResult = line.parser.nextOperator();
-  if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
-    }
-  }
-
-  const parse = line.parser.nextString();
-  if (!parse) {
-    line.result.diagnostics.push({
-      message: "A string value of an item mod, such as Tyrannical, " +
-        "was expected, yet not found.",
-      range: {
-        start: { line: line.result.row, character: line.parser.textStartIndex },
-        end: { line: line.result.row, character: line.parser.originalLength }
-      },
-      severity: DiagnosticSeverity.Error,
-      source: line.filterContext.source
-    });
-
-    return;
-  }
-
-  const parsedMod = parse.value;
-  const parseRange = parse.range;
-
-  const prefixes = line.config.limitedModPool ? modData.limited.prefixes : modData.full.prefixes;
-  const suffixes = line.config.limitedModPool ? modData.limited.suffixes : modData.limited.suffixes;
-
-  let invalidMod = true;
-  for (const mod of prefixes) {
-    if (mod.includes(parsedMod)) {
-      invalidMod = false;
-      break;
-    }
-  }
-
-  if (invalidMod) {
-    for (const mod of suffixes) {
-      if (mod.includes(parsedMod)) {
-        invalidMod = false;
-        break;
-      }
-    }
-  }
-
-  if (invalidMod) {
-    for (const mod of line.config.modWhitelist) {
-      if (mod.includes(parsedMod)) {
-        invalidMod = false;
-        break;
-      }
-    }
-  }
-
-  if (invalidMod) {
-    line.result.diagnostics.push({
-      message: `Invalid value for a ${line.result.keyword} rule. Expected an item mod, ` +
-        "such as Tyrannical.",
-      range: parseRange,
-      severity: DiagnosticSeverity.Error,
-      source: line.filterContext.source
-    });
-  }
-
-  if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, DiagnosticSeverity.Error);
-  }
-}
-
 /**
  * Parses a single number rule from the line.
  * @param equalityOnly True if only the equality operator is valid for this rule.
@@ -580,6 +509,7 @@ function parseClassRule(line: LineInformation) {
     if (valueResult) {
       if (parsedClasses.includes(valueResult.value)) {
         reportDuplicateString(line, valueResult);
+        continue;
       }
 
       let invalid = true;
@@ -688,6 +618,7 @@ function parseBaseTypeRule(line: LineInformation) {
       const value = valueResult.value;
       if (parsedBases.includes(value)) {
         reportDuplicateString(line, valueResult);
+        continue;
       }
 
       let invalid = true;
@@ -741,6 +672,85 @@ function parseBaseTypeRule(line: LineInformation) {
       }
     } else {
       if (parsedBases.length === 0 && line.result.diagnostics.length === 0) {
+        line.result.diagnostics.push({
+          message: `Missing value for ${line.result.keyword} rule. A string value was expected.`,
+          range: {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          },
+          severity: DiagnosticSeverity.Error,
+          source: line.filterContext.source
+        });
+      }
+
+      break;
+    }
+  }
+}
+
+function parseModRule(line: LineInformation): void {
+  const operatorResult = line.parser.nextOperator();
+  if (operatorResult) {
+    if (operatorResult.value !== "=") {
+      reportNonEqualityOperator(line, operatorResult);
+    }
+  }
+
+  const parsedMods: string[] = [];
+  const prefixes = line.config.limitedModPool ? modData.limited.prefixes : modData.full.prefixes;
+  const suffixes = line.config.limitedModPool ? modData.limited.suffixes :
+    modData.full.suffixes;
+
+  while (true) {
+    const valueResult = line.parser.nextString();
+
+    if (valueResult) {
+      const value = valueResult.value;
+      let invalid = true;
+
+      if (parsedMods.includes(value)) {
+        reportDuplicateString(line, valueResult);
+        continue;
+      }
+
+      for (const mod of prefixes) {
+        if (mod.includes(value)) {
+          invalid = false;
+          break;
+        }
+      }
+
+      if (invalid) {
+        for (const mod of suffixes) {
+          if (mod.includes(value)) {
+            invalid = false;
+            break;
+          }
+        }
+      }
+
+      if (invalid) {
+        for (const mod of line.config.modWhitelist) {
+          if (mod.includes(value)) {
+            invalid = false;
+            break;
+          }
+        }
+      }
+
+      if (invalid) {
+        line.result.diagnostics.push({
+          message: `Invalid value for a ${line.result.keyword} rule. Expected an item mod, ` +
+            "such as Tyrannical.",
+          range: valueResult.range,
+          severity: DiagnosticSeverity.Error,
+          source: line.filterContext.source
+        });
+      } else {
+        parsedMods.push(value);
+      }
+    } else {
+      if (parsedMods.length === 0 && line.result.diagnostics.length === 0) {
         line.result.diagnostics.push({
           message: `Missing value for ${line.result.keyword} rule. A string value was expected.`,
           range: {

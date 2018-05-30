@@ -286,6 +286,34 @@ function getClassHover(position: Position, text: string, index: number): Hover |
   return result;
 }
 
+function getModHover(pos: Position, text: string, index: number): Hover | null {
+  // TODO(glen): we now have reason to hook into the main parsing pass in order to
+  //  provide detailed information regarding each affix.
+  let valueIndex = parser.bypassEqOperator(text, index);
+
+  if (valueIndex === undefined || pos.character < valueIndex) {
+    return null;
+  }
+
+  let valueRange: Range | undefined;
+  do {
+    valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+
+    if (valueRange) {
+      valueIndex = valueRange.end.character + 1;
+    } else {
+      return null;
+    }
+  } while (!parser.isNextValue(valueRange, pos));
+
+  valueRange.end.character++;
+
+  return {
+    contents: "The name of an explicit item mod, such as `Tyrannical`.",
+    range: valueRange
+  };
+}
+
 function getSoundHover(pos: Position, text: string, index: number): Hover | null {
   let result: Hover | null = null;
 
@@ -450,12 +478,6 @@ function getSocketGroupHover(pos: Position, text: string, index: number): Hover 
 
 function getBooleanHover(pos: Position, text: string, index: number): Hover | null {
   const contents = "A boolean with two possible values: `True` or `False`.";
-  return getSingleValueHover(pos, text, index, contents, true);
-}
-
-function getModHover(pos: Position, text: string, index: number): Hover | null {
-  // TODO(glen): provide hover information regarding the tier of the hovered over mod.
-  const contents = "The name of an explicit item mod, such as `Tyrannical`.";
   return getSingleValueHover(pos, text, index, contents, true);
 }
 

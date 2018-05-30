@@ -308,6 +308,62 @@ function getBaseCompletions(config: ConfigurationValues, pos: Position,
   return result;
 }
 
+function getModCompletions(config: ConfigurationValues, pos: Position,
+  text: string, index: number): CompletionItem[] {
+
+  const result: CompletionItem[] = [];
+
+  let valueIndex = parser.bypassEqOperator(text, index);
+
+  const pushCompletions = (range: Range) => {
+    const prefixes = config.limitedModPool ? modData.limited.prefixes : modData.full.prefixes;
+    const suffixes = config.limitedModPool ? modData.limited.suffixes : modData.full.suffixes;
+
+    for (const mod of prefixes) {
+      result.push(completionForStringRange(mod, range, config.modQuotes));
+    }
+
+    for (const mod of suffixes) {
+      result.push(completionForStringRange(mod, range, config.modQuotes));
+    }
+
+    for (const mod of config.modWhitelist) {
+      const suggestion = completionForStringRange(mod, range, config.modQuotes);
+      suggestion.kind = CompletionItemKind.Reference;
+      result.push(suggestion);
+    }
+  };
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    const range: Range = {
+      start: { line: pos.line, character: pos.character },
+      end: { line: pos.line, character: pos.character }
+    };
+    pushCompletions(range);
+  } else {
+    let valueRange: Range | undefined;
+    do {
+      valueRange = parser.getNextValueRange(text, pos.line, valueIndex);
+
+      if (valueRange) {
+        valueIndex = valueRange.end.character + 1;
+      } else {
+        pushCompletions({
+          start: { line: pos.line, character: pos.character },
+          end: { line: pos.line, character: pos.character }
+        });
+
+        return result;
+      }
+    } while (!parser.isNextValue(valueRange, pos));
+
+    valueRange.end.character++;
+    pushCompletions(valueRange);
+  }
+
+  return result;
+}
+
 function getAlertSoundCompletions(config: ConfigurationValues, pos: Position,
   text: string, index: number): CompletionItem[] {
 
@@ -387,49 +443,6 @@ function getBooleanCompletions(config: ConfigurationValues, pos: Position,
   const pushCompletions = (range: Range) => {
     for (const bool of filterData.booleans) {
       result.push(completionForStringRange(bool, range, config.booleanQuotes));
-    }
-  };
-
-  if (valueIndex == null || pos.character < valueIndex) {
-    const range: Range = {
-      start: { line: pos.line, character: pos.character },
-      end: { line: pos.line, character: pos.character }
-    };
-    pushCompletions(range);
-  } else {
-    const range = parser.getNextValueRange(text, pos.line, valueIndex);
-    if (range != null && parser.isNextValue(range, pos)) {
-      range.end.character++;
-      pushCompletions(range);
-    }
-  }
-
-  return result;
-}
-
-function getModCompletions(config: ConfigurationValues, pos: Position,
-  text: string, index: number): CompletionItem[] {
-
-  const result: CompletionItem[] = [];
-
-  const valueIndex = parser.bypassEqOperator(text, index);
-
-  const pushCompletions = (range: Range) => {
-    const prefixes = config.limitedModPool ? modData.limited.prefixes : modData.full.prefixes;
-    const suffixes = config.limitedModPool ? modData.limited.suffixes : modData.full.suffixes;
-
-    for (const mod of prefixes) {
-      result.push(completionForStringRange(mod, range, config.modQuotes));
-    }
-
-    for (const mod of suffixes) {
-      result.push(completionForStringRange(mod, range, config.modQuotes));
-    }
-
-    for (const mod of config.modWhitelist) {
-      const suggestion = completionForStringRange(mod, range, config.modQuotes);
-      suggestion.kind = CompletionItemKind.Reference;
-      result.push(suggestion);
     }
   };
 

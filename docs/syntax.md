@@ -17,6 +17,7 @@ StackSize | All | 1-1000 | No
 Rarity | All | One of the following strings: Normal, Magic, Rare, Unique | Yes
 Class | Equality | Multiple strings from the list of Classes | Yes
 BaseType | Equality | Multiple strings from the list of Bases | Yes
+HasExplicitMod | Equality | Multiple strings from list of Mods | Yes
 Sockets | All | 0-6 | No
 LinkedSockets | All | 0, 2-6 | No
 SocketGroup | Equality | String consisting of *r, g, b, w* | No
@@ -29,7 +30,6 @@ ShaperItem | Equality | True or False | No
 ShapedMap | Equality | True or False | No
 ElderMap | Equality | True or False | No
 DisableDropSound | Equality | True or False | No
-HasExplicitMod | Equality | Single string from list of Mods | Unknown
 
 ## Action Rules
 Keyword | Operator | Values | Trailing Comment | Case Sensitive
