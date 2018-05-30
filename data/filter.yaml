@@ -99,7 +99,7 @@ ruleRanges:
     min: 0
     max: 30
   StackSize:
-    min: 5
+    min: 1
     max: 1000
   Sockets:
     min: 0
@@ -150,3 +150,203 @@ sounds:
     ShFusing: Orb of Fusing
     ShRegal: Regal Orb
     ShVaal: Vaal Orb
+stackSizes:
+  Albino Rhoa Feather: 10
+  Alchemy Shard: 20
+  Alteration Shard: 20
+  Ancient Shard: 20
+  Ancient Orb: 20
+  Annulment Shard: 20
+  Apprentice Cartographer's Seal: 10
+  Apprentice Cartographer's Sextant: 10
+  Armourer's Scrap: 40
+  Bestiary Orb: 10
+  Binding Shard: 20
+  Blacksmith's Whetstone: 20
+  Blessed Orb: 20
+  Blessing of Chayula: 10
+  Blessing of Esh: 10
+  Blessing of Tul: 10
+  Blessing of Uul-Netol: 10
+  Blessing of Xoph: 10
+  Cartographer's Chisel: 20
+  Chaos Orb: 10
+  Chaos Shard: 20
+  Chromatic Orb: 20
+  Deafening Essence of Anger: 9
+  Deafening Essence of Anguish: 9
+  Deafening Essence of Contempt: 9
+  Deafening Essence of Doubt: 9
+  Deafening Essence of Dread: 9
+  Deafening Essence of Envy: 9
+  Deafening Essence of Fear: 9
+  Deafening Essence of Greed: 9
+  Deafening Essence of Hatred: 9
+  Deafening Essence of Loathing: 9
+  Deafening Essence of Misery: 9
+  Deafening Essence of Rage: 9
+  Deafening Essence of Scorn: 9
+  Deafening Essence of Sorrow: 9
+  Deafening Essence of Spite: 9
+  Deafening Essence of Suffering: 9
+  Deafening Essence of Torment: 9
+  Deafening Essence of Woe: 9
+  Deafening Essence of Wrath: 9
+  Deafening Essence of Zeal: 9
+  Divine Orb: 10
+  Engineer's Orb: 20
+  Engineer's Shard: 20
+  Essence of Delirium: 9
+  Essence of Horror: 9
+  Essence of Hysteria: 9
+  Essence of Insanity: 9
+  Eternal Orb: 10
+  Event Coin: 10
+  Event Shard: 2
+  Exalted Orb: 10
+  Exalted Shard: 20
+  Gemcutter's Prism: 20
+  Glassblower's Bauble: 20
+  Harbinger's Orb: 20
+  Harbinger's Shard: 20
+  Horizon Shard: 20
+  Imprinted Bestiary Orb: 1
+  Jeweller's Orb: 20
+  Journeyman Cartographer's Seal: 10
+  Journeyman Cartographer's Sextant: 10
+  Master Cartographer's Seal: 10
+  Master Cartographer's Sextant: 10
+  Mirror of Kalandra: 10
+  Mirror Shard: 20
+  Muttering Essence of Anger: 9
+  Muttering Essence of Contempt: 9
+  Muttering Essence of Fear: 9
+  Muttering Essence of Greed: 9
+  Muttering Essence of Hatred: 9
+  Muttering Essence of Sorrow: 9
+  Muttering Essence of Torment: 9
+  Muttering Essence of Woe: 9
+  Necromancy Net: 100
+  Orb of Alchemy: 10
+  Orb of Alteration: 20
+  Orb of Annulment: 20
+  Orb of Augmentation: 30
+  Orb of Binding: 20
+  Orb of Chance: 20
+  Orb of Fusing: 20
+  Orb of Horizons: 20
+  Orb of Regret: 40
+  Orb of Scouring: 30
+  Orb of Transmutation: 40
+  Perandus Coin: 1000
+  Portal Scroll: 40
+  Prophecy: 1
+  Regal Orb: 10
+  Regal Shard: 20
+  Reinforced Iron Net: 100
+  Reinforced Rope Net: 100
+  Reinforced Steel Net: 100
+  Remnant of Corruption: 9
+  Screaming Essence of Anger: 9
+  Screaming Essence of Anguish: 9
+  Screaming Essence of Contempt: 9
+  Screaming Essence of Doubt: 9
+  Screaming Essence of Dread: 9
+  Screaming Essence of Envy: 9
+  Screaming Essence of Fear: 9
+  Screaming Essence of Greed: 9
+  Screaming Essence of Hatred: 9
+  Screaming Essence of Loathing: 9
+  Screaming Essence of Misery: 9
+  Screaming Essence of Rage: 9
+  Screaming Essence of Scorn: 9
+  Screaming Essence of Sorrow: 9
+  Screaming Essence of Spite: 9
+  Screaming Essence of Suffering: 9
+  Screaming Essence of Torment: 9
+  Screaming Essence of Woe: 9
+  Screaming Essence of Wrath: 9
+  Screaming Essence of Zeal: 9
+  Scroll Fragment: 5
+  Scroll of Wisdom: 40
+  Shrieking Essence of Anger: 9
+  Shrieking Essence of Anguish: 9
+  Shrieking Essence of Contempt: 9
+  Shrieking Essence of Doubt: 9
+  Shrieking Essence of Dread: 9
+  Shrieking Essence of Envy: 9
+  Shrieking Essence of Fear: 9
+  Shrieking Essence of Greed: 9
+  Shrieking Essence of Hatred: 9
+  Shrieking Essence of Loathing: 9
+  Shrieking Essence of Misery: 9
+  Shrieking Essence of Rage: 9
+  Shrieking Essence of Scorn: 9
+  Shrieking Essence of Sorrow: 9
+  Shrieking Essence of Spite: 9
+  Shrieking Essence of Suffering: 9
+  Shrieking Essence of Torment: 9
+  Shrieking Essence of Woe: 9
+  Shrieking Essence of Wrath: 9
+  Shrieking Essence of Zeal: 9
+  Silver Coin: 30
+  Simple Iron Net: 100
+  Simple Rope Net: 100
+  Simple Steel Net: 100
+  Splinter of Chayula: 100
+  Splinter of Esh: 100
+  Splinter of Tul: 100
+  Splinter of Uul-Netol: 100
+  Splinter of Xoph: 100
+  Stacked Deck: 10
+  Strong Iron Net: 100
+  Strong Rope Net: 100
+  Strong Steel Net: 100
+  Thaumaturgical Net: 100
+  Transmutation Shard: 20
+  Unshaping Orb: 10
+  Vaal Orb: 10
+  # TODO(glen): fix these once we know their actual value
+  ##############################
+  Vial of Awakening: 9999
+  Vial of Consequence: 9999
+  Vial of Dominance: 9999
+  Vial of Fate: 9999
+  Vial of Sacrifice: 9999
+  Vial of Summoning: 9999
+  Vial of the Ghost: 9999
+  Vial of the Ritual: 9999
+  Vial of Transcendence: 9999
+  ##############################
+  Wailing Essence of Anger: 9
+  Wailing Essence of Anguish: 9
+  Wailing Essence of Contempt: 9
+  Wailing Essence of Doubt: 9
+  Wailing Essence of Fear: 9
+  Wailing Essence of Greed: 9
+  Wailing Essence of Hatred: 9
+  Wailing Essence of Loathing: 9
+  Wailing Essence of Rage: 9
+  Wailing Essence of Sorrow: 9
+  Wailing Essence of Spite: 9
+  Wailing Essence of Suffering: 9
+  Wailing Essence of Torment: 9
+  Wailing Essence of Woe: 9
+  Wailing Essence of Wrath: 9
+  Wailing Essence of Zeal: 9
+  Weeping Essence of Anger: 9
+  Weeping Essence of Contempt: 9
+  Weeping Essence of Doubt: 9
+  Weeping Essence of Fear: 9
+  Weeping Essence of Greed: 9
+  Weeping Essence of Hatred: 9
+  Weeping Essence of Rage: 9
+  Weeping Essence of Sorrow: 9
+  Weeping Essence of Suffering: 9
+  Weeping Essence of Torment: 9
+  Weeping Essence of Woe: 9
+  Weeping Essence of Wrath: 9
+  Whispering Essence of Contempt: 9
+  Whispering Essence of Greed: 9
+  Whispering Essence of Hatred: 9
+  Whispering Essence of Woe: 9

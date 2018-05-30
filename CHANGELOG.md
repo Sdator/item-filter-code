@@ -3,7 +3,10 @@
 The history of changes to the extension.
 
 ### Version 1.10.0 (TBD)
-- Added a new configuration variable: 'item-filter.limitedModPool'. This variable allows you to choose between two sets of valid values for the HasExplicitMod rule: one containing all explicit mods in the game and one containing only mods from the Warbands and Incursion leagues. When set to false, the former will be used.
+- Added a new configuration variable: 'item-filter.limitedModPool'. This variable allows you to choose between two sets of valid values for the HasExplicitMod rule, with one set containing all explicit mods in the game and the other containing only the mods from the Warbands and Incursion leagues. When set to false, the former will be used.
+- Added autocompletion for the values of the `StackSize` rule.
+- Modified the hover for the value of `StackSize` rule to include a list of the matched stackable currency items.
+- Fixed a syntax error within the language configuration file.
 
 ### Version 1.9.0 (May 30th, 2018)
 - Renamed the `HasMod` rule to the *hopefully* correct name of `HasExplicitMod`.

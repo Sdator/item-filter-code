@@ -316,6 +316,79 @@ function getSoundHover(pos: Position, text: string, index: number): Hover | null
   return result;
 }
 
+function getStackSizeHover(pos: Position, text: string, index: number): Hover | null {
+  let result: Hover | null = null;
+
+  const operatorResult = parser.getOperator(text, index);
+  const [operator, valueIndex] = operatorResult;
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    return result;
+  }
+
+  const range = parser.getNextValueRange(text, pos.line, valueIndex);
+  if (range == null || !parser.isNextValue(range, pos)) return result;
+
+  const valueString = text.slice(range.start.character, range.end.character + 1);
+  const value = parseInt(valueString);
+  if (isNaN(value)) {
+    return result;
+  }
+
+  const stackSizeMin = filterData.ruleRanges["StackSize"].min;
+  const stackSizeMax = filterData.ruleRanges["StackSize"].max;
+
+  let min: number;
+  let max: number;
+
+  switch (operator) {
+    case parser.Operator.Equal:
+      min = value;
+      max = value;
+      break;
+    case parser.Operator.GreaterThan:
+      min = value + 1;
+      max = stackSizeMax;
+      break;
+    case parser.Operator.GreaterThanEqual:
+      min = value;
+      max = stackSizeMax;
+      break;
+    case parser.Operator.LessThan:
+      min = stackSizeMin;
+      max = value - 1;
+      break;
+    case parser.Operator.LessThanEqual:
+      min = stackSizeMin;
+      max = value;
+      break;
+    default:
+      return result;
+  }
+
+  let output = "The stack size of the currency item, which can be any number from " +
+    `${stackSizeMin} to ${stackSizeMax}.`;
+  let firstValue = true;
+  for (const currentValue in filterData.stackSizes) {
+    const currentStackSize = filterData.stackSizes[currentValue];
+
+    if (currentStackSize >= min && currentStackSize <= max) {
+      if (firstValue) {
+        output += "\n\nCaptured Currency:\n";
+        firstValue = false;
+      }
+      output += `- ${currentValue} \`${currentStackSize}\`\n`;
+    }
+  }
+
+  result = {
+    contents: output,
+    range
+  };
+
+  return result;
+}
+
 function getLevelHover(pos: Position, text: string, index: number): Hover | null {
   const contents = "A level, which can be any number from 0 to 100.";
   return getSingleValueHover(pos, text, index, contents, false);
@@ -333,11 +406,6 @@ function getSocketsHover(pos: Position, text: string, index: number): Hover | nu
 
 function getQualityHover(pos: Position, text: string, index: number): Hover | null {
   const contents = "The quality of the item, which can be any number from 0 to 30.";
-  return getSingleValueHover(pos, text, index, contents, false);
-}
-
-function getStackSizeHover(pos: Position, text: string, index: number): Hover | null {
-  const contents = "The stack size of the currency item, which can be any number from 5 to 1000.";
   return getSingleValueHover(pos, text, index, contents, false);
 }
 

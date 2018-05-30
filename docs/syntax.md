@@ -13,7 +13,7 @@ ItemLevel | All | 0-100 | No
 DropLevel | All | 0-100 | No
 GemLevel | All | 0-30 | No
 Quality | All | 0-30 | No
-StackSize | All | 5-1000 | No
+StackSize | All | 1-1000 | No
 Rarity | All | One of the following strings: Normal, Magic, Rare, Unique | Yes
 Class | Equality | Multiple strings from the list of Classes | Yes
 BaseType | Equality | Multiple strings from the list of Bases | Yes
