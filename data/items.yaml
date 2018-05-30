@@ -60,6 +60,7 @@ Active Skill Gems:
   - Essence Drain
   - Ethereal Knives
   - Explosive Arrow
+  - Explosive Trap
   - Fire Nova Mine
   - Fire Trap
   - Fireball
@@ -68,6 +69,7 @@ Active Skill Gems:
   - Flame Surge
   - Flame Totem
   - Flameblast
+  - Flamethrower Trap
   - Flammability
   - Flesh Offering
   - Flicker Strike
@@ -101,6 +103,7 @@ Active Skill Gems:
   - Lacerate
   - Leap Slam
   - Lightning Arrow
+  - Lightning Spire Trap
   - Lightning Strike
   - Lightning Tendrils
   - Lightning Trap
@@ -132,11 +135,13 @@ Active Skill Gems:
   - Riposte
   - Scorching Ray
   - Searing Bond
+  - Seismic Trap
   - Shield Charge
   - Shock Nova
   - Shockwave Totem
   - Shrapnel Shot
   - Siege Ballista
+  - Siphoning Trap
   - Smoke Mine
   - Spark
   - Spectral Shield Throw
@@ -161,6 +166,8 @@ Active Skill Gems:
   - Tornado Shot
   - Unearth
   - Vaal Arc
+  - Vaal Blade Vortex
+  - Vaal Blight
   - Vaal Breach
   - Vaal Burning Arrow
   - Vaal Clarity
@@ -169,6 +176,7 @@ Active Skill Gems:
   - Vaal Detonate Dead
   - Vaal Discipline
   - Vaal Double Strike
+  - Vaal Earthquake
   - Vaal Fireball
   - Vaal Flameblast
   - Vaal Glacial Hammer
@@ -177,6 +185,9 @@ Active Skill Gems:
   - Vaal Haste
   - Vaal Ice Nova
   - Vaal Immortal Call
+  - Vaal Impurity of Fire
+  - Vaal Impurity of Ice
+  - Vaal Impurity of Lightning
   - Vaal Lightning Strike
   - Vaal Lightning Trap
   - Vaal Lightning Warp
@@ -522,6 +533,7 @@ Divination Card:
   - Gift of the Gemling Queen
   - Glimmer of Hope
   - Grave Knowledge
+  - Harmony of Souls
   - Her Mask
   - Heterochromia
   - Hope
@@ -530,6 +542,7 @@ Divination Card:
   - Humility
   - Hunter's Resolve
   - Hunter's Reward
+  - Immortal Resolve
   - Jack in the Box
   - Lantador's Lost Love
   - Last Hope
@@ -546,6 +559,7 @@ Divination Card:
   - Might is Right
   - Mitts
   - No Traces
+  - Perfection
   - Pride Before the Fall
   - Prosperity
   - Rain Tempter
@@ -555,11 +569,14 @@ Divination Card:
   - Scholar of the Seas
   - Shard of Fate
   - Struck by Lightning
+  - The Admirer
   - The Aesthete
   - The Arena Champion
+  - The Army of Blood
   - The Artist
   - The Avenger
   - The Battle Born
+  - The Beast
   - The Betrayal
   - The Blazing Fire
   - The Body
@@ -571,12 +588,14 @@ Divination Card:
   - The Cataclysm
   - The Catalyst
   - The Celestial Justicar
+  - The Celestial Stone
   - The Chains that Bind
   - The Coming Storm
   - The Conduit
   - The Cursed King
   - The Dapper Prodigy
   - The Dark Mage
+  - The Darkest Dream
   - The Deceiver
   - The Demoness
   - The Devastator
@@ -585,6 +604,7 @@ Divination Card:
   - The Dragon
   - The Dragon's Heart
   - The Dreamer
+  - The Dreamland
   - The Drunken Aristocrat
   - The Encroaching Darkness
   - The Endurance
@@ -592,6 +612,7 @@ Divination Card:
   - The Ethereal
   - The Explorer
   - The Eye of the Dragon
+  - The Fathomless Depths
   - The Feast
   - The Fiend
   - The Fletcher
@@ -604,6 +625,7 @@ Divination Card:
   - The Gemcutter
   - The Gentleman
   - The Gladiator
+  - The Hale Heart
   - The Harvester
   - The Hermit
   - The Hoarder
@@ -615,6 +637,7 @@ Divination Card:
   - The Inventor
   - The Iron Bard
   - The Jester
+  - The Jeweller's Boon
   - The King's Blade
   - The King's Heart
   - The Last One Standing
@@ -623,6 +646,8 @@ Divination Card:
   - The Lord in Black
   - The Lover
   - The Lunaris Priestess
+  - The Master
+  - The Mayor
   - The Mercenary
   - The Metalsmith's Gift
   - The Oath
@@ -636,14 +661,17 @@ Divination Card:
   - The Poet
   - The Polymath
   - The Porcupine
+  - The Professor
   - The Puzzle
   - The Queen
   - The Rabid Rhoa
   - The Realm
   - The Risk
+  - The Rite of Elements
   - The Road to Power
   - The Ruthless Ceinture
   - The Saint's Treasure
+  - The Samurai's Eye
   - The Scarred Meadow
   - The Scavenger
   - The Scholar
@@ -660,6 +688,7 @@ Divination Card:
   - The Surgeon
   - The Surveyor
   - The Survivalist
+  - The Sword King's Salute
   - The Thaumaturgist
   - The Throne
   - The Tower
@@ -667,6 +696,8 @@ Divination Card:
   - The Trial
   - The Twins
   - The Tyrant
+  - The Undaunted
+  - The Undisputed
   - The Union
   - The Valkyrie
   - The Valley of Steel Boxes
@@ -678,6 +709,7 @@ Divination Card:
   - The Watcher
   - The Web
   - The Wind
+  - The Witch
   - The Wolf
   - The Wolf's Shadow
   - The Wolven King's Bite
@@ -686,6 +718,7 @@ Divination Card:
   - The Wrath
   - The Wretched
   - Three Faces in the Dark
+  - Three Voices
   - Thunderous Skies
   - Time-Lost Relic
   - Tranquillity
@@ -826,6 +859,9 @@ Hybrid Flasks:
   - Medium Hybrid Flask
   - Sacred Hybrid Flask
   - Small Hybrid Flask
+Incursion Item:
+  - Stone of Passage
+  - Flashpowder Keg
 Jewel:
   - Cobalt Jewel
   - Crimson Jewel
@@ -1550,6 +1586,15 @@ Stackable Currency:
   - Transmutation Shard
   - Unshaping Orb
   - Vaal Orb
+  - Vial of Awakening
+  - Vial of Consequence
+  - Vial of Dominance
+  - Vial of Fate
+  - Vial of Sacrifice
+  - Vial of Summoning
+  - Vial of the Ghost
+  - Vial of the Ritual
+  - Vial of Transcendence
   - Wailing Essence of Anger
   - Wailing Essence of Anguish
   - Wailing Essence of Contempt
@@ -1611,6 +1656,7 @@ Support Skill Gems:
   - Added Fire Damage Support
   - Added Lightning Damage Support
   - Additional Accuracy Support
+  - Advanced Traps Support
   - Ancestral Call Support
   - Arcane Surge Support
   - Blasphemy Support
@@ -1629,10 +1675,11 @@ Support Skill Gems:
   - Chain Support
   - Chance to Bleed Support
   - Chance to Flee Support
-  - Chance to Ignite Support
+  - Charged Traps Support
   - Cluster Traps Support
   - Cold Penetration Support
   - Cold to Fire Support
+  - Combustion Support
   - Concentrated Effect Support
   - Controlled Destruction Support
   - Culling Strike Support
@@ -1707,7 +1754,6 @@ Support Skill Gems:
   - Stun Support
   - Summon Phantasm on Kill Support
   - Swift Affliction Support
-  - Trap Cooldown Support
   - Trap Support
   - Trap and Mine Damage Support
   - Unbound Ailments Support

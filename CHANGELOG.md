@@ -4,6 +4,12 @@ The history of changes to the extension.
 
 ### Version 1.8.0 (May 30th, 2018)
 - Added the initial support for Patch of Exile version 3.3 and the Incursion league.
+  + As with every major Path of Exile release, the new unique items will be added to the extension
+  once all have been discovered.
+- Added support for the new `GemLevel` rule.
+- Added support for the new `StackSize` rule.
+- Added basic support for the new `HasMod` rule.
+  + Autocompletions for explicit mods will be added soon.
 - Added the two uniques from Path of Exile v3.2.2: Gluttony and Chains of Command.
 - Both the completion provider and hover provider now take into account the previously entered values on the line.
 - The hover provider has been expanded upon, with all values except for colors now having a tooltip.
@@ -20,8 +26,7 @@ quotation marks when autocompleting values.
   as that is an error within the game.
 - Updated from the proposed color picker API to the officially released API.
   + Visual Studio Code 1.20.0 (released in January of 2018) or newer is now required by the extension.
-
-As with every major Path of Exile release, the unrevealed uniques will be added to the extension once all are discovered.
+- Both the `Quality` rule and the `Rarity` rule can now be used twice within a block.
 
 ### Version 1.7.0 (March 15th, 2018)
 - Added support for the new DisableDropSound rule.

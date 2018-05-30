@@ -47,8 +47,12 @@ export function getHoverResult(text: string, position: Position): Hover | null {
     case "ItemLevel":
     case "DropLevel":
       return getLevelHover(position, text, currentIndex);
+    case "GemLevel":
+      return getGemLevelHover(position, text, currentIndex);
     case "Quality":
       return getQualityHover(position, text, currentIndex);
+    case "StackSize":
+      return getStackSizeHover(position, text, currentIndex);
     case "Sockets":
       return getSocketsHover(position, text, currentIndex);
     case "LinkedSockets":
@@ -69,6 +73,8 @@ export function getHoverResult(text: string, position: Position): Hover | null {
     case "ElderMap":
     case "DisableDropSound":
       return getBooleanHover(position, text, currentIndex);
+    case "HasMod":
+      return getModHover(position, text, currentIndex);
     case "Class":
       return getClassHover(position, text, currentIndex);
     case "BaseType":
@@ -315,6 +321,11 @@ function getLevelHover(pos: Position, text: string, index: number): Hover | null
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
+function getGemLevelHover(pos: Position, text: string, index: number): Hover | null {
+  const contents = "The level of the gem, which can be any number from 1 to 30.";
+  return getSingleValueHover(pos, text, index, contents, false);
+}
+
 function getSocketsHover(pos: Position, text: string, index: number): Hover | null {
   const contents = "The number of sockets on the item, which can be any number from 0 to 6.";
   return getSingleValueHover(pos, text, index, contents, false);
@@ -322,6 +333,11 @@ function getSocketsHover(pos: Position, text: string, index: number): Hover | nu
 
 function getQualityHover(pos: Position, text: string, index: number): Hover | null {
   const contents = "The quality of the item, which can be any number from 0 to 30.";
+  return getSingleValueHover(pos, text, index, contents, false);
+}
+
+function getStackSizeHover(pos: Position, text: string, index: number): Hover | null {
+  const contents = "The stack size of the currency item, which can be any number from 5 to 1000.";
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
@@ -360,6 +376,12 @@ function getSocketGroupHover(pos: Position, text: string, index: number): Hover 
 
 function getBooleanHover(pos: Position, text: string, index: number): Hover | null {
   const contents = "A boolean with two possible values: `True` or `False`.";
+  return getSingleValueHover(pos, text, index, contents, true);
+}
+
+function getModHover(pos: Position, text: string, index: number): Hover | null {
+  // TODO(glen): provide hover information regarding the tier of the hovered over mod.
+  const contents = "The name of an explicit item mod, such as `Tyrannical`.";
   return getSingleValueHover(pos, text, index, contents, true);
 }
 

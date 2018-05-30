@@ -14,8 +14,8 @@ import { stylizedArrayJoin } from "./helpers";
 import { BlockContext, FilterContext } from "./item-filter";
 import { TokenParser, TokenParseResult } from "./token-parsing";
 
-const itemData = <ItemData> require(path.join(dataRoot, "items.json"));
-const filterData = <FilterData> require(path.join(dataRoot, "filter.json"));
+const itemData = <ItemData>require(path.join(dataRoot, "items.json"));
+const filterData = <FilterData>require(path.join(dataRoot, "filter.json"));
 
 /** The result of parsing an item filter line. */
 export interface BaseParseLineResult {
@@ -230,6 +230,35 @@ function parseBooleanRule(line: LineInformation): void {
       source: line.filterContext.source
     });
   }
+
+  if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, DiagnosticSeverity.Error);
+  }
+}
+
+function parseModRule(line: LineInformation): void {
+  const operatorResult = line.parser.nextOperator();
+  if (operatorResult) {
+    if (operatorResult.value !== "=") {
+      reportNonEqualityOperator(line, operatorResult);
+    }
+  }
+
+  const stringResult = line.parser.nextString();
+  if (!stringResult) {
+    line.result.diagnostics.push({
+      message: "A string value of an implicit mod, such as Tyrannical, " +
+        "was expected, yet not found.",
+      range: {
+        start: { line: line.result.row, character: line.parser.textStartIndex },
+        end: { line: line.result.row, character: line.parser.originalLength }
+      },
+      severity: DiagnosticSeverity.Error,
+      source: line.filterContext.source
+    });
+  }
+
+  // TODO(glen): verify this against a list of mods.
 
   if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
     reportTrailingText(line, DiagnosticSeverity.Error);
@@ -759,7 +788,9 @@ export function parseLine(config: ConfigurationValues, filterContext: FilterCont
       break;
     case "ItemLevel":
     case "DropLevel":
+    case "GemLevel":
     case "Quality":
+    case "StackSize":
     case "Sockets":
     case "LinkedSockets":
     case "Height":
@@ -783,6 +814,9 @@ export function parseLine(config: ConfigurationValues, filterContext: FilterCont
     case "ElderMap":
     case "DisableDropSound":
       parseBooleanRule(lineInfo);
+      break;
+    case "HasMod":
+      parseModRule(lineInfo);
       break;
     case "SetBorderColor":
     case "SetTextColor":

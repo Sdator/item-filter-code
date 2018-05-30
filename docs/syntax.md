@@ -11,10 +11,12 @@ Keyword | Operator | Values | Case Sensitive
 --- | --- | --- | ---
 ItemLevel | All | 0-100 | No
 DropLevel | All | 0-100 | No
+GemLevel | All | 0-30 | No
 Quality | All | 0-30 | No
+StackSize | All | 5-1000 | No
 Rarity | All | One of the following strings: Normal, Magic, Rare, Unique | Yes
-Class | Equality | String from the list of Classes | Yes
-BaseType | Equality | String from the list of Bases | Yes
+Class | Equality | Multiple strings from the list of Classes | Yes
+BaseType | Equality | Multiple strings from the list of Bases | Yes
 Sockets | All | 0-6 | No
 LinkedSockets | All | 0, 2-6 | No
 SocketGroup | Equality | String consisting of *r, g, b, w* | No
@@ -27,6 +29,7 @@ ShaperItem | Equality | True or False | No
 ShapedMap | Equality | True or False | No
 ElderMap | Equality | True or False | No
 DisableDropSound | Equality | True or False | No
+HasMod | Equality | Single string from list of Mods | Unknown
 
 ## Action Rules
 Keyword | Operator | Values | Trailing Comment | Case Sensitive

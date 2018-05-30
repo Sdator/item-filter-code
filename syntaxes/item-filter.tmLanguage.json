@@ -109,6 +109,18 @@
         }
       ]
     },
+    "quadruple-digit-number": {
+      "patterns": [
+        {
+          "match": "\\s+([0-9]{1,4})(?=\\s|$)",
+          "captures": {
+            "1": {
+              "name": "constant.numeric.filter"
+            }
+          }
+        }
+      ]
+    },
     "socket-colors": {
       "patterns": [
         {
@@ -232,10 +244,16 @@
           "include": "#triple-digit-number-rules"
         },
         {
+          "include": "#quadruple-digit-number-rules"
+        },
+        {
           "include": "#string-rules"
         },
         {
           "include": "#boolean-rules"
+        },
+        {
+          "include": "#mod-rules"
         },
         {
           "include": "#color-rules"
@@ -281,7 +299,7 @@
     "double-digit-number-rules": {
       "patterns": [
         {
-          "begin": "^\\s*(Quality)(?=\\s)",
+          "begin": "^\\s*(Quality|GemLevel)(?=\\s)",
           "end": "\\s*$",
           "captures": {
             "1": {
@@ -315,6 +333,27 @@
             },
             {
               "include": "#triple-digit-number"
+            }
+          ]
+        }
+      ]
+    },
+    "quadruple-digit-number-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(StackSize)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#operator"
+            },
+            {
+              "include": "#quadruple-digit-number"
             }
           ]
         }
@@ -363,6 +402,30 @@
             },
             {
               "include": "#quoted-boolean"
+            }
+          ]
+        }
+      ]
+    },
+    "mod-rules": {
+      "patterns": [
+        {
+          "begin": "^\\s*(HasMod)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#equality-operator"
+            },
+            {
+              "include": "#word"
+            },
+            {
+              "include": "#string"
             }
           ]
         }

@@ -12,15 +12,18 @@ Our ordering is currently:
 9. ShaperItem
 10. ShapedMap
 11. ElderMap
-12. DisableDropSound
-13. ItemLevel
-14. DropLevel
-15. SocketGroup
-16. Rarity
-17. Class
-18. BaseType
-19. Unknown entities.
-20. Action rules.
+12. HasMod
+13. DisableDropSound
+14. ItemLevel
+15. DropLevel
+16. GemLevel
+17. StackSize
+18. SocketGroup
+19. Rarity
+20. Class
+21. BaseType
+22. Unknown entities.
+23. Action rules.
 
 As you can see, we ultimately want to avoid the very costly `BaseType` rule, with other string-based rules being towards the bottom as well. This is also essentially the reverse of how most people will write item filters, with `Class` and `BaseType` typically starting each block.
 
