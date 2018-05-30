@@ -9,15 +9,6 @@ import { Position, Range } from "vscode-languageserver";
 const keywordRegex = /^(\s*)([A-Z]+)(?=\s|$)/i;
 const whitespaceCharacterRegex = /\s/;
 
-export enum Operator {
-  Equal,
-  GreaterThanEqual,
-  GreaterThan,
-  LessThanEqual,
-  LessThan,
-  Invalid
-}
-
 /**
  * Bypasses all equality operators and whitespace prior to the first potential
  * value of the filter rule.
@@ -87,55 +78,6 @@ export function bypassOperator(text: string, index: number): number | undefined 
   }
 
   return undefined;
-}
-
-/**
- * Parses the next operator from the given line, returning both its type and the
- * index of the entity that follows.
- * @param text The line text we're parsing.
- * @param index The current index for the line. This should generally be the
- *  very first space following the keyword.
- * @return A tuple containing the operator as the first element and the index
- * of the first non-operator character that follows on the line.
- */
-export function getOperator(text: string, index: number): [Operator, number | undefined] {
-  if (index >= text.length) return [Operator.Equal, undefined];
-
-  let operator = Operator.Invalid;
-  for (let i = index; i < text.length; i++) {
-    const character = text.charAt(i);
-    const characters = text.substr(i, 2);
-
-    if (characters === ">=" || characters === "<=") {
-      if (operator !== Operator.Invalid) {
-        return [Operator.Invalid, undefined];
-      } else {
-        operator = characters === ">=" ? Operator.GreaterThanEqual : Operator.LessThanEqual;
-        i++;
-      }
-    } else if (character === "=" || character === ">" || character === "<") {
-      if (operator !== Operator.Invalid) {
-        return [Operator.Invalid, undefined];
-      } else {
-        if (character === "=") {
-          operator = Operator.Equal;
-        } else if (character === ">") {
-          operator = Operator.GreaterThan;
-        } else if (character === "<") {
-          operator = Operator.LessThan;
-        }
-      }
-    } else if (!whitespaceCharacterRegex.test(character)) {
-      if (operator === Operator.Invalid) {
-        return [Operator.Equal, i];
-      } else {
-        return [operator, i];
-      }
-    }
-  }
-
-  return operator === Operator.Invalid ? [Operator.Equal, text.length] :
-    [Operator.Invalid, undefined];
 }
 
 /**

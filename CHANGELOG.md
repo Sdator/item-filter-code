@@ -2,12 +2,13 @@
 
 The history of changes to the extension.
 
+### Version 1.10.1 (May 30th, 2018)
+- Cleared up minor confusion regarding the `StackSize` rule.
+
 ### Version 1.10.0 (May 30th, 2018)
 - The `HasExplicitMod` rule now takes multiple string values.
 - The `HasExplicitMod` rule can now appear up to 6 times in each block.
-- Added a new configuration variable: 'item-filter.limitedModPool'. This variable allows you to choose between two sets of valid values for the HasExplicitMod rule, with one set containing all explicit mods in the game and the other containing only the mods from the Warbands and Incursion leagues. When set to true, the latter set will be used.
-- Added autocompletion for the values of the `StackSize` rule.
-- Modified the hover for the value of `StackSize` rule to include a list of the matched stackable currency items.
+- Added a new configuration variable: `item-filter.limitedModPool`. This variable allows you to choose between two sets of valid values for the HasExplicitMod rule, with one set containing all explicit mods in the game and the other containing only the mods from the Warbands and Incursion leagues. When set to true, the latter set will be used.
 - Fixed a syntax error within the language configuration file.
 - Improved the consistency for hover results, with there now being a separator for hovers providing additional information.
 - Fixed a bug where issues regarding the rule limitations on each block were not being reported.

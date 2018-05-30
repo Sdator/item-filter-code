@@ -57,9 +57,6 @@ export interface FilterData {
     },
     stringIdentifiers: { [key: string]: string }
   };
-  stackSizes: {
-    [key: string]: number
-  };
 }
 
 export interface UniqueItem {

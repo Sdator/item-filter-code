@@ -75,8 +75,6 @@ export function getCompletionSuggestions(config: ConfigurationValues, lineText: 
         return getBooleanCompletions(config, position, lineText, currentIndex);
       case "HasExplicitMod":
         return getModCompletions(config, position, lineText, currentIndex);
-      case "StackSize":
-        return getStackSizeCompletions(position, lineText, currentIndex);
       default:
         return [];
     }
@@ -443,38 +441,6 @@ function getBooleanCompletions(config: ConfigurationValues, pos: Position,
   const pushCompletions = (range: Range) => {
     for (const bool of filterData.booleans) {
       result.push(completionForStringRange(bool, range, config.booleanQuotes));
-    }
-  };
-
-  if (valueIndex == null || pos.character < valueIndex) {
-    const range: Range = {
-      start: { line: pos.line, character: pos.character },
-      end: { line: pos.line, character: pos.character }
-    };
-    pushCompletions(range);
-  } else {
-    const range = parser.getNextValueRange(text, pos.line, valueIndex);
-    if (range != null && parser.isNextValue(range, pos)) {
-      range.end.character++;
-      pushCompletions(range);
-    }
-  }
-
-  return result;
-}
-
-function getStackSizeCompletions(pos: Position, text: string, index: number): CompletionItem[] {
-
-  const result: CompletionItem[] = [];
-
-  const valueIndex = parser.bypassOperator(text, index);
-
-  const pushCompletions = (range: Range) => {
-    for (const currency in filterData.stackSizes) {
-      const stackSize = filterData.stackSizes[currency];
-      const suggestion = completionForStringRange(currency, range, false);
-      if (suggestion.textEdit) suggestion.textEdit.newText = `${stackSize}`;
-      result.push(suggestion);
     }
   };
 

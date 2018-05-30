@@ -6,7 +6,7 @@ keywordDescriptions:
   DropLevel: "The level at which the item begins dropping at."
   GemLevel: "The level of the dropped gem."
   Quality: "The amount of quality on the item."
-  StackSize: "The stack size of the currency item."
+  StackSize: "The current stack size of a stackable currency."
   Rarity: "The rarity of the item."
   Class: "The item class of the item. Specifying part of a class name is allowed and will match any classes with that text in the name."
   BaseType: "The base type of the item. Specifying a part of a base type name is allowed and will match any of the base types with that text in the name."

@@ -46,8 +46,9 @@ export function getHoverResult(text: string, position: Position): Hover | null {
 
   switch (keyword) {
     case "ItemLevel":
+      return getItemLevelHover(position, text, currentIndex);
     case "DropLevel":
-      return getLevelHover(position, text, currentIndex);
+      return getDropLevelHover(position, text, currentIndex);
     case "GemLevel":
       return getGemLevelHover(position, text, currentIndex);
     case "Quality":
@@ -350,115 +351,67 @@ function getSoundHover(pos: Position, text: string, index: number): Hover | null
   return result;
 }
 
-function getStackSizeHover(pos: Position, text: string, index: number): Hover | null {
-  let result: Hover | null = null;
-
-  const operatorResult = parser.getOperator(text, index);
-  const [operator, valueIndex] = operatorResult;
-
-  if (valueIndex == null || pos.character < valueIndex) {
-    return result;
-  }
-
-  const range = parser.getNextValueRange(text, pos.line, valueIndex);
-  if (range == null || !parser.isNextValue(range, pos)) return result;
-
-  const valueString = text.slice(range.start.character, range.end.character + 1);
-  const value = parseInt(valueString);
-  if (isNaN(value)) {
-    return result;
-  }
-
-  const stackSizeMin = filterData.ruleRanges["StackSize"].min;
-  const stackSizeMax = filterData.ruleRanges["StackSize"].max;
-
-  let min: number;
-  let max: number;
-
-  switch (operator) {
-    case parser.Operator.Equal:
-      min = value;
-      max = value;
-      break;
-    case parser.Operator.GreaterThan:
-      min = value + 1;
-      max = stackSizeMax;
-      break;
-    case parser.Operator.GreaterThanEqual:
-      min = value;
-      max = stackSizeMax;
-      break;
-    case parser.Operator.LessThan:
-      min = stackSizeMin;
-      max = value - 1;
-      break;
-    case parser.Operator.LessThanEqual:
-      min = stackSizeMin;
-      max = value;
-      break;
-    default:
-      return result;
-  }
-
-  let output = "The stack size of the currency item, which can be any number from " +
-    `${stackSizeMin} to ${stackSizeMax}.`;
-  let firstValue = true;
-  for (const currentValue in filterData.stackSizes) {
-    const currentStackSize = filterData.stackSizes[currentValue];
-
-    if (currentStackSize >= min && currentStackSize <= max) {
-      if (firstValue) {
-        output += "\n\n---\n\nCaptured Currency:\n";
-        firstValue = false;
-      }
-      output += `- ${currentValue} \`${currentStackSize}\`\n`;
-    }
-  }
-
-  result = {
-    contents: output,
-    range
-  };
-
-  return result;
+function getDropLevelHover(pos: Position, text: string, index: number): Hover | null {
+  const ranges = filterData.ruleRanges["DropLevel"];
+  const contents = "The level at which an item begins dropping, which can be any " +
+    `number from ${ranges.min} to ${ranges.max}.`;
+  return getSingleValueHover(pos, text, index, contents, false);
 }
 
-function getLevelHover(pos: Position, text: string, index: number): Hover | null {
-  const contents = "A level, which can be any number from 0 to 100.";
+function getItemLevelHover(pos: Position, text: string, index: number): Hover | null {
+  const ranges = filterData.ruleRanges["ItemLevel"];
+  const contents = "The level at which the item was generated, which can be any " +
+    `number from ${ranges.min} to ${ranges.max}.`;
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
 function getGemLevelHover(pos: Position, text: string, index: number): Hover | null {
-  const contents = "The level of the gem, which can be any number from 1 to 30.";
+  const ranges = filterData.ruleRanges["GemLevel"];
+  const contents = "The level of the gem, which can be any number from " +
+    `${ranges.min} to ${ranges.max}.`;
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
 function getSocketsHover(pos: Position, text: string, index: number): Hover | null {
-  const contents = "The number of sockets on the item, which can be any number from 0 to 6.";
+  const ranges = filterData.ruleRanges["Sockets"];
+  const contents = "The number of sockets on the item, which can be any number from " +
+    `${ranges.min} to ${ranges.max}.`;
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
 function getQualityHover(pos: Position, text: string, index: number): Hover | null {
-  const contents = "The quality of the item, which can be any number from 0 to 30.";
+  const ranges = filterData.ruleRanges["Quality"];
+  const contents = "The quality of the item, which can be any number from " +
+    `${ranges.min} to ${ranges.max}.`;
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
 function getLinkedSocketsHover(pos: Position, text: string, index: number): Hover | null {
+  const ranges = filterData.ruleRanges["LinkedSockets"];
   const contents = "The number of linked sockets on the item, which can be either " +
-    "0 or a number from 2 to 6.";
+    `0 or a number from ${ranges.min} to ${ranges.max}.`;
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
 function getHeightHover(pos: Position, text: string, index: number): Hover | null {
+  const ranges = filterData.ruleRanges["Height"];
   const contents = "The height of the item within the inventory, which can be a " +
-    "number from 1 to 4.";
+    `number from ${ranges.min} to ${ranges.max}.`;
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
 function getWidthHover(pos: Position, text: string, index: number): Hover | null {
+  const ranges = filterData.ruleRanges["Width"];
   const contents = "The height of the item within the inventory, which can be a " +
-    "number from 1 to 2.";
+    `number from ${ranges.min} to ${ranges.max}.`;
   return getSingleValueHover(pos, text, index, contents, false);
+}
+
+function getStackSizeHover(pos: Position, text: string, index: number): Hover | null {
+  const ranges = filterData.ruleRanges["StackSize"];
+  const content = "The stack size of the currency item, which can be any number from " +
+    `${ranges.min} to ${ranges.max}.`;
+  return getSingleValueHover(pos, text, index, content, false);
 }
 
 function getRarityHover(pos: Position, text: string, index: number): Hover | null {
@@ -482,7 +435,9 @@ function getBooleanHover(pos: Position, text: string, index: number): Hover | nu
 }
 
 function getFontSizeHover(pos: Position, text: string, index: number): Hover | null {
-  const content = "The size to use for the font, which can be any number from 18 to 45.";
+  const ranges = filterData.ruleRanges["SetFontSize"];
+  const content = "The size to use for the font, which can be any number from " +
+    `${ranges.min} to ${ranges.max}.`;
   return getSingleValueHover(pos, text, index, content, true);
 }
 
