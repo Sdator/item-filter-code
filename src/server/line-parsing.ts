@@ -240,8 +240,11 @@ function parseModRule(line: LineInformation): void {
   const parsedMod = parse.value;
   const parseRange = parse.range;
 
+  const prefixes = line.config.limitedModPool ? modData.limited.prefixes : modData.full.prefixes;
+  const suffixes = line.config.limitedModPool ? modData.limited.suffixes : modData.limited.suffixes;
+
   let invalidMod = true;
-  for (const mod of modData.prefixes) {
+  for (const mod of prefixes) {
     if (mod.includes(parsedMod)) {
       invalidMod = false;
       break;
@@ -249,7 +252,7 @@ function parseModRule(line: LineInformation): void {
   }
 
   if (invalidMod) {
-    for (const mod of modData.suffixes) {
+    for (const mod of suffixes) {
       if (mod.includes(parsedMod)) {
         invalidMod = false;
         break;

@@ -413,11 +413,14 @@ function getModCompletions(config: ConfigurationValues, pos: Position,
   const valueIndex = parser.bypassEqOperator(text, index);
 
   const pushCompletions = (range: Range) => {
-    for (const mod of modData.prefixes) {
+    const prefixes = config.limitedModPool ? modData.limited.prefixes : modData.full.prefixes;
+    const suffixes = config.limitedModPool ? modData.limited.suffixes : modData.full.suffixes;
+
+    for (const mod of prefixes) {
       result.push(completionForStringRange(mod, range, config.modQuotes));
     }
 
-    for (const mod of modData.suffixes) {
+    for (const mod of suffixes) {
       result.push(completionForStringRange(mod, range, config.modQuotes));
     }
 

@@ -2,14 +2,15 @@
 
 The history of changes to the extension.
 
+### Version 1.10.0 (TBD)
+- Added a new configuration variable: 'item-filter.limitedModPool'. This variable allows you to choose between two sets of valid values for the HasExplicitMod rule: one containing all explicit mods in the game and one containing only mods from the Warbands and Incursion leagues. When set to false, the former will be used.
+
 ### Version 1.9.0 (May 30th, 2018)
 - Renamed the `HasMod` rule to the *hopefully* correct name of `HasExplicitMod`.
 - Added validation for the value of the `HasExplicitMod` rule.
 - Added autocompletion for the value of the `HasExplicitMod` rule.
-- Added a new configuration variable: `item-filter.modWhitelist`. This variable allows values to be whitelisted
-for the `HasExplicitMod` rule.
-- Added a new configuration variable: `item-filter.modQuotes`. This variable allows you to set whether
-all values for the `HasExplicitMod` will be surrounded by quotation marks on autocompletion.
+- Added a new configuration variable: `item-filter.modWhitelist`. This variable allows values to be whitelisted for the `HasExplicitMod` rule.
+- Added a new configuration variable: `item-filter.modQuotes`. This variable allows you to set whether all values for the `HasExplicitMod` will be surrounded by quotation marks on autocompletion.
 
 If you find any mods that are missing from the extension, then an issue report would be helpful.
 
@@ -31,10 +32,8 @@ If you find any mods that are missing from the extension, then an issue report w
 - Quality rules can now have a value up to a maximum of 30, up from 20.
 - Rarity rule values now behave similarly to other string values.
 - The values for boolean rules, such as Corrupted, now behave similarly to other string values.
-- Several new configuration variables have been added in order to control the automatic insertion of
-quotation marks when autocompleting values.
-  + Note that the identifier for sound rules, such as PlayAlertSound, cannot be surrounded by quotation marks,
-  as that is an error within the game.
+- Several new configuration variables have been added in order to control the automatic insertion of quotation marks when autocompleting values.
+  + Note that the identifier for sound rules, such as PlayAlertSound, cannot be surrounded by quotation marks, as that is an error within the game.
 - Updated from the proposed color picker API to the officially released API.
   + Visual Studio Code 1.20.0 (released in January of 2018) or newer is now required by the extension.
 - Both the `Quality` rule and the `Rarity` rule can now be used twice within a block.
@@ -79,8 +78,7 @@ quotation marks when autocompleting values.
 - Sound identifiers now have a border decoration within the editor.
 - Windows users can now play sounds by hovering over sound identifiers.
 - Added several partial item bases to the autocompletion results.
-- Class rules that proceed a BaseType rule are now always used when determining
-  whether or not each item base is valid.
+- Class rules that proceed a BaseType rule are now always used when determining whether or not each item base is valid.
 - Fixed an unhandled promise rejection relating to invalid or whitelisted keywords.
 
 ### Version 1.0.1 (February 15th, 2018)

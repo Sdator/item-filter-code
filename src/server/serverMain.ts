@@ -27,6 +27,7 @@ let config: ConfigurationValues = {
   modWhitelist: [],
   performanceHints: true,
   alwaysShowAlpha: false,
+  limitedModPool: true,
   itemValueQuotes: true,
   booleanQuotes: false,
   rarityQuotes: false,

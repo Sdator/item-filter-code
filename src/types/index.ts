@@ -20,6 +20,7 @@ export interface ConfigurationValues {
   modWhitelist: string[];
   performanceHints: boolean;
   alwaysShowAlpha: boolean;
+  limitedModPool: boolean;
   itemValueQuotes: boolean;
   booleanQuotes: boolean;
   rarityQuotes: boolean;
@@ -81,8 +82,14 @@ export interface SuggestionData {
 }
 
 export interface ModData {
-  prefixes: string[];
-  suffixes: string[];
+  full: {
+    prefixes: string[];
+    suffixes: string[];
+  }
+  limited: {
+    prefixes: string[];
+    suffixes: string[];
+  }
 }
 
 export interface SoundInformation {

@@ -159,6 +159,13 @@
             "default": false,
             "scope": "window"
           },
+          "item-filter.limitedModPool": {
+            "title": "Limited Mod Pool",
+            "description": "For the HasExplicitMod rule, only allow mods from either Warbands or Incursion within item filters.",
+            "type": "boolean",
+            "default": true,
+            "scope": "window"
+          },
           "item-filter.itemValueQuotes": {
             "title": "Item Value Quotes",
             "description": "When autocompleting string values for the Class and BaseType rules, always surround the value with quotation marks.",
