@@ -20,12 +20,13 @@ import {
 } from "vscode-languageserver";
 
 import { dataRoot } from "../common";
-import { ConfigurationValues, ItemData, FilterData, SuggestionData } from "../types";
+import { ConfigurationValues, ItemData, FilterData, ModData, SuggestionData } from "../types";
 import * as parser from "./context-parsing";
 
 const itemData = <ItemData>require(path.join(dataRoot, "items.json"));
 const filterData = <FilterData>require(path.join(dataRoot, "filter.json"));
 const suggestionData = <SuggestionData>require(path.join(dataRoot, "suggestions.json"));
+const modData = <ModData>require(path.join(dataRoot, "mods.json"));
 
 const whitespaceRegex = /^\s*$/;
 const whitespaceCharacterRegex = /\s/;
@@ -72,6 +73,8 @@ export function getCompletionSuggestions(config: ConfigurationValues, lineText: 
       case "ElderMap":
       case "DisableDropSound":
         return getBooleanCompletions(config, position, lineText, currentIndex);
+      case "HasExplicitMod":
+        return getModCompletions(config, position, lineText, currentIndex);
       default:
         return [];
     }
@@ -158,7 +161,9 @@ function getKeywordCompletions(config: ConfigurationValues, pos: Position,
   }
 
   for (const wlk of config.ruleWhitelist) {
-    result.push(keywordToCompletionItem(wlk, range));
+    const suggestion = keywordToCompletionItem(wlk, range);
+    suggestion.kind = CompletionItemKind.Reference;
+    result.push(suggestion);
   }
 
   return result;
@@ -317,7 +322,9 @@ function getAlertSoundCompletions(config: ConfigurationValues, pos: Position,
     }
 
     for (const wls of config.soundWhitelist) {
-      result.push(completionForStringRange(wls, range, false));
+      const suggestion = completionForStringRange(wls, range, false);
+      suggestion.kind = CompletionItemKind.Reference;
+      result.push(suggestion);
     }
   };
 
@@ -378,6 +385,46 @@ function getBooleanCompletions(config: ConfigurationValues, pos: Position,
   const pushCompletions = (range: Range) => {
     for (const bool of filterData.booleans) {
       result.push(completionForStringRange(bool, range, config.booleanQuotes));
+    }
+  };
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    const range: Range = {
+      start: { line: pos.line, character: pos.character },
+      end: { line: pos.line, character: pos.character }
+    };
+    pushCompletions(range);
+  } else {
+    const range = parser.getNextValueRange(text, pos.line, valueIndex);
+    if (range != null && parser.isNextValue(range, pos)) {
+      range.end.character++;
+      pushCompletions(range);
+    }
+  }
+
+  return result;
+}
+
+function getModCompletions(config: ConfigurationValues, pos: Position,
+  text: string, index: number): CompletionItem[] {
+
+  const result: CompletionItem[] = [];
+
+  const valueIndex = parser.bypassEqOperator(text, index);
+
+  const pushCompletions = (range: Range) => {
+    for (const mod of modData.prefixes) {
+      result.push(completionForStringRange(mod, range, config.modQuotes));
+    }
+
+    for (const mod of modData.suffixes) {
+      result.push(completionForStringRange(mod, range, config.modQuotes));
+    }
+
+    for (const mod of config.modWhitelist) {
+      const suggestion = completionForStringRange(mod, range, config.modQuotes);
+      suggestion.kind = CompletionItemKind.Reference;
+      result.push(suggestion);
     }
   };
 

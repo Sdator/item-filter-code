@@ -87,6 +87,7 @@ export function preprocessData(): void {
   const filterData = loadYAML(path.join("data", "filter.yaml"));
   const soundData = loadYAML(path.join("data", "sounds.yaml"));
   const uniqueData = loadYAML(path.join("data", "uniques.yaml"));
+  const modData = loadYAML(path.join("data", "mods.yaml"));
   const suggestionData = loadYAML(path.join("data", "suggestions.yaml"));
   let itemData: { [key: string]: string[] };
   itemData = loadYAML(path.join("data", "items.yaml")) as typeof itemData;
@@ -115,6 +116,12 @@ export function preprocessData(): void {
   const suggestionDataContent = JSON.stringify(suggestionData);
   const suggestionOutputFile = path.join(buildRoot, "suggestions.json");
   fs.writeFile(suggestionOutputFile, suggestionDataContent, err => {
+    if (err) throw err;
+  });
+
+  const modDataContent = JSON.stringify(modData);
+  const modOutputFile = path.join(buildRoot, "mods.json");
+  fs.writeFile(modOutputFile, modDataContent, err => {
     if (err) throw err;
   });
 

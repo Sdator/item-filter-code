@@ -2,7 +2,7 @@
   "name": "item-filter-code",
   "description": "Support for editing Path of Exile item filters within Visual Studio Code.",
   "displayName": "Item Filter Code",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "author": "Glen Marker",
   "publisher": "GlenCFL",
   "license": "MIT",
@@ -101,7 +101,7 @@
         "title": "Item Filter Code",
         "properties": {
           "item-filter.baseWhitelist": {
-            "title": "Base Whitelist",
+            "title": "Item Base Whitelist",
             "description": "Additional item bases considered to be valid within item filters.",
             "type": [
               "array"
@@ -110,7 +110,7 @@
             "scope": "window"
           },
           "item-filter.classWhitelist": {
-            "title": "Class Whitelist",
+            "title": "Item Class Whitelist",
             "description": "Additional item classes considered to be valid within item filters.",
             "type": [
               "array"
@@ -129,7 +129,16 @@
           },
           "item-filter.soundWhitelist": {
             "title": "Sound Whitelist",
-            "description": "Additional sound identifiers considered to be valid block rules within item filters.",
+            "description": "Additional sound identifiers considered to be valid within item filters.",
+            "type": [
+              "array"
+            ],
+            "default": [],
+            "scope": "window"
+          },
+          "item-filter.modWhitelist": {
+            "title": "Item Mod Whitelist",
+            "description": "Additional explicit item mods considered to be valid for the HasExplicitMod rule.",
             "type": [
               "array"
             ],
@@ -169,6 +178,13 @@
             "description": "When autocompleting the value for the Rarity rule, always surround the value with quotation marks.",
             "type": "boolean",
             "default": false,
+            "scope": "window"
+          },
+          "item-filter.modQuotes": {
+            "title": "Mod Value Quotes",
+            "description": "When autocompleting the value for the HasExplicitMod rule, always surround the value with quotation marks.",
+            "type": "boolean",
+            "default": true,
             "scope": "window"
           },
           "item-filter.linuxMPGAvailable": {

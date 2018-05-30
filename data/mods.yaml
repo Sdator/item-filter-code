@@ -1,0 +1,537 @@
+---
+prefixes:
+  - Abhorrent
+  - Acrobat's
+  - Adept's
+  - Agile
+  - Alchemist's
+  - Alluring
+  - Ample
+  - Anarchic
+  - Annealed
+  - Antagonist's
+  - Apprentice's
+  - Aqua
+  - Archmage's
+  - Arcing
+  - Armadillo's
+  - Armoured
+  - Athlete's
+  - Avenger's
+  - Azure
+  - Barbed
+  - Beetle's
+  - Beryl
+  - Betrayer's
+  - Bipedal
+  - Blasting
+  - Blazing
+  - Bloodthirsty
+  - Blue
+  - Blurred
+  - Boggart's
+  - Brawler's
+  - Brinerot
+  - Bubbling
+  - Burning
+  - Burnished
+  - Butterfly's
+  - Buttressed
+  - Buzzing
+  - Calming
+  - Capricious
+  - Carapaced
+  - Caster's
+  - Catalysed
+  - Catalyzing
+  - Caustic
+  - Cautious
+  - Ceremonial
+  - Cerulean
+  - Chaining
+  - Chalybeous
+  - Champion's
+  - Chanter's
+  - Cheetah's
+  - Chemist's
+  - Chilled
+  - Citaqualotl's
+  - Cobalt
+  - Combatant's
+  - Conflagrating
+  - Conqueror's
+  - Crab's
+  - Crackling
+  - Cremating
+  - Cruel
+  - Dancer's
+  - Dauntless
+  - Dazzling
+  - Deadly
+  - Deceiver's
+  - Demonic
+  - Dictator's
+  - Discharging
+  - Djinn's
+  - Dragon's
+  - Dragonfly's
+  - Duelist's
+  - Eldritch
+  - Electrocuting
+  - Elephant's
+  - Emanant
+  - Emperor's
+  - Empowered
+  - Empowering
+  - Encased
+  - Entombing
+  - Ephemeral
+  - Ethereal
+  - Evanescent
+  - Experimenter's
+  - Fearless
+  - Feasting
+  - Fecund
+  - Fencer's
+  - Feral
+  - Filigree
+  - Flame Spinner's
+  - Flaming
+  - Flaring
+  - Fleet
+  - Fletcher's
+  - Fortified
+  - Freezing
+  - Frigid
+  - Frost Weaver's
+  - Frosted
+  - Frozen
+  - Gazelle's
+  - Gentian
+  - Ghost's
+  - Girded
+  - Glaciated
+  - Gladiator's
+  - Gleaming
+  - Glimmering
+  - Glinting
+  - Glittering
+  - Glowing
+  - Glyphic's
+  - Gremlin's
+  - Grounded
+  - Guatelitzi's
+  - Hale
+  - Haunting
+  - Healthy
+  - Heated
+  - Heavy
+  - Hero's
+  - Hexproof
+  - Hexwarded
+  - Honed
+  - Humming
+  - Hummingbird's
+  - Icy
+  - Illusory
+  - Impervious
+  - Impregnable
+  - Incandescent
+  - Incanter's
+  - Incinerating
+  - Incombustible
+  - Inculcated
+  - Indomitable
+  - Infixed
+  - Infused
+  - Infusing
+  - Ingrained
+  - Inspired
+  - Inspiring
+  - Instilled
+  - Interpolated
+  - Jagged
+  - Journeyman's
+  - Lacquered
+  - Lamprey's
+  - Lava Caller's
+  - Layered
+  - Legends
+  - Lich's
+  - Lobstered
+  - Lunar
+  - Mage's
+  - Magician's
+  - Magpie's
+  - Malicious
+  - Mammoth's
+  - Matatl's
+  - Mazarine
+  - Mercenary's
+  - Merciless
+  - Mirage's
+  - Mirrored
+  - Molten
+  - Mosquito's
+  - Moth's
+  - Multifarious
+  - Mutewind
+  - Naga's
+  - Nightmare's
+  - Nihilist's
+  - Occultist's
+  - Opalescent
+  - Otherworldly
+  - Overlord's
+  - Overpowering
+  - Panicked
+  - Paragon's
+  - Parched
+  - Perandus'
+  - Perpetual
+  - Phantasm's
+  - Phased
+  - Pirate's
+  - Pixie's
+  - Plated
+  - Polar
+  - Polished
+  - Professor's
+  - Protective
+  - Pulsing
+  - Punishing
+  - Radiating
+  - Rapturous
+  - Razor Sharp
+  - Reanimator's
+  - Reaver's
+  - Recovering
+  - Redblade
+  - Reinforced
+  - Remora's
+  - Resistant
+  - Resolute
+  - Resplendent
+  - Rhino's
+  - Ribbed
+  - Robust
+  - Rotund
+  - Runic
+  - Runner's
+  - Sanguine
+  - Sapphire
+  - Sapping
+  - Saturated
+  - Savage
+  - Scholar's
+  - Scintillating
+  - Scorching
+  - Scrapper's
+  - Seething
+  - Seraphim's
+  - Serrated
+  - Shade's
+  - Shadowy
+  - Sharpshooter's
+  - Shining
+  - Shocking
+  - Skeletal
+  - Slithering
+  - Smoking
+  - Smoldering
+  - Smouldering
+  - Snapping
+  - Solar
+  - Sorcerer's
+  - Sparking
+  - Spectre's
+  - Spiny
+  - Splitting
+  - Sprinter's
+  - Squire's
+  - Stallion's
+  - Stalwart
+  - Stout
+  - Strong-Willed
+  - Studded
+  - Summoner's
+  - Surgeon's
+  - Tacati's
+  - Tempered
+  - Tempest King's
+  - Thaumaturgist's
+  - The Shaper's
+  - Thickened
+  - Thirsty
+  - Thorny
+  - Thunder Lord's
+  - Titan's
+  - Topotante's
+  - Turncoat's
+  - Twinned
+  - Tyrannical
+  - Unassailable
+  - Undead
+  - Unleashed
+  - Unreal
+  - Unstoppable
+  - Unwavering
+  - Unworldly
+  - Vampire's
+  - Vaporous
+  - Vicious
+  - Vigorous
+  - Virile
+  - Warlock's
+  - Wasp's
+  - Weaponmaster's
+  - Wicked
+  - Winterbringer's
+  - Wizard's
+  - Wraith's
+  - Xopec's
+  - Zaffre
+  - Zana's
+suffixes:
+  - of Absorption
+  - of Acclaim
+  - of Accuracy
+  - of Adamantite Skin
+  - of Adrenaline
+  - of Amassment
+  - of Anger
+  - of Animation
+  - of Archaeology
+  - of Arcing
+  - of Ashes
+  - of Balance
+  - of Bameth
+  - of Banishment
+  - of Bliss
+  - of Bloodlines
+  - of Calamity
+  - of Calm
+  - of Celebration
+  - of Champions
+  - of Cinders
+  - of Citaqualotl
+  - of Coals
+  - of Collecting
+  - of Commanders
+  - of Congealment
+  - of Consumption
+  - of Corundum Skin
+  - of Craving
+  - of Curing
+  - of Darting
+  - of Dazing
+  - of Deadliness
+  - of Desecration
+  - of Destruction
+  - of Disaster
+  - of Discharge
+  - of Dousing
+  - of Drought
+  - of Ease
+  - of Elation
+  - of Electricity
+  - of Elemental Weakness
+  - of Embers
+  - of Endurance
+  - of Enfeeblement
+  - of Ephij
+  - of Euphoria
+  - of Eviction
+  - of Excavation
+  - of Excitement
+  - of Exile
+  - of Expertise
+  - of Exposure
+  - of Expulsion
+  - of Fame
+  - of Fending
+  - of Ferocity
+  - of Finesse
+  - of Flames
+  - of Flight
+  - of Floe
+  - of Fracturing
+  - of Frenzy
+  - of Fury
+  - of Gathering
+  - of Giants
+  - of Glaciation
+  - of Gluttony
+  - of Grandmastery
+  - of Grounding
+  - of Guatelitzi
+  - of Haast
+  - of Havoc
+  - of Heat
+  - of Hemomancy
+  - of Hoarding
+  - of Hordes
+  - of Ice
+  - of Immolation
+  - of Impact
+  - of Impotence
+  - of Incision
+  - of Infamy
+  - of Insulation
+  - of Intercepting
+  - of Ire
+  - of Iron Skin
+  - of Joy
+  - of Legerdemain
+  - of Light
+  - of Lightning
+  - of Mastery
+  - of Matatl
+  - of Menace
+  - of Miring
+  - of Needling
+  - of Nimbleness
+  - of Nirvana
+  - of Nourishment
+  - of Osmosis
+  - of Penetrating
+  - of Piercing
+  - of Plunder
+  - of Power
+  - of Precision
+  - of Prestidigitation
+  - of Propulsion
+  - of Puhuarte
+  - of Radiance
+  - of Rage
+  - of Raiding
+  - of Refilling
+  - of Reflexes
+  - of Regrowth
+  - of Rejuvenation
+  - of Renown
+  - of Resistance
+  - of Restoration
+  - of Rime
+  - of Ruin
+  - of Rupturing
+  - of Rust
+  - of Savouring
+  - of Shaping
+  - of Shining
+  - of Sipping
+  - of Skill
+  - of Skirmishing
+  - of Slamming
+  - of Sleet
+  - of Smothering
+  - of SNow
+  - of Sortilege
+  - of Sparks
+  - of Staggering
+  - of Stasis
+  - of Static
+  - of Staunching
+  - of Steadiness
+  - of Steel Skin
+  - of Stinging
+  - of Stone Skin
+  - of Stunning
+  - of Success
+  - of Tacati
+  - of Talent
+  - of Temporal Chains
+  - of the Apt
+  - of the Assassin
+  - of the Augur
+  - of the Bear
+  - of the Boxer
+  - of the Brawler
+  - of the Brute
+  - of the Cloud
+  - of the Clouds
+  - of the Combatant
+  - of the Comet
+  - of the Crystal
+  - of the Deadeye
+  - of the Drake
+  - of the Elder
+  - of the Falcon
+  - of the Fox
+  - of the Furnace
+  - of the Galaxy
+  - of the Gale
+  - of the Genius
+  - of the Gladiator
+  - of the Gods
+  - of the Goliath
+  - of the Gorilla
+  - of the Heavens
+  - of the Hydra
+  - of the Ice
+  - of the Infinite
+  - of the Inuit
+  - of the Jaguar
+  - of the Kaleidoscope
+  - of the Kiln
+  - of the Leopard
+  - of the Leviathan
+  - of the Lightning
+  - of the Lion
+  - of the Lizard
+  - of the Lost
+  - of the Lynx
+  - of the Maelstrom
+  - of the Magma
+  - of the Marksman
+  - of the Meteor
+  - of the Mongoose
+  - of the Newt
+  - of the Panther
+  - of the Penguin
+  - of the Phantasm
+  - of the Philosopher
+  - of the Phoenix
+  - of the Polar Bear
+  - of the Prism
+  - of the Prodigy
+  - of the Pugilist
+  - of the Pupil
+  - of the Rainbow
+  - of the Ranger
+  - of the Sage
+  - of the Salamander
+  - of the Savant
+  - of the Seal
+  - of the Sky
+  - of the Sniper
+  - of the Squall
+  - of the Starfish
+  - of the Storm
+  - of the Student
+  - of the Tempest
+  - of the Thunderhead
+  - of the Titan
+  - of the Troll
+  - of the Universe
+  - of the Virtuoso
+  - of the Volcano
+  - of the Walrus
+  - of the Whelpling
+  - of the Wind
+  - of the Worthy
+  - of the Wrestler
+  - of the Yeti
+  - of the Zephyr
+  - of Thick Skin
+  - of Toughness
+  - of Triumph
+  - of Tzteosh
+  - of Unmaking
+  - of Variegation
+  - of Venom
+  - of Victory
+  - of Voltage
+  - of Vulnerability
+  - of Walling
+  - of Warding

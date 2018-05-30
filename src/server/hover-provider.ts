@@ -73,7 +73,7 @@ export function getHoverResult(text: string, position: Position): Hover | null {
     case "ElderMap":
     case "DisableDropSound":
       return getBooleanHover(position, text, currentIndex);
-    case "HasMod":
+    case "HasExplicitMod":
       return getModHover(position, text, currentIndex);
     case "Class":
       return getClassHover(position, text, currentIndex);

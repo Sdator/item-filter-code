@@ -12,7 +12,7 @@ Our ordering is currently:
 9. ShaperItem
 10. ShapedMap
 11. ElderMap
-12. HasMod
+12. HasExplicitMod
 13. DisableDropSound
 14. ItemLevel
 15. DropLevel

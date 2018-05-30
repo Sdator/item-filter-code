@@ -24,11 +24,13 @@ let config: ConfigurationValues = {
   classWhitelist: [],
   ruleWhitelist: [],
   soundWhitelist: [],
+  modWhitelist: [],
   performanceHints: true,
   alwaysShowAlpha: false,
   itemValueQuotes: true,
   booleanQuotes: false,
-  rarityQuotes: false
+  rarityQuotes: false,
+  modQuotes: true
 };
 
 const connection: IConnection = createConnection(new IPCMessageReader(process),

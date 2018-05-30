@@ -9,13 +9,14 @@ import * as path from "path";
 import { ColorInformation, Diagnostic, DiagnosticSeverity, Range } from "vscode-languageserver";
 
 import { dataRoot } from "../common";
-import { ConfigurationValues, FilterData, ItemData, SoundInformation } from "../types";
+import { ConfigurationValues, FilterData, ItemData, ModData, SoundInformation } from "../types";
 import { stylizedArrayJoin } from "./helpers";
 import { BlockContext, FilterContext } from "./item-filter";
 import { TokenParser, TokenParseResult } from "./token-parsing";
 
 const itemData = <ItemData>require(path.join(dataRoot, "items.json"));
 const filterData = <FilterData>require(path.join(dataRoot, "filter.json"));
+const modData = <ModData>require(path.join(dataRoot, "mods.json"));
 
 /** The result of parsing an item filter line. */
 export interface BaseParseLineResult {
@@ -67,136 +68,112 @@ export interface LineInformation {
   parser: TokenParser;
 }
 
-export function isKeywordedParseLineResult(obj: object): obj is KeywordedParseLineResult {
-  return (<KeywordedParseLineResult>obj).keyword != null;
-}
+export function parseLine(config: ConfigurationValues, filterContext: FilterContext,
+  blockContext: BlockContext, text: string, row: number): ParseLineResult {
 
-function reportUnknownKeyword(line: LineInformation): void {
-  line.result.diagnostics.push({
-    message: "Unknown filter keyword.",
-    range: line.result.keywordRange,
-    severity: DiagnosticSeverity.Error,
-    source: line.filterContext.source
-  });
-}
-
-function resetBlockInformation(context: BlockContext): void {
-  context.classes = [];
-  context.previousRules.clear();
-  context.root = undefined;
-}
-
-function reportTrailingText(line: LineInformation, severity: DiagnosticSeverity): void {
-  const range: Range = {
-    start: { line: line.result.row, character: line.parser.currentIndex },
-    end: { line: line.result.row, character: line.parser.textEndIndex }
+  const parser = new TokenParser(text, row);
+  const baseResult: BaseParseLineResult = {
+    row,
+    lineRange: {
+      start: { line: parser.row, character: parser.textStartIndex },
+      end: { line: parser.row, character: parser.textEndIndex }
+    },
+    diagnostics: [],
   };
 
-  const message = severity === DiagnosticSeverity.Warning ?
-    "This trailing text will be ignored by Path of Exile." :
-    "This trailing text will be considered an error by Path of Exile.";
+  if (parser.isEmpty() || parser.isCommented()) return baseResult;
 
-  line.result.diagnostics.push({
-    message,
-    range,
-    severity,
-    source: line.filterContext.source
-  });
-}
-
-function reportNonEqualityOperator(line: LineInformation, parse: TokenParseResult<string>): void {
-  line.result.diagnostics.push({
-    message: `Invalid operator for the ${line.result.keyword} rule. Only the equality` +
-      " operator is supported by this rule.",
-    range: parse.range,
-    severity: DiagnosticSeverity.Error,
-    source: line.filterContext.source
-  });
-}
-
-function reportInvalidColor(line: LineInformation, result: TokenParseResult<number>,
-  min: number, max: number): void {
-
-  line.result.diagnostics.push({
-    message: `Invalid value for a ${line.result.keyword} rule.` +
-      `Expected 3-4 numbers within the ${min}-${max} range.`,
-    range: result.range,
-    severity: DiagnosticSeverity.Error,
-    source: line.filterContext.source
-  });
-}
-
-function reportMissingColor(line: LineInformation, min: number, max: number): void {
-  line.result.diagnostics.push({
-    message: `Missing value for a ${line.result.keyword} rule.` +
-      `Expected 3-4 numbers within the ${min}-${max} range.`,
-    range: {
-      start: { line: line.result.row, character: line.parser.textStartIndex },
-      end: { line: line.result.row, character: line.parser.originalLength }
-    },
-    severity: DiagnosticSeverity.Error,
-    source: line.filterContext.source
-  });
-}
-
-function reportDuplicateString(line: LineInformation, parse: TokenParseResult<string>): void {
-  line.result.diagnostics.push({
-    message: `Duplicate value detected within a ${line.result.keyword} rule.`,
-    range: parse.range,
-    severity: DiagnosticSeverity.Warning,
-    source: line.filterContext.source
-  });
-}
-
-function expectNumber(line: LineInformation): TokenParseResult<number> | undefined {
-  const rangeLimits = filterData.ruleRanges[line.result.keyword];
-  assert(rangeLimits !== undefined);
-  const min = rangeLimits.min;
-  const max = rangeLimits.max;
-  const additionals = rangeLimits.additionals ? rangeLimits.additionals : [];
-
-  const numberResult = line.parser.nextNumber();
-
-  let secondPart: string;
-  if (additionals.length > 0) {
-    const additionalText = stylizedArrayJoin(additionals, ", or ");
-    secondPart = ` Valid values are either ${min}-${max} or ${additionalText}.`;
-  } else {
-    secondPart = ` Valid values are between ${min} and ${max}.`;
-  }
-
-  if (numberResult) {
-    let invalid = numberResult.value < min || numberResult.value > max;
-
-    if (invalid) {
-      for (const v of additionals) {
-        if (numberResult.value === v) invalid = false;
-      }
-    }
-
-    if (invalid) {
-      line.result.diagnostics.push({
-        message: `Invalid value for a ${line.result.keyword} rule. ${secondPart}`,
-        range: numberResult.range,
-        severity: DiagnosticSeverity.Error,
-        source: line.filterContext.source
-      });
-    } else {
-      return numberResult;
-    }
-  } else {
-    line.result.diagnostics.push({
-      message: `Missing value for a ${line.result.keyword} rule. ${secondPart}`,
-      range: {
-        start: { line: line.result.row, character: line.parser.textStartIndex },
-        end: { line: line.result.row, character: line.parser.originalLength }
-      },
+  const keywordResult = parser.nextWord();
+  if (!keywordResult) {
+    baseResult.diagnostics.push({
+      message: "Unreadable keyword, likely due to a stray character.",
+      range: baseResult.lineRange,
       severity: DiagnosticSeverity.Error,
-      source: line.filterContext.source
+      source: filterContext.source
     });
+    return baseResult;
   }
 
-  return undefined;
+  const keywordedResult: KeywordedParseLineResult = {
+    row,
+    lineRange: baseResult.lineRange,
+    diagnostics: baseResult.diagnostics,
+    keyword: keywordResult.value,
+    keywordRange: keywordResult.range,
+    knownKeyword: true,
+  };
+
+  const lineInfo: LineInformation = {
+    result: keywordedResult,
+    config,
+    filterContext,
+    blockContext,
+    parser,
+  };
+
+  switch (keywordedResult.keyword) {
+    case "Show":
+    case "Hide":
+      parseBlock(lineInfo);
+      break;
+    case "ItemLevel":
+    case "DropLevel":
+    case "GemLevel":
+    case "Quality":
+    case "StackSize":
+    case "Sockets":
+    case "LinkedSockets":
+    case "Height":
+    case "Width":
+      parseSingleNumberRule(lineInfo);
+      break;
+    case "SetFontSize":
+      parseSingleNumberRule(lineInfo, true);
+      break;
+    case "Rarity":
+      parseRarityRule(lineInfo);
+      break;
+    case "SocketGroup":
+      parseSocketGroupRule(lineInfo);
+      break;
+    case "Identified":
+    case "Corrupted":
+    case "ElderItem":
+    case "ShaperItem":
+    case "ShapedMap":
+    case "ElderMap":
+    case "DisableDropSound":
+      parseBooleanRule(lineInfo);
+      break;
+    case "HasExplicitMod":
+      parseModRule(lineInfo);
+      break;
+    case "SetBorderColor":
+    case "SetTextColor":
+    case "SetBackgroundColor":
+      parseColorRule(lineInfo);
+      break;
+    case "Class":
+      parseClassRule(lineInfo);
+      break;
+    case "BaseType":
+      parseBaseTypeRule(lineInfo);
+      break;
+    case "PlayAlertSound":
+    case "PlayAlertSoundPositional":
+      parseSoundRule(lineInfo);
+      break;
+    default:
+      let whitelistedKeyword = false;
+      for (const wlr of config.ruleWhitelist) {
+        if (keywordedResult.keyword === wlr) whitelistedKeyword = true;
+      }
+
+      keywordedResult.knownKeyword = false;
+      if (!whitelistedKeyword) reportUnknownKeyword(lineInfo);
+  }
+
+  return keywordedResult;
 }
 
 function parseBlock(line: LineInformation): void {
@@ -244,10 +221,10 @@ function parseModRule(line: LineInformation): void {
     }
   }
 
-  const stringResult = line.parser.nextString();
-  if (!stringResult) {
+  const parse = line.parser.nextString();
+  if (!parse) {
     line.result.diagnostics.push({
-      message: "A string value of an implicit mod, such as Tyrannical, " +
+      message: "A string value of an item mod, such as Tyrannical, " +
         "was expected, yet not found.",
       range: {
         start: { line: line.result.row, character: line.parser.textStartIndex },
@@ -256,9 +233,48 @@ function parseModRule(line: LineInformation): void {
       severity: DiagnosticSeverity.Error,
       source: line.filterContext.source
     });
+
+    return;
   }
 
-  // TODO(glen): verify this against a list of mods.
+  const parsedMod = parse.value;
+  const parseRange = parse.range;
+
+  let invalidMod = true;
+  for (const mod of modData.prefixes) {
+    if (mod.includes(parsedMod)) {
+      invalidMod = false;
+      break;
+    }
+  }
+
+  if (invalidMod) {
+    for (const mod of modData.suffixes) {
+      if (mod.includes(parsedMod)) {
+        invalidMod = false;
+        break;
+      }
+    }
+  }
+
+  if (invalidMod) {
+    for (const mod of line.config.modWhitelist) {
+      if (mod.includes(parsedMod)) {
+        invalidMod = false;
+        break;
+      }
+    }
+  }
+
+  if (invalidMod) {
+    line.result.diagnostics.push({
+      message: `Invalid value for a ${line.result.keyword} rule. Expected an item mod, ` +
+        "such as Tyrannical.",
+      range: parseRange,
+      severity: DiagnosticSeverity.Error,
+      source: line.filterContext.source
+    });
+  }
 
   if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
     reportTrailingText(line, DiagnosticSeverity.Error);
@@ -738,110 +754,134 @@ function parseBaseTypeRule(line: LineInformation) {
   }
 }
 
-export function parseLine(config: ConfigurationValues, filterContext: FilterContext,
-  blockContext: BlockContext, text: string, row: number): ParseLineResult {
+export function isKeywordedParseLineResult(obj: object): obj is KeywordedParseLineResult {
+  return (<KeywordedParseLineResult>obj).keyword != null;
+}
 
-  const parser = new TokenParser(text, row);
-  const baseResult: BaseParseLineResult = {
-    row,
-    lineRange: {
-      start: { line: parser.row, character: parser.textStartIndex },
-      end: { line: parser.row, character: parser.textEndIndex }
-    },
-    diagnostics: [],
-  };
+function expectNumber(line: LineInformation): TokenParseResult<number> | undefined {
+  const rangeLimits = filterData.ruleRanges[line.result.keyword];
+  assert(rangeLimits !== undefined);
+  const min = rangeLimits.min;
+  const max = rangeLimits.max;
+  const additionals = rangeLimits.additionals ? rangeLimits.additionals : [];
 
-  if (parser.isEmpty() || parser.isCommented()) return baseResult;
+  const numberResult = line.parser.nextNumber();
 
-  const keywordResult = parser.nextWord();
-  if (!keywordResult) {
-    baseResult.diagnostics.push({
-      message: "Unreadable keyword, likely due to a stray character.",
-      range: baseResult.lineRange,
-      severity: DiagnosticSeverity.Error,
-      source: filterContext.source
-    });
-    return baseResult;
+  let secondPart: string;
+  if (additionals.length > 0) {
+    const additionalText = stylizedArrayJoin(additionals, ", or ");
+    secondPart = ` Valid values are either ${min}-${max} or ${additionalText}.`;
+  } else {
+    secondPart = ` Valid values are between ${min} and ${max}.`;
   }
 
-  const keywordedResult: KeywordedParseLineResult = {
-    row,
-    lineRange: baseResult.lineRange,
-    diagnostics: baseResult.diagnostics,
-    keyword: keywordResult.value,
-    keywordRange: keywordResult.range,
-    knownKeyword: true,
-  };
+  if (numberResult) {
+    let invalid = numberResult.value < min || numberResult.value > max;
 
-  const lineInfo: LineInformation = {
-    result: keywordedResult,
-    config,
-    filterContext,
-    blockContext,
-    parser,
-  };
-
-  switch (keywordedResult.keyword) {
-    case "Show":
-    case "Hide":
-      parseBlock(lineInfo);
-      break;
-    case "ItemLevel":
-    case "DropLevel":
-    case "GemLevel":
-    case "Quality":
-    case "StackSize":
-    case "Sockets":
-    case "LinkedSockets":
-    case "Height":
-    case "Width":
-      parseSingleNumberRule(lineInfo);
-      break;
-    case "SetFontSize":
-      parseSingleNumberRule(lineInfo, true);
-      break;
-    case "Rarity":
-      parseRarityRule(lineInfo);
-      break;
-    case "SocketGroup":
-      parseSocketGroupRule(lineInfo);
-      break;
-    case "Identified":
-    case "Corrupted":
-    case "ElderItem":
-    case "ShaperItem":
-    case "ShapedMap":
-    case "ElderMap":
-    case "DisableDropSound":
-      parseBooleanRule(lineInfo);
-      break;
-    case "HasMod":
-      parseModRule(lineInfo);
-      break;
-    case "SetBorderColor":
-    case "SetTextColor":
-    case "SetBackgroundColor":
-      parseColorRule(lineInfo);
-      break;
-    case "Class":
-      parseClassRule(lineInfo);
-      break;
-    case "BaseType":
-      parseBaseTypeRule(lineInfo);
-      break;
-    case "PlayAlertSound":
-    case "PlayAlertSoundPositional":
-      parseSoundRule(lineInfo);
-      break;
-    default:
-      let whitelistedKeyword = false;
-      for (const wlr of config.ruleWhitelist) {
-        if (keywordedResult.keyword === wlr) whitelistedKeyword = true;
+    if (invalid) {
+      for (const v of additionals) {
+        if (numberResult.value === v) invalid = false;
       }
+    }
 
-      keywordedResult.knownKeyword = false;
-      if (!whitelistedKeyword) reportUnknownKeyword(lineInfo);
+    if (invalid) {
+      line.result.diagnostics.push({
+        message: `Invalid value for a ${line.result.keyword} rule. ${secondPart}`,
+        range: numberResult.range,
+        severity: DiagnosticSeverity.Error,
+        source: line.filterContext.source
+      });
+    } else {
+      return numberResult;
+    }
+  } else {
+    line.result.diagnostics.push({
+      message: `Missing value for a ${line.result.keyword} rule. ${secondPart}`,
+      range: {
+        start: { line: line.result.row, character: line.parser.textStartIndex },
+        end: { line: line.result.row, character: line.parser.originalLength }
+      },
+      severity: DiagnosticSeverity.Error,
+      source: line.filterContext.source
+    });
   }
 
-  return keywordedResult;
+  return undefined;
+}
+
+function reportUnknownKeyword(line: LineInformation): void {
+  line.result.diagnostics.push({
+    message: "Unknown filter keyword.",
+    range: line.result.keywordRange,
+    severity: DiagnosticSeverity.Error,
+    source: line.filterContext.source
+  });
+}
+
+function resetBlockInformation(context: BlockContext): void {
+  context.classes = [];
+  context.previousRules.clear();
+  context.root = undefined;
+}
+
+function reportTrailingText(line: LineInformation, severity: DiagnosticSeverity): void {
+  const range: Range = {
+    start: { line: line.result.row, character: line.parser.currentIndex },
+    end: { line: line.result.row, character: line.parser.textEndIndex }
+  };
+
+  const message = severity === DiagnosticSeverity.Warning ?
+    "This trailing text will be ignored by Path of Exile." :
+    "This trailing text will be considered an error by Path of Exile.";
+
+  line.result.diagnostics.push({
+    message,
+    range,
+    severity,
+    source: line.filterContext.source
+  });
+}
+
+function reportNonEqualityOperator(line: LineInformation, parse: TokenParseResult<string>): void {
+  line.result.diagnostics.push({
+    message: `Invalid operator for the ${line.result.keyword} rule. Only the equality` +
+      " operator is supported by this rule.",
+    range: parse.range,
+    severity: DiagnosticSeverity.Error,
+    source: line.filterContext.source
+  });
+}
+
+function reportInvalidColor(line: LineInformation, result: TokenParseResult<number>,
+  min: number, max: number): void {
+
+  line.result.diagnostics.push({
+    message: `Invalid value for a ${line.result.keyword} rule.` +
+      `Expected 3-4 numbers within the ${min}-${max} range.`,
+    range: result.range,
+    severity: DiagnosticSeverity.Error,
+    source: line.filterContext.source
+  });
+}
+
+function reportMissingColor(line: LineInformation, min: number, max: number): void {
+  line.result.diagnostics.push({
+    message: `Missing value for a ${line.result.keyword} rule.` +
+      `Expected 3-4 numbers within the ${min}-${max} range.`,
+    range: {
+      start: { line: line.result.row, character: line.parser.textStartIndex },
+      end: { line: line.result.row, character: line.parser.originalLength }
+    },
+    severity: DiagnosticSeverity.Error,
+    source: line.filterContext.source
+  });
+}
+
+function reportDuplicateString(line: LineInformation, parse: TokenParseResult<string>): void {
+  line.result.diagnostics.push({
+    message: `Duplicate value detected within a ${line.result.keyword} rule.`,
+    range: parse.range,
+    severity: DiagnosticSeverity.Warning,
+    source: line.filterContext.source
+  });
 }

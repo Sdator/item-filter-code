@@ -22,7 +22,7 @@ keywordDescriptions:
   ShapedMap: "Whether the item is a shaped map."
   ElderMap: "Whether the item is an elder map."
   DisableDropSound: "Whether the default drop sound should be disabled."
-  HasMod: "Whether the item has the given explicit mod."
+  HasExplicitMod: "Whether the item has the given explicit mod."
   SetBorderColor: "Sets the border color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional."
   SetTextColor: "Sets the text color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional."
   SetBackgroundColor: "Sets the color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional."
@@ -50,7 +50,7 @@ rules:
   - ShapedMap
   - ElderMap
   - DisableDropSound
-  - HasMod
+  - HasExplicitMod
   - SetBorderColor
   - SetTextColor
   - SetBackgroundColor
@@ -77,7 +77,7 @@ ruleLimits:
   ShaperItem: 1
   ShapedMap: 1
   ElderMap: 1
-  HasMod: 1
+  HasExplicitMod: 2
   DisableDropSound: 1
   SetBorderColor: 1
   SetTextColor: 1

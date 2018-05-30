@@ -29,7 +29,7 @@ ShaperItem | Equality | True or False | No
 ShapedMap | Equality | True or False | No
 ElderMap | Equality | True or False | No
 DisableDropSound | Equality | True or False | No
-HasMod | Equality | Single string from list of Mods | Unknown
+HasExplicitMod | Equality | Single string from list of Mods | Unknown
 
 ## Action Rules
 Keyword | Operator | Values | Trailing Comment | Case Sensitive

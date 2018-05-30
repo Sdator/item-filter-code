@@ -17,11 +17,13 @@ export interface ConfigurationValues {
   classWhitelist: string[];
   ruleWhitelist: string[];
   soundWhitelist: string[];
+  modWhitelist: string[];
   performanceHints: boolean;
   alwaysShowAlpha: boolean;
   itemValueQuotes: boolean;
   booleanQuotes: boolean;
   rarityQuotes: boolean;
+  modQuotes: boolean;
 }
 
 export type Result<T> = T | Promise<T>;
@@ -76,6 +78,11 @@ interface Suggestion {
 export interface SuggestionData {
   extraBases: Array<string | Suggestion>;
   extraClasses: string[];
+}
+
+export interface ModData {
+  prefixes: string[];
+  suffixes: string[];
 }
 
 export interface SoundInformation {

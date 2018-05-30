@@ -2,6 +2,17 @@
 
 The history of changes to the extension.
 
+### Version 1.9.0 (May 30th, 2018)
+- Renamed the `HasMod` rule to the *hopefully* correct name of `HasExplicitMod`.
+- Added validation for the value of the `HasExplicitMod` rule.
+- Added autocompletion for the value of the `HasExplicitMod` rule.
+- Added a new configuration variable: `item-filter.modWhitelist`. This variable allows values to be whitelisted
+for the `HasExplicitMod` rule.
+- Added a new configuration variable: `item-filter.modQuotes`. This variable allows you to set whether
+all values for the `HasExplicitMod` will be surrounded by quotation marks on autocompletion.
+
+If you find any mods that are missing from the extension, then an issue report would be helpful.
+
 ### Version 1.8.0 (May 30th, 2018)
 - Added the initial support for Patch of Exile version 3.3 and the Incursion league.
   + As with every major Path of Exile release, the new unique items will be added to the extension
