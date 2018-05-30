@@ -7,6 +7,7 @@ The history of changes to the extension.
 - Added autocompletion for the values of the `StackSize` rule.
 - Modified the hover for the value of `StackSize` rule to include a list of the matched stackable currency items.
 - Fixed a syntax error within the language configuration file.
+- Improved the consistency for hover results, with there now being a separator for hovers providing additional information.
 
 ### Version 1.9.0 (May 30th, 2018)
 - Renamed the `HasMod` rule to the *hopefully* correct name of `HasExplicitMod`.

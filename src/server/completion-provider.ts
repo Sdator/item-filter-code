@@ -463,7 +463,7 @@ function getStackSizeCompletions(pos: Position, text: string, index: number): Co
       if (suggestion.textEdit) suggestion.textEdit.newText = `${stackSize}`;
       result.push(suggestion);
     }
-  }
+  };
 
   if (valueIndex == null || pos.character < valueIndex) {
     const range: Range = {

@@ -88,11 +88,12 @@ export interface ModData {
   full: {
     prefixes: string[];
     suffixes: string[];
-  }
+  };
+
   limited: {
     prefixes: string[];
     suffixes: string[];
-  }
+  };
 }
 
 export interface SoundInformation {

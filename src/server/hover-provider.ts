@@ -17,6 +17,7 @@ import * as parser from "./context-parsing";
 const itemData = <ItemData>require(path.join(dataRoot, "items.json"));
 const filterData = <FilterData>require(path.join(dataRoot, "filter.json"));
 const uniqueData = <UniqueData>require(path.join(dataRoot, "uniques.json"));
+const separatorText = "\n\n---\n\n";
 
 export function getHoverResult(text: string, position: Position): Hover | null {
   const keywordResult = parser.getKeyword(text, position.line);
@@ -121,7 +122,11 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
   baseType = baseType.slice(startIndex, endIndex);
 
   // We're essentially buffering directly into a markdown string.
-  let output = "";
+  let output = "\n\nA base type to be captured by the closing block. As a string value, " +
+    "if the base type consists of a multi-word value, then it must be encapsulated " +
+    "in quotation marks. This value can be partial, with all item bases containing that " +
+    "partial string then being matched.";
+  let separatorInputted = false;
 
   const itemClasses: string[] = [];
   const matchedBases: string[] = [];
@@ -136,9 +141,12 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
   }
 
   if (itemClasses.length === 1) {
-    output += `Class: \`${itemClasses[0]}\`\n\n`;
+    output += separatorText + `Class: \`${itemClasses[0]}\`\n\n`;
+    separatorInputted = true;
   } else if (itemClasses.length > 1) {
-    output += `Classes:`;
+    output += separatorText + `Classes:`;
+    separatorInputted = true;
+
     for (const itemClass of itemClasses) {
       output += ` \`${itemClass}\``;
     }
@@ -163,6 +171,11 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
   }
 
   if (matchedUniques.length >= 1) {
+    if (!separatorInputted) {
+      output += separatorText;
+      separatorInputted = true;
+    }
+
     output += "Uniques:\n";
     let uniquesPushed = 0;
     for (const unique of matchedUniques) {
@@ -191,21 +204,12 @@ function getBaseTypeHover(position: Position, text: string, index: number): Hove
     }
   }
 
-  if (output === "") {
-    return null;
-  } else {
-    output += "\n\nA base type to be captured by the closing block. As a string value, " +
-      "if the base type consists of a multi-word value, then it must be encapsulated " +
-      "in quotation marks. This value can be partial, with all item bases containing that " +
-      "partial string then being matched.";
+  const result: Hover = {
+    contents: output,
+    range: valueRange
+  };
 
-    const result: Hover = {
-      contents: output,
-      range: valueRange
-    };
-
-    return result;
-  }
+  return result;
 }
 
 function getClassHover(position: Position, text: string, index: number): Hover | null {
@@ -235,7 +239,11 @@ function getClassHover(position: Position, text: string, index: number): Hover |
   const endIndex = classType[length - 1] === `"` ? length - 1 : length;
   classType = classType.slice(startIndex, endIndex);
 
-  let output = "";
+  let output = "An item class to be captured by the closing block. As a string value, " +
+    "if the item class consists of a multi-word value, then it must be encapsulated " +
+    "in quotation marks. This value can be partial, with all item classes containing " +
+    "that partial string then being matched.";
+  let separatorInputted = false;
 
   const matchedClasses: string[] = [];
   for (const itemClass of itemData.classes) {
@@ -246,11 +254,13 @@ function getClassHover(position: Position, text: string, index: number): Hover |
 
   let containedItems = 0;
   if (matchedClasses.length === 1) {
-    output += `Class \`${matchedClasses[0]}\`\n\n`;
+    output += separatorText + `Class \`${matchedClasses[0]}\`\n\n`;
+    separatorInputted = true;
     const items = itemData.classesToBases[matchedClasses[0]];
     if (items !== undefined) containedItems = items.length;
   } else if (matchedClasses.length > 1) {
-    output += `Matched Classes:\n`;
+    output += separatorText + `Matched Classes:\n`;
+    separatorInputted = true;
     for (const itemClass of matchedClasses) {
       output += `- ${itemClass}\n`;
       const items = itemData.classesToBases[itemClass];
@@ -260,24 +270,20 @@ function getClassHover(position: Position, text: string, index: number): Hover |
   }
 
   if (containedItems > 0) {
+    if (!separatorInputted) {
+      output += separatorText;
+      separatorInputted = true;
+    }
+
     output += `Items: \`${containedItems}\``;
   }
 
-  if (output === "") {
-    return null;
-  } else {
-    output += "\n\nAn item class to be captured by the closing block. As a string value, " +
-      "if the item class consists of a multi-word value, then it must be encapsulated " +
-      "in quotation marks. This value can be partial, with all item classes containing " +
-      "that partial string then being matched.";
+  const result: Hover = {
+    contents: output,
+    range: valueRange
+  };
 
-    const result: Hover = {
-      contents: output,
-      range: valueRange
-    };
-
-    return result;
-  }
+  return result;
 }
 
 function getSoundHover(pos: Position, text: string, index: number): Hover | null {
@@ -374,7 +380,7 @@ function getStackSizeHover(pos: Position, text: string, index: number): Hover | 
 
     if (currentStackSize >= min && currentStackSize <= max) {
       if (firstValue) {
-        output += "\n\nCaptured Currency:\n";
+        output += "\n\n---\n\nCaptured Currency:\n";
         firstValue = false;
       }
       output += `- ${currentValue} \`${currentStackSize}\`\n`;
