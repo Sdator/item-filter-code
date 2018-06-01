@@ -142,8 +142,10 @@ export function parseLine(config: ConfigurationValues, filterContext: FilterCont
     case "ShaperItem":
     case "ShapedMap":
     case "ElderMap":
-    case "DisableDropSound":
       parseBooleanRule(lineInfo);
+      break;
+    case "DisableDropSound":
+      parseBooleanRule(lineInfo, true);
       break;
     case "HasExplicitMod":
       parseModRule(lineInfo);
@@ -187,7 +189,7 @@ function parseBlock(line: LineInformation): void {
   reportTrailingText(line, DiagnosticSeverity.Warning);
 }
 
-function parseBooleanRule(line: LineInformation): void {
+function parseBooleanRule(line: LineInformation, optional = false): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
@@ -196,7 +198,7 @@ function parseBooleanRule(line: LineInformation): void {
   }
 
   const booleanResult = line.parser.nextBoolean();
-  if (!booleanResult) {
+  if (!optional && !booleanResult) {
     line.result.diagnostics.push({
       message: "A boolean value, either True or False, was expected, yet not found.",
       range: {

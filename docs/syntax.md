@@ -29,7 +29,7 @@ ElderItem | Equality | True or False | No
 ShaperItem | Equality | True or False | No
 ShapedMap | Equality | True or False | No
 ElderMap | Equality | True or False | No
-DisableDropSound | Equality | True or False | No
+DisableDropSound | Equality | Nothing, True or False | No
 
 ## Action Rules
 Keyword | Operator | Values | Trailing Comment | Case Sensitive

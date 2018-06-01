@@ -2,6 +2,9 @@
 
 The history of changes to the extension.
 
+### Version 1.10.2 (June 1st, 2018)
+- The `DisableDropSound` rule no longer requires a value.
+
 ### Version 1.10.1 (May 30th, 2018)
 - Cleared up minor confusion regarding the `StackSize` rule.
 
