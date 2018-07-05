@@ -68,6 +68,7 @@ function loadYAML(relPath: string): object {
     const fullPath = path.join(projectRoot, relPath);
     const result = yaml.safeLoad(fs.readFileSync(fullPath, "utf8"));
     if (result) {
+      // tslint:disable-next-line:no-unsafe-any
       return result;
     } else {
       throw new Error(`failed to load YAML file at path: ${relPath}`);

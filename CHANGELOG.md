@@ -2,6 +2,10 @@
 
 The history of changes to the extension.
 
+### Version 1.11.0 (July 5th, 2018)
+- Added all new uniques from Path of Exile version 3.3.
+- Added approximately 50 missing affixes for the `HasExplicitMod` rule.
+
 ### Version 1.10.2 (June 1st, 2018)
 - The `DisableDropSound` rule no longer requires a value.
 

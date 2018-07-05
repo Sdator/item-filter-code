@@ -1,38 +1,53 @@
 ---
 full:
   prefixes:
+    - Abbot's
     - Abhorrent
     - Acrobat's
     - Adept's
     - Agile
     - Alchemist's
     - Alluring
+    - Alpine
     - Ample
     - Anarchic
+    - Anarchist's
     - Annealed
     - Antagonist's
     - Apprentice's
     - Aqua
     - Archmage's
     - Arcing
+    - Arctic
     - Armadillo's
+    - Arming
     - Armoured
     - Athlete's
+    - Avalanching
     - Avenger's
     - Azure
+    - Bandit's
     - Barbed
+    - Battlemage's
+    - Beating
     - Beetle's
     - Beryl
     - Betrayer's
     - Bipedal
+    - Biting
+    - Bitter
     - Blasting
     - Blazing
+    - Blistering
     - Bloodthirsty
     - Blue
+    - Blunt
     - Blurred
     - Boggart's
+    - Bolting
     - Brawler's
     - Brinerot
+    - Brutal
     - Bubbling
     - Burning
     - Burnished
@@ -42,10 +57,12 @@ full:
     - Calming
     - Capricious
     - Carapaced
+    - Carved
     - Caster's
     - Catalysed
     - Catalyzing
     - Caustic
+    - Cauterising
     - Cautious
     - Ceremonial
     - Cerulean
@@ -53,52 +70,80 @@ full:
     - Chalybeous
     - Champion's
     - Chanter's
+    - Chaotic
+    - Charged
+    - Charging
     - Cheetah's
     - Chemist's
     - Chilled
+    - Chilling
     - Citaqualotl's
+    - Cleaving
     - Cobalt
     - Combatant's
     - Conflagrating
     - Conqueror's
+    - Coursing
     - Crab's
     - Crackling
     - Cremating
+    - Crocodile's
     - Cruel
+    - Cryomancer's
+    - Cryomantic
+    - Crystalline
     - Dancer's
     - Dauntless
     - Dazzling
     - Deadly
     - Deceiver's
+    - Deflecting
     - Demonic
+    - Devastating
     - Dictator's
     - Discharging
+    - Dissipating
     - Djinn's
     - Dragon's
     - Dragonfly's
     - Duelist's
     - Eldritch
     - Electrocuting
+    - Electromantic
     - Elephant's
     - Emanant
     - Emperor's
     - Empowered
     - Empowering
     - Encased
+    - Energetic
+    - Enlightened
     - Entombing
+    - Enveloped
     - Ephemeral
+    - Esh's
     - Ethereal
     - Evanescent
+    - Evasive
+    - Exarch's
+    - Exemplary
     - Experimenter's
+    - Fawn's
     - Fearless
     - Feasting
     - Fecund
     - Fencer's
+    - Fencing
     - Feral
+    - Fevered
+    - Fierce
     - Filigree
     - Flame Spinner's
     - Flaming
+    - Flanking
     - Flaring
+    - Flawless
+    - Flea's
     - Fleet
     - Fletcher's
     - Fortified
@@ -122,27 +167,38 @@ full:
     - Gremlin's
     - Grounded
     - Guatelitzi's
+    - Hailing
     - Hale
+    - Halting
+    - Harming
+    - Harmonic
     - Haunting
     - Healthy
     - Heated
     - Heavy
+    - Hellion's
     - Hero's
     - Hexproof
     - Hexwarded
+    - Hissing
     - Honed
     - Humming
     - Hummingbird's
+    - Ibex's
     - Icy
+    - Illusion's
     - Illusory
+    - Impenetrable
     - Impervious
     - Impregnable
     - Incandescent
     - Incanter's
     - Incinerating
     - Incombustible
+    - Incorporeal
     - Inculcated
     - Indomitable
+    - Infernal
     - Infixed
     - Infused
     - Infusing
@@ -150,22 +206,30 @@ full:
     - Inspired
     - Inspiring
     - Instilled
+    - Interpermeated
     - Interpolated
+    - Ionising
     - Jagged
+    - Jinxing
     - Journeyman's
+    - Judging
     - Lacquered
     - Lamprey's
     - Lava Caller's
     - Layered
+    - Leadership
     - Legends
+    - Lethal
     - Lich's
     - Lobstered
     - Lunar
     - Mage's
     - Magician's
+    - Magmatic
     - Magpie's
     - Malicious
     - Mammoth's
+    - Master's
     - Matatl's
     - Mazarine
     - Mercenary's
@@ -173,11 +237,14 @@ full:
     - Mirage's
     - Mirrored
     - Molten
+    - Monk's
     - Mosquito's
     - Moth's
     - Multifarious
     - Mutewind
     - Naga's
+    - Nautilus's
+    - Necromancer's
     - Nightmare's
     - Nihilist's
     - Occultist's
@@ -185,23 +252,33 @@ full:
     - Otherworldly
     - Overlord's
     - Overpowering
+    - Oyster's
     - Panicked
     - Paragon's
     - Parched
+    - Parrying
     - Perandus'
     - Perpetual
     - Phantasm's
     - Phased
+    - Piercing
     - Pirate's
     - Pixie's
     - Plated
     - Polar
     - Polished
+    - Prime
+    - Prior's
     - Professor's
     - Protective
     - Pulsing
+    - Puncturing
     - Punishing
+    - Pyroclastic
+    - Pyromantic
+    - Quintessential
     - Radiating
+    - Ram's
     - Rapturous
     - Razor Sharp
     - Reanimator's
@@ -212,13 +289,17 @@ full:
     - Remora's
     - Resistant
     - Resolute
+    - Resonant
     - Resplendent
     - Rhino's
     - Ribbed
+    - Ripping
     - Robust
     - Rotund
     - Runic
     - Runner's
+    - Rupturing
+    - Sabotage
     - Sanguine
     - Sapphire
     - Sapping
@@ -228,21 +309,33 @@ full:
     - Scintillating
     - Scorching
     - Scrapper's
+    - Searing
     - Seething
     - Seraphim's
+    - Serene
     - Serrated
     - Shade's
     - Shadowy
+    - Shaman's
+    - Sharpened
     - Sharpshooter's
+    - Shielding
+    - Shimmering
     - Shining
     - Shocking
+    - Sinister
+    - Sizzling
     - Skeletal
+    - Slicing
     - Slithering
+    - Smiting
     - Smoking
     - Smoldering
     - Smouldering
     - Snapping
+    - Snowy
     - Solar
+    - Soldier's
     - Sorcerer's
     - Sparking
     - Spectre's
@@ -253,11 +346,15 @@ full:
     - Stallion's
     - Stalwart
     - Stout
+    - Striking
     - Strong-Willed
     - Studded
     - Summoner's
+    - Sundering
     - Surgeon's
+    - Surging
     - Tacati's
+    - Technical
     - Tempered
     - Tempest King's
     - Thaumaturgist's
@@ -266,50 +363,75 @@ full:
     - Thirsty
     - Thorny
     - Thunder Lord's
+    - Thundering
+    - Thwarting
     - Titan's
     - Topotante's
+    - Trapping
+    - Tul's
     - Turncoat's
     - Twinned
     - Tyrannical
     - Unassailable
     - Undead
+    - Unfaltering
     - Unleashed
     - Unreal
     - Unstoppable
     - Unwavering
     - Unworldly
+    - Urchin's
+    - Vaal
     - Vampire's
     - Vaporous
     - Vicious
+    - Victor's
     - Vigorous
     - Virile
+    - Vivid
+    - Volcanic
+    - Volleying
+    - Warding
     - Warlock's
+    - Warrior's
     - Wasp's
     - Weaponmaster's
     - Wicked
     - Winterbringer's
     - Wizard's
     - Wraith's
+    - Wright's
     - Xopec's
+    - Xoph's
     - Zaffre
     - Zana's
   suffixes:
     - of Absorption
+    - of Absorption
     - of Acclaim
+    - of Acclimatisation
     - of Accuracy
     - of Adamantite Skin
+    - of Adaption
     - of Adrenaline
     - of Amassment
     - of Anger
     - of Animation
+    - of Annihilation
     - of Archaeology
+    - of Archery
     - of Arcing
     - of Ashes
+    - of Athletics
     - of Balance
     - of Bameth
     - of Banishment
+    - of Berserking
+    - of Blasting
+    - of Bleeding
     - of Bliss
     - of Bloodlines
+    - of Burning
     - of Calamity
     - of Calm
     - of Celebration
@@ -318,28 +440,38 @@ full:
     - of Citaqualotl
     - of Coals
     - of Collecting
+    - of Combat
+    - of Combusting
     - of Commanders
     - of Congealment
     - of Consumption
     - of Corundum Skin
     - of Craving
+    - of Cunning
     - of Curing
+    - of Dampening
     - of Darting
     - of Dazing
     - of Deadliness
+    - of Deadliness
+    - of Demolishing
     - of Desecration
     - of Destruction
+    - of Dexterity
     - of Disaster
     - of Discharge
     - of Dousing
     - of Drought
     - of Ease
+    - of Efficiency
     - of Elation
     - of Electricity
     - of Elemental Weakness
     - of Embers
+    - of Enchanting
     - of Endurance
     - of Enfeeblement
+    - of Entropy
     - of Ephij
     - of Euphoria
     - of Eviction
@@ -349,14 +481,20 @@ full:
     - of Expertise
     - of Exposure
     - of Expulsion
+    - of Exuberance
     - of Fame
+    - of Fending
     - of Fending
     - of Ferocity
     - of Finesse
     - of Flames
     - of Flight
     - of Floe
+    - of Focus
+    - of Fog
+    - of Fortitude
     - of Fracturing
+    - of Freezing
     - of Frenzy
     - of Fury
     - of Gathering
@@ -365,9 +503,12 @@ full:
     - of Gluttony
     - of Grandmastery
     - of Grounding
+    - of Grounding
     - of Guatelitzi
     - of Haast
+    - of Haemophilia
     - of Havoc
+    - of Haze
     - of Heat
     - of Hemomancy
     - of Hoarding
@@ -379,6 +520,8 @@ full:
     - of Incision
     - of Infamy
     - of Insulation
+    - of Insulation
+    - of Intelligence
     - of Intercepting
     - of Ire
     - of Iron Skin
@@ -386,19 +529,28 @@ full:
     - of Legerdemain
     - of Light
     - of Lightning
+    - of Lioneye
     - of Mastery
     - of Matatl
     - of Menace
+    - of Menace
     - of Miring
+    - of Mysticism
     - of Needling
     - of Nimbleness
     - of Nirvana
     - of Nourishment
+    - of Numbing
+    - of Order
     - of Osmosis
+    - of Overflowing
     - of Penetrating
     - of Piercing
     - of Plunder
+    - of Poisoning
+    - of Potency
     - of Power
+    - of Precision
     - of Precision
     - of Prestidigitation
     - of Propulsion
@@ -406,29 +558,40 @@ full:
     - of Radiance
     - of Rage
     - of Raiding
+    - of Raiding
+    - of Recovery
     - of Refilling
     - of Reflexes
     - of Regrowth
     - of Rejuvenation
+    - of Rejuvenation
+    - of Rending
     - of Renown
+    - of Resilience
+    - of Resistance
     - of Resistance
     - of Restoration
     - of Rime
     - of Ruin
+    - of Runes
     - of Rupturing
     - of Rust
+    - of Snow
     - of Savouring
     - of Shaping
+    - of Shelter
     - of Shining
+    - of Shocking
     - of Sipping
     - of Skill
     - of Skirmishing
     - of Slamming
     - of Sleet
     - of Smothering
-    - of SNow
+    - of Soaring
     - of Sortilege
     - of Sparks
+    - of Spirit
     - of Staggering
     - of Stasis
     - of Static
@@ -437,15 +600,38 @@ full:
     - of Steel Skin
     - of Stinging
     - of Stone Skin
+    - of Strength
+    - of Stunning
     - of Stunning
     - of Success
     - of Tacati
     - of Talent
     - of Temporal Chains
+    - of Thick Skin
+    - of Toughness
+    - of Triumph
+    - of Tzteosh
+    - of Unmaking
+    - of Unmaking
+    - of Variegation
+    - of Venom
+    - of Venom
+    - of Vibrance
+    - of Victory
+    - of Voltage
+    - of Vulnerability
+    - of Walling
+    - of Warding
+    - of Weight
+    - of Wounding
+    - of Zeal
+    - of the Apocalypse
     - of the Apt
     - of the Assassin
     - of the Augur
     - of the Bear
+    - of the Beast
+    - of the Blur
     - of the Boxer
     - of the Brawler
     - of the Brute
@@ -455,8 +641,10 @@ full:
     - of the Comet
     - of the Crystal
     - of the Deadeye
+    - of the Dragon
     - of the Drake
     - of the Elder
+    - of the Elements
     - of the Falcon
     - of the Fox
     - of the Furnace
@@ -465,8 +653,10 @@ full:
     - of the Genius
     - of the Gladiator
     - of the Gods
+    - of the Godslayer
     - of the Goliath
     - of the Gorilla
+    - of the Hearth
     - of the Heavens
     - of the Hydra
     - of the Ice
@@ -487,6 +677,7 @@ full:
     - of the Marksman
     - of the Meteor
     - of the Mongoose
+    - of the Multiverse
     - of the Newt
     - of the Panther
     - of the Penguin
@@ -494,6 +685,7 @@ full:
     - of the Philosopher
     - of the Phoenix
     - of the Polar Bear
+    - of the Polymath
     - of the Prism
     - of the Prodigy
     - of the Pugilist
@@ -506,6 +698,7 @@ full:
     - of the Seal
     - of the Sky
     - of the Sniper
+    - of the Span
     - of the Squall
     - of the Starfish
     - of the Storm
@@ -517,6 +710,7 @@ full:
     - of the Universe
     - of the Virtuoso
     - of the Volcano
+    - of the Wall
     - of the Walrus
     - of the Whelpling
     - of the Wind
@@ -524,18 +718,6 @@ full:
     - of the Wrestler
     - of the Yeti
     - of the Zephyr
-    - of Thick Skin
-    - of Toughness
-    - of Triumph
-    - of Tzteosh
-    - of Unmaking
-    - of Variegation
-    - of Venom
-    - of Victory
-    - of Voltage
-    - of Vulnerability
-    - of Walling
-    - of Warding
 limited:
   prefixes:
     # Warbands.

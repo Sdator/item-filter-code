@@ -62,6 +62,9 @@ Onyx Amulet:
   - Yoke of Suffering
 Paua Amulet:
   - Atziri's Foible
+  - name: Sacrificial Heart
+    boss: The Vaal Omnitect
+    league: Incursion
   - Sidhebreath
 Rotfeather Talisman:
   - name: Natural Hierarchy
@@ -81,6 +84,9 @@ Chain Belt:
   - name: Ascent From Flesh
     league: Prophecy
   - Bated Breath
+  - name: Coward's Chains
+    league: Incursion
+    location: Hybridisation Chamber
   - Maligaro's Restraint
 Cloth Belt:
   - Perandus Blazon
@@ -97,6 +103,9 @@ Heavy Belt:
     location: The Apex of Sacrifice
   - Dyadian Dawn
   - Meginord's Girdle
+  - name: String of Servitude
+    boss: The Vaal Omnitect
+    league: Incursion
 Leather Belt:
   - name: Cyclopean Coil
     boss: The Elder
@@ -441,6 +450,10 @@ Scholar Boots:
 Serpentscale Boots:
   - name: Mutewind Whispersteps
     league: Warbands
+Shackled Boots:
+  - name: Dance of the Offered
+    league: Incursion
+    location: Conduit of Lightning
 Shagreen Boots:
   - Three-step Assault
 Sharkskin Boots:
@@ -559,6 +572,9 @@ Steelscale Gauntlets:
     league: Abyss
     location: Abyssal Depths
 Strapped Mitts:
+  - name: Architect's Hand
+    league: Incursion
+    location: Defense Research Lab
   - Facebreaker
 Titan Gauntlets:
   - name: Craiceann's Pincers
@@ -590,6 +606,10 @@ Bone Circlet:
   - Wraithlord
 Close Helmet:
   - The Baron
+Crusader Helmet:
+  - name: Mask of the Spirit Drinker
+    league: Incursion
+    location: Sanctum of Immortality
 Deicide Mask:
   - Heretic's Veil
 Ezomyte Burgonet:
@@ -707,11 +727,16 @@ Zealot Helmet:
   - Kitava's Thirst
 
 # Shields =====================================================================
+Ancient Spirit Shield:
+  - name: Apep's Slumber
+    league: Incursion
+    location: Poison Garden
 Archon Kite Shield:
   - name: Broken Faith
     league: Warbands
   - Invictus Solaris
   - Prism Guardian
+  - Unyielding Flame
 Baroque Round Shield:
   - Daresso's Courage
 Branded Kite Shield:
@@ -770,6 +795,8 @@ Pinnacle Tower Shield:
   - Lioneye's Remorse
 Plank Kite Shield:
   - Springleaf
+Polished Spiked Shield:
+  - Zeel's Amplifier
 Rawhide Tower Shield:
   - Lycosidae
 Reinforced Tower Shield:
@@ -804,6 +831,8 @@ Decorative Axe:
   - Relentless Fury
 Despot Axe:
   - Debeon's Dirge
+Ezomyte Aze:
+  - Sinvicta's Mettle
 Headsman Axe:
   - The Blood Reaper
 Infernal Axe:
@@ -978,6 +1007,8 @@ Great Mallet:
   - Chober Chaber
   - name: Trypanon
     league: Perandus
+Grinning Fetish:
+  - Earendel's Embrace
 Imperial Maul:
   - Tidebreaker
 Iron Sceptre:
@@ -1156,6 +1187,10 @@ Vaal Blade:
   - Rebuke of the Vaal
   - name: Varunastra
     league: Perandus
+Variscite Blade:
+  - name: Story of the Vaal
+    league: Incursion
+    location: Crucible of Flame
 War Sword:
   - The Tempestuous Steel
 
@@ -1218,6 +1253,9 @@ Large Hybrid Flask:
   - Divination Distillate
 Quartz Flask:
   - Forbidden Taste
+  - name: Soul Catcher
+    boss: The Vaal Omnitect
+    league: Incursion
 Quicksilver Flask:
   - Rotgut
 Ruby Flask:
@@ -1290,6 +1328,7 @@ Cobalt Jewel:
   - Assassin's Haste
   - Brute Force Solution
   - Clear Mind
+  - Combat Focus
   - Conqueror's Potency
   - Dead Reckoning
   - Eldritch Knowledge
@@ -1311,6 +1350,9 @@ Cobalt Jewel:
   - Spirited Response
   - Spreading Rot
   - Survival Secrets
+  - name: Tempered Mind
+    boss: The Vaal Omnitect
+    league: Incursion
   - name: The Blue Dream
     league: Breach
     location: Chayula's Domain
@@ -1323,6 +1365,7 @@ Cobalt Jewel:
 Crimson Jewel:
   - Brawn
   - Coated Shrapnel
+  - Combat Focus
   - Conqueror's Efficiency
   - Efficient Training
   - Energised Armour
@@ -1348,6 +1391,9 @@ Crimson Jewel:
   - name: The Red Dream
     league: Breach
     location: Chayula's Domain
+  - name: Tempered Flesh
+    boss: The Vaal Omnitect
+    league: Incursion
   - The Vigil
   - Warlord's Reach
   - Weight of the Empire
@@ -1363,6 +1409,7 @@ Viridian Jewel:
   - Cheap Construction
   - Cold Steel
   - Collateral Damage
+  - Combat Focus
   - Conqueror's Longevity
   - Fight for Survival
   - Fluid Motion
@@ -1385,6 +1432,9 @@ Viridian Jewel:
   - Steel Spirit
   - Sudden Ignition
   - Survival Instincts
+  - name: Tempered Spirit
+    boss: The Vaal Omnitect
+    league: Incursion
   - The Golden Rule
   - name: The Green Dream
     league: Breach
