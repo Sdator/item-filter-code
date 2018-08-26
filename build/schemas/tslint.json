@@ -4201,8 +4201,8 @@
     },
     "tsRules": {
       "properties": {
-        "underscore-privates": {
-          "description": "Ensures that private members are prefixed with an underscore.",
+        "underscore-identifiers": {
+          "description": "Ensures that public members are not prefixed with an underscore and that private members are prefixed with an underscore.",
           "allOf": [
             {
               "$ref": "#/definitions/rule"

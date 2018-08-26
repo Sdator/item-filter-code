@@ -196,7 +196,7 @@
     "no-this-assignment": true,
     "no-trailing-whitespace": true,
     "no-unbound-method": false,
-    "underscore-privates": true,
+    "underscore-identifiers": true,
     "no-unnecessary-callback-wrapper": true,
     "no-unnecessary-class": true,
     "no-unnecessary-initializer": true,
