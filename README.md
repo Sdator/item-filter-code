@@ -16,7 +16,7 @@ An extension for Visual Studio Code that provides additional support for writing
 
 ### Preview
 
-![Item Filter Code Preview](https://raw.githubusercontent.com/glencfl/item-filter-code/master/media/preview.png)
+![Item Filter Code Preview](https://raw.githubusercontent.com/GlenCFL/item-filter-code/master/assets/images/preview.png)
 
 ### Sound Support on Linux
 
