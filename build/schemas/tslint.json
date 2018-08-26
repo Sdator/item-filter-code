@@ -4201,6 +4201,26 @@
     },
     "tsRules": {
       "properties": {
+        "underscore-privates": {
+          "description": "Ensures that private members are prefixed with an underscore.",
+          "allOf": [
+            {
+              "$ref": "#/definitions/rule"
+            },
+            {
+              "items": [
+                {
+                  "type": "boolean"
+                }
+              ],
+              "additionalItems": false,
+              "properties": {
+                "severity": {}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
         "adjacent-overload-signatures": {
           "description": "Enforces function overloads to be consecutive.",
           "allOf": [

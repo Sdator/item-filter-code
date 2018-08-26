@@ -4,40 +4,34 @@
  * license information.
  * ===========================================================================*/
 
-// Document this file.
-
 import * as vscode from "vscode";
 
-import { IDisposable } from "../../common/event-kit";
+import { CompositeDisposable, IDisposable } from "../../common/event-kit";
 import { intoCodeDiagnostic } from "../converters";
 import * as ifm from "../managers/item-filters";
 
 export class FilterDiagnosticsProvider implements IDisposable {
-  private readonly diagnostics: vscode.DiagnosticCollection;
-  private readonly filterManager: ifm.ItemFilterManager;
-  private readonly subscriptions: IDisposable[];
+  private readonly _diagnostics: vscode.DiagnosticCollection;
+  private readonly _filterManager: ifm.ItemFilterManager;
+  private readonly _subscriptions: CompositeDisposable;
 
   constructor(filterManager: ifm.ItemFilterManager) {
-    this.diagnostics = vscode.languages.createDiagnosticCollection("item-filter");
-    this.filterManager = filterManager;
+    this._diagnostics = vscode.languages.createDiagnosticCollection("item-filter");
+    this._filterManager = filterManager;
 
-    this.subscriptions = [
-      this.filterManager.observeFilters(this.add, this),
-      this.filterManager.onDidCloseFilter(this.remove, this),
-      this.filterManager.onDidChangeFilter(this.update, this)
-    ];
+    this._subscriptions = new CompositeDisposable(
+      this._filterManager.observeFilters(this._add, this),
+      this._filterManager.onDidCloseFilter(this._remove, this),
+      this._filterManager.onDidChangeFilter(this._update, this)
+    );
   }
 
   dispose(): void {
-    while (this.subscriptions.length) {
-      const s = this.subscriptions.pop();
-      if (s) s.dispose();
-    }
-
-    this.diagnostics.dispose();
+    this._subscriptions.dispose();
+    this._diagnostics.dispose();
   }
 
-  private async add(event: ifm.FilterOpenedEvent): Promise<void> {
+  private async _add(event: ifm.FilterOpenedEvent): Promise<void> {
     const result = await event.filter.payload;
 
     const diagnostics: vscode.Diagnostic[] = [];
@@ -45,14 +39,14 @@ export class FilterDiagnosticsProvider implements IDisposable {
       diagnostics.push(intoCodeDiagnostic(filterDiagnostic));
     }
 
-    this.diagnostics.set(vscode.Uri.parse(event.uri), diagnostics);
+    this._diagnostics.set(vscode.Uri.parse(event.uri), diagnostics);
   }
 
-  private remove(event: ifm.FilterClosedEvent): void {
-    this.diagnostics.set(vscode.Uri.parse(event.uri), undefined);
+  private _remove(event: ifm.FilterClosedEvent): void {
+    this._diagnostics.set(vscode.Uri.parse(event.uri), undefined);
   }
 
-  private async update(event: ifm.FilterChangedEvent): Promise<void> {
-    return this.add(event);
+  private async _update(event: ifm.FilterChangedEvent): Promise<void> {
+    return this._add(event);
   }
 }

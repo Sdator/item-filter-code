@@ -6,6 +6,7 @@
 
 // TODO(glen): low priority, but try to get rid of these eventually.
 // tslint:disable:ban-types no-any no-unsafe-any
+// TODO(glen): emitting data should be optional.
 
 import { IDisposable } from ".";
 import { Disposable } from "./disposable";
@@ -18,31 +19,35 @@ import { Disposable } from "./disposable";
  * expose an event-based API.
  */
 export class Emitter<Emissions = { [key: string]: any }> implements IDisposable {
-  private disposed: boolean;
+  private _disposed: boolean;
+  private readonly _eventHandlers: Map<string, Function[]>;
 
-  private readonly eventHandlers: Map<string, Function[]>;
+  /** Returns whether this emitter has been disposed of previously. */
+  get disposed(): boolean {
+    return this._disposed;
+  }
 
   /** Create a new Emitter. */
   constructor() {
-    this.disposed = false;
-    this.eventHandlers = new Map;
+    this._disposed = false;
+    this._eventHandlers = new Map;
   }
 
   /** Clear out any existing subscribers. */
   clear(): void {
-    this.eventHandlers.clear();
+    this._eventHandlers.clear();
   }
 
   /** Unsubscribe all handlers. */
   dispose(): boolean {
-    this.eventHandlers.clear();
-    this.disposed = true;
+    this._eventHandlers.clear();
+    this._disposed = true;
     return true;
   }
 
   /** Returns whether this emitter has been disposed of previously. */
   isDisposed(): boolean {
-    return this.disposed;
+    return this._disposed;
   }
 
   /**
@@ -56,7 +61,7 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
   on<T extends keyof Emissions>(event: T, handler: (value: Emissions[T]) => void,
     unshift = false): Disposable {
 
-    if (this.disposed) {
+    if (this._disposed) {
       throw new Error("listen attempted on a disposed Emitter");
     }
 
@@ -64,7 +69,7 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
       throw new Error("handler passed to Emitter wasn't a function");
     }
 
-    const currentHandlers = this.eventHandlers.get(event as string);
+    const currentHandlers = this._eventHandlers.get(event as string);
     if (currentHandlers) {
       if (unshift) {
         currentHandlers.unshift(handler);
@@ -72,11 +77,11 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
         currentHandlers.push(handler);
       }
     } else {
-      this.eventHandlers.set(event as string, [handler]);
+      this._eventHandlers.set(event as string, [handler]);
     }
 
     return new Disposable(() => {
-      this.off(event as string, handler);
+      this._off(event as string, handler);
     });
   }
 
@@ -144,7 +149,7 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
    * @return Whether a handler was registered and invoked during this emission.
    */
   emit<T extends keyof Emissions>(event: T, value: Emissions[T]): boolean {
-    const handlers = this.eventHandlers.get(event as string);
+    const handlers = this._eventHandlers.get(event as string);
     if (!handlers) return false;
 
     for (const handler of handlers) {
@@ -165,7 +170,7 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
   async emitAsync<T extends keyof Emissions>(event: T, value: Emissions[T]):
     Promise<boolean> {
 
-    const handlers = this.eventHandlers.get(event as string);
+    const handlers = this._eventHandlers.get(event as string);
     if (!handlers) return false;
 
     const promises: Array<Promise<void>> = [];
@@ -182,12 +187,12 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
 
   /** Returns the name of every current registered event. */
   getEventNames(): string[] {
-    return Object.keys(this.eventHandlers);
+    return Object.keys(this._eventHandlers);
   }
 
   /** Returns the number of listeners for the given event. */
   getListenerCountForEvent(event: string): number {
-    const handlers = this.eventHandlers.get(event);
+    const handlers = this._eventHandlers.get(event);
     return handlers ? handlers.length : 0;
   }
 
@@ -195,7 +200,7 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
   getTotalListenerCount(): number {
     let result = 0;
 
-    this.eventHandlers.forEach(value => {
+    this._eventHandlers.forEach(value => {
       result += value.length;
     });
 
@@ -246,10 +251,10 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
   }
 
   /** Removes a registered handler whenever its disposable is disposed of. */
-  private off(event: string, handler: Function): void {
-    if (this.disposed) return;
+  private _off(event: string, handler: Function): void {
+    if (this._disposed) return;
 
-    const previousHandlers = this.eventHandlers.get(event);
+    const previousHandlers = this._eventHandlers.get(event);
     if (previousHandlers) {
       const newHandlers: Function[] = [];
       for (const h of previousHandlers) {
@@ -257,9 +262,9 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
       }
 
       if (newHandlers.length > 0) {
-        this.eventHandlers.set(event, newHandlers);
+        this._eventHandlers.set(event, newHandlers);
       } else {
-        this.eventHandlers.delete(event);
+        this._eventHandlers.delete(event);
       }
     }
   }

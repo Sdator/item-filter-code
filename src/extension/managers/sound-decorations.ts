@@ -6,7 +6,7 @@
 
 import * as vscode from "vscode";
 
-import { IDisposable } from "../../common/event-kit";
+import { CompositeDisposable, IDisposable } from "../../common/event-kit";
 import { SoundInformation } from "../../common/types";
 import { EditorRegistry } from "../registries/editors";
 import { intoCodeRange } from "../converters";
@@ -18,38 +18,34 @@ import { PlaySoundOptions } from "../types";
  * Studio Code window.
  */
 export class SoundDecorationManager implements IDisposable {
-  private readonly cache: Map<string, vscode.DecorationOptions[]>;
-  private readonly decorationType: vscode.TextEditorDecorationType;
-  private readonly editorRegistry: EditorRegistry;
-  private readonly filterManager: ItemFilterManager;
-  private readonly subscriptions: IDisposable[];
+  private readonly _cache: Map<string, vscode.DecorationOptions[]>;
+  private readonly _decorationType: vscode.TextEditorDecorationType;
+  private readonly _editorRegistry: EditorRegistry;
+  private readonly _filterManager: ItemFilterManager;
+  private readonly _subscriptions: CompositeDisposable;
 
   constructor(editorRegistry: EditorRegistry, filterManager: ItemFilterManager) {
-    this.cache = new Map();
-    this.editorRegistry = editorRegistry;
-    this.filterManager = filterManager;
+    this._cache = new Map();
+    this._editorRegistry = editorRegistry;
+    this._filterManager = filterManager;
 
-    this.decorationType = vscode.window.createTextEditorDecorationType({
+    this._decorationType = vscode.window.createTextEditorDecorationType({
       borderWidth: "0px 0px 0.6mm",
       borderStyle: "solid",
       borderColor: "MediumSeaGreen"
     });
 
-    this.subscriptions = [
-      editorRegistry.observeFilterEditors(this.open, this),
-      editorRegistry.onDidCloseFilterEditor(this.close, this),
-      filterManager.onDidChangeFilter(this.update, this)
-    ];
+    this._subscriptions = new CompositeDisposable(
+      editorRegistry.observeFilterEditors(this._open, this),
+      editorRegistry.onDidCloseFilterEditor(this._close, this),
+      filterManager.onDidChangeFilter(this._update, this)
+    );
   }
 
   /** Disposes of this manager and all of its subscriptions. */
   dispose(): void {
-    while (this.subscriptions.length) {
-      const s = this.subscriptions.pop();
-      if (s) s.dispose();
-    }
-
-    this.cache.clear();
+    this._subscriptions.dispose();
+    this._cache.clear();
   }
 
   /**
@@ -57,32 +53,32 @@ export class SoundDecorationManager implements IDisposable {
    * to either create or restore any sound decorations specific to that editor's
    * document.
    */
-  private async open(editor: vscode.TextEditor): Promise<void> {
+  private async _open(editor: vscode.TextEditor): Promise<void> {
     const uri = editor.document.uri.toString();
 
-    const existingDecorations = this.cache.get(uri);
+    const existingDecorations = this._cache.get(uri);
     if (existingDecorations) {
-      editor.setDecorations(this.decorationType, existingDecorations);
+      editor.setDecorations(this._decorationType, existingDecorations);
       return;
     }
 
-    const filter = this.filterManager.get(uri);
+    const filter = this._filterManager.get(uri);
     // With how we order our events, this should always be true. If it's not,
     // then the decorations will simply be missing until an edit.
     if (filter) {
       const payload = await filter.payload;
-      const decorations = this.createDecorations(payload.soundInformation);
-      editor.setDecorations(this.decorationType, decorations);
-      this.cache.set(uri, decorations);
+      const decorations = this._createDecorations(payload.soundInformation);
+      editor.setDecorations(this._decorationType, decorations);
+      this._cache.set(uri, decorations);
     }
   }
 
   /** Closes a previously visible editor. */
-  private close(closedEditor: vscode.TextEditor): void {
+  private _close(closedEditor: vscode.TextEditor): void {
     const closedEditorUri = closedEditor.document.uri.toString();
 
     let sharedDocument = false;
-    for (const editor of this.editorRegistry.editors) {
+    for (const editor of this._editorRegistry.editors) {
       const editorUri = editor.document.uri.toString();
 
       if (closedEditorUri === editorUri && editor !== closedEditor) {
@@ -91,26 +87,26 @@ export class SoundDecorationManager implements IDisposable {
     }
 
     if (!sharedDocument) {
-      this.cache.delete(closedEditorUri);
+      this._cache.delete(closedEditorUri);
     }
   }
 
   /** Updates the sound decorations for each editor containing the given document. */
-  private async update(event: FilterChangedEvent): Promise<void> {
+  private async _update(event: FilterChangedEvent): Promise<void> {
     const payload = await event.filter.payload;
-    const decorations = this.createDecorations(payload.soundInformation);
-    this.cache.set(event.uri, decorations);
+    const decorations = this._createDecorations(payload.soundInformation);
+    this._cache.set(event.uri, decorations);
 
-    for (const editor of this.editorRegistry.editors) {
+    for (const editor of this._editorRegistry.editors) {
       const editorUri = editor.document.uri.toString();
       if (editorUri === event.uri) {
-        editor.setDecorations(this.decorationType, decorations);
+        editor.setDecorations(this._decorationType, decorations);
       }
     }
   }
 
   /** Creates VSCode editor decorations from each of the given sounds. */
-  private createDecorations(sounds: SoundInformation[]): vscode.DecorationOptions[] {
+  private _createDecorations(sounds: SoundInformation[]): vscode.DecorationOptions[] {
     const result: vscode.DecorationOptions[] = [];
 
     for (const sound of sounds) {

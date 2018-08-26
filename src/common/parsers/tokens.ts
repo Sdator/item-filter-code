@@ -32,7 +32,7 @@ export class TokenParser {
   readonly textEndIndex: number;
   currentIndex: number;
 
-  private empty: boolean;
+  private _empty: boolean;
 
   constructor(text: string, row: number, startingIndex = 0) {
     if (eolRegex.test(text)) throw new Error("string spans multiple lines");
@@ -48,11 +48,11 @@ export class TokenParser {
 
       this.textStartIndex = surroundingResult[1].length;
       this.textEndIndex = this.textStartIndex + surroundingResult[2].length;
-      this.empty = false;
+      this._empty = false;
     } else {
       this.textStartIndex = 0;
       this.textEndIndex = 0;
-      this.empty = true;
+      this._empty = true;
     }
   }
 
@@ -119,12 +119,12 @@ export class TokenParser {
 
   /** Returns whether the internal text consists only of whitespace. */
   isEmpty(): boolean {
-    return this.empty;
+    return this._empty;
   }
 
   /** Returns whether the internal text would be ignored entirely by Path of Exile. */
   isIgnored(): boolean {
-    if (this.empty || this.isCommented()) {
+    if (this._empty || this.isCommented()) {
       return true;
     } else {
       return false;
@@ -152,7 +152,7 @@ export class TokenParser {
     this.currentIndex += shiftBy;
 
     if (!textRegex.test(this.text)) {
-      this.empty = true;
+      this._empty = true;
     }
 
     return { value, range };

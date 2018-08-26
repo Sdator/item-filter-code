@@ -18,34 +18,29 @@ interface DocumentContext {
 }
 
 export class FilterColorProvider implements vscode.DocumentColorProvider, IDisposable {
-  private config: ConfigurationValues;
-  private readonly configManager: ConfigurationManager;
-  private readonly filterManager: ItemFilterManager;
-  private readonly subscriptions: IDisposable[];
+  private _config: ConfigurationValues;
+  private readonly _configManager: ConfigurationManager;
+  private readonly _filterManager: ItemFilterManager;
+  private readonly _subscription: IDisposable;
 
   constructor(configManager: ConfigurationManager, filterManager: ItemFilterManager) {
-    this.config = configManager.values;
-    this.configManager = configManager;
-    this.filterManager = filterManager;
+    this._config = configManager.values;
+    this._configManager = configManager;
+    this._filterManager = filterManager;
 
-    this.subscriptions = [
-      this.configManager.onDidChange(newConfig => {
-        this.config = newConfig;
-      })
-    ];
+    this._subscription = this._configManager.onDidChange(newConfig => {
+      this._config = newConfig;
+    });
   }
 
   dispose(): void {
-    while (this.subscriptions.length) {
-      const s = this.subscriptions.pop();
-      if (s) s.dispose();
-    }
+    this._subscription.dispose();
   }
 
   async provideDocumentColors(document: vscode.TextDocument, _token: vscode.CancellationToken):
     Promise<vscode.ColorInformation[]> {
 
-    const filter = this.filterManager.get(document.uri.toString());
+    const filter = this._filterManager.get(document.uri.toString());
     if (!filter) return [];
 
     const payload = await filter.payload;
@@ -69,7 +64,7 @@ export class FilterColorProvider implements vscode.DocumentColorProvider, IDispo
     const appendAlpha = alpha === 255 ? false : true;
 
     let colorString = `${red} ${green} ${blue}`;
-    if (this.config.alwaysShowAlpha || appendAlpha) colorString += ` ${alpha}`;
+    if (this._config.alwaysShowAlpha || appendAlpha) colorString += ` ${alpha}`;
 
     result.push({
       label: "Color Picker",

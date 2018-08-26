@@ -66,16 +66,16 @@ export interface LineInformation {
 }
 
 export class LineParser {
-  private readonly config: types.ConfigurationValues;
-  private readonly filterContext: types.FilterContext;
-  private readonly blockContext: types.BlockContext;
+  private readonly _config: types.ConfigurationValues;
+  private readonly _filterContext: types.FilterContext;
+  private readonly _blockContext: types.BlockContext;
 
   constructor(config: types.ConfigurationValues, filterContext: types.FilterContext,
     blockContext: types.BlockContext) {
 
-    this.config = config;
-    this.filterContext = filterContext;
-    this.blockContext = blockContext;
+    this._config = config;
+    this._filterContext = filterContext;
+    this._blockContext = blockContext;
   }
 
   parse(text: string, row: number): ParseLineResult {
@@ -115,9 +115,9 @@ export class LineParser {
 
     const lineInfo: LineInformation = {
       result: keywordedResult,
-      config: this.config,
-      filterContext: this.filterContext,
-      blockContext: this.blockContext,
+      config: this._config,
+      filterContext: this._filterContext,
+      blockContext: this._blockContext,
       parser,
     };
 
@@ -177,7 +177,7 @@ export class LineParser {
         break;
       default:
         let whitelistedKeyword = false;
-        for (const wlr of this.config.ruleWhitelist) {
+        for (const wlr of this._config.ruleWhitelist) {
           if (keywordedResult.keyword === wlr) whitelistedKeyword = true;
         }
 

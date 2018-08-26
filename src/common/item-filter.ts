@@ -34,10 +34,10 @@ export class ItemFilter {
   readonly payload: Promise<FilterParseResult>;
 
   constructor(config: types.ConfigurationValues, text: string) {
-    this.payload = this.fullUpdate(config, text);
+    this.payload = this._fullUpdate(config, text);
   }
 
-  private async fullUpdate(config: types.ConfigurationValues, text: string):
+  private async _fullUpdate(config: types.ConfigurationValues, text: string):
     Promise<FilterParseResult> {
 
     const lines = splitLines(text);

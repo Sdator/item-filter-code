@@ -33,19 +33,21 @@ const whitespaceCharacterRegex = /\s/;
 const spaceRegex = / /;
 
 export class FilterCompletionProvider implements vscode.CompletionItemProvider, IDisposable {
-  private config: types.ConfigurationValues;
-  private readonly configManager: ConfigurationManager;
-  private readonly subscriptions: IDisposable[];
+  private _config: types.ConfigurationValues;
+  private readonly _configManager: ConfigurationManager;
+  private readonly _subscription: IDisposable;
 
   constructor(configManager: ConfigurationManager) {
-    this.configManager = configManager;
-    this.config = configManager.values;
+    this._configManager = configManager;
+    this._config = configManager.values;
 
-    this.subscriptions = [
-      this.configManager.onDidChange(newConfig => {
-        this.config = newConfig;
-      })
-    ];
+    this._subscription = this._configManager.onDidChange(newConfig => {
+      this._config = newConfig;
+    });
+  }
+
+  dispose(): void {
+    this._subscription.dispose();
   }
 
   provideCompletionItems(document: vscode.TextDocument, position: vscode.Position,
@@ -53,17 +55,10 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
     vscode.ProviderResult<vscode.CompletionItem[]> {
 
     const lines = splitLines(document.getText());
-    return this.getCompletionsForLine(lines[position.line], position, document.eol);
+    return this._getCompletionsForLine(lines[position.line], position, document.eol);
   }
 
-  dispose(): void {
-    while (this.subscriptions.length) {
-      const s = this.subscriptions.pop();
-      if (s) s.dispose();
-    }
-  }
-
-  private getCompletionsForLine(lineText: string, position: vscode.Position,
+  private _getCompletionsForLine(lineText: string, position: vscode.Position,
     eol: vscode.EndOfLine): vscode.CompletionItem[] {
 
     const keywordResult = contextParser.getKeyword(lineText, position.character);
@@ -72,24 +67,24 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
       const [keyword, keywordRange] = keywordResult;
 
       if (position.character < keywordRange.start.character) {
-        return getKeywordCompletions(this.config, eol, position);
+        return getKeywordCompletions(this._config, eol, position);
       } else if (position.character <= keywordRange.end.character) {
         const start = new vscode.Position(position.line, keywordRange.start.character);
         const end = new vscode.Position(position.line, keywordRange.end.character);
-        return getKeywordCompletions(this.config, eol, start, end);
+        return getKeywordCompletions(this._config, eol, start, end);
       }
 
       const currentIndex = keywordRange.end.character;
       switch (keyword) {
         case "Class":
-          return getClassCompletions(this.config, position, lineText, currentIndex, eol);
+          return getClassCompletions(this._config, position, lineText, currentIndex, eol);
         case "BaseType":
-          return getBaseCompletions(this.config, position, lineText, currentIndex, eol);
+          return getBaseCompletions(this._config, position, lineText, currentIndex, eol);
         case "PlayAlertSound":
         case "PlayAlertSoundPositional":
-          return getAlertSoundCompletions(this.config, position, lineText, currentIndex, eol);
+          return getAlertSoundCompletions(this._config, position, lineText, currentIndex, eol);
         case "Rarity":
-          return getRarityCompletions(this.config, position, lineText, currentIndex, eol);
+          return getRarityCompletions(this._config, position, lineText, currentIndex, eol);
         case "Identified":
         case "Corrupted":
         case "ElderItem":
@@ -97,15 +92,15 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
         case "ShapedMap":
         case "ElderMap":
         case "DisableDropSound":
-          return getBooleanCompletions(this.config, position, lineText, currentIndex, eol);
+          return getBooleanCompletions(this._config, position, lineText, currentIndex, eol);
         case "HasExplicitMod":
-          return getModCompletions(this.config, position, lineText, currentIndex, eol);
+          return getModCompletions(this._config, position, lineText, currentIndex, eol);
         default:
           return [];
       }
     } else {
       const isEmpty = whitespaceRegex.test(lineText);
-      if (isEmpty) return getKeywordCompletions(this.config, eol, position);
+      if (isEmpty) return getKeywordCompletions(this._config, eol, position);
 
       let foundContent = false;
       for (let i = 0; i <= position.character; i++) {
@@ -132,7 +127,7 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
       } else {
         // Stuff towards the end of the line, with a request for completions at
         // the beginning.
-        return getKeywordCompletions(this.config, eol, position);
+        return getKeywordCompletions(this._config, eol, position);
       }
     }
   }

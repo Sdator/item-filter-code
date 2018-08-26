@@ -4,6 +4,7 @@
  * license information.
  * ===========================================================================*/
 
+export * from "./composite-disposable";
 export * from "./disposable";
 export * from "./emitter";
 

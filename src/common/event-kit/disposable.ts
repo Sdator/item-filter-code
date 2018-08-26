@@ -11,7 +11,12 @@ import { IDisposable } from ".";
  * invoked on disposal.
  */
 export class Disposable implements IDisposable {
-  private disposed: boolean;
+  private _disposed: boolean;
+
+  /** Returns whether this disposable has been disposed of previously. */
+  get disposed(): boolean {
+    return this._disposed;
+  }
 
   /**
    * Create a new disposable.
@@ -22,7 +27,7 @@ export class Disposable implements IDisposable {
     if (action && typeof(action) !== "function") {
       throw new Error("Disposal action passed to a Disposable wasn't a function.");
     }
-    this.disposed = false;
+    this._disposed = false;
   }
 
   /**
@@ -35,9 +40,9 @@ export class Disposable implements IDisposable {
    * @return Whether this instance was successfully disposed of.
    */
   dispose(): void {
-    if (this.disposed) return;
+    if (this._disposed) return;
 
-    this.disposed = true;
+    this._disposed = true;
     if (this.action) {
       this.action();
       this.action = undefined;
@@ -46,6 +51,6 @@ export class Disposable implements IDisposable {
 
   /** Returns whether this disposable has been disposed of previously. */
   isDisposed(): boolean {
-    return this.disposed;
+    return this._disposed;
   }
 }

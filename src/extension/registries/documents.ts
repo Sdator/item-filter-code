@@ -6,7 +6,7 @@
 
 import * as vscode from "vscode";
 
-import { Emitter, Event, IDisposable } from "../../common/event-kit";
+import { CompositeDisposable, Emitter, Event, IDisposable } from "../../common/event-kit";
 
 /** Type information for the DocumentRegistry's Emitter. */
 interface Emissions {
@@ -39,8 +39,8 @@ interface Emissions {
  * own.
  */
 export class DocumentRegistry implements IDisposable {
-  private readonly subscriptions: IDisposable[];
-  private readonly emitter: Emitter<Emissions>;
+  private readonly _emitter: Emitter<Emissions>;
+  private readonly _subscriptions: CompositeDisposable;
 
   /** A list of active documents within the editor. */
   get documents(): vscode.TextDocument[] {
@@ -61,27 +61,23 @@ export class DocumentRegistry implements IDisposable {
   }
 
   constructor() {
-    this.emitter = new Emitter();
+    this._emitter = new Emitter();
 
-    this.subscriptions = [
-      vscode.workspace.onDidOpenTextDocument(this.open, this),
-      vscode.workspace.onDidCloseTextDocument(this.close, this),
-      vscode.workspace.onDidChangeTextDocument(this.change, this)
-    ];
+    this._subscriptions = new CompositeDisposable(
+      vscode.workspace.onDidOpenTextDocument(this._open, this),
+      vscode.workspace.onDidCloseTextDocument(this._close, this),
+      vscode.workspace.onDidChangeTextDocument(this._change, this)
+    );
 
     for (const document of this.documents) {
-      this.open(document);
+      this._open(document);
     }
   }
 
   /** Disposes of this registry and all of its subscriptions. */
   dispose(): void {
-    while (this.subscriptions.length) {
-      const s = this.subscriptions.pop();
-      if (s) s.dispose();
-    }
-
-    this.emitter.dispose();
+    this._subscriptions.dispose();
+    this._emitter.dispose();
   }
 
   /** Returns the TextDocument for the given URI, if one exists. */
@@ -111,7 +107,7 @@ export class DocumentRegistry implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidOpenDocument: Event<Emissions["document-opened"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("document-opened", e, thisArg, disposables);
+    return this._emitter.registerEvent("document-opened", e, thisArg, disposables);
   }
 
   /**
@@ -119,7 +115,7 @@ export class DocumentRegistry implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidOpenFilter: Event<Emissions["filter-opened"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("filter-opened", e, thisArg, disposables);
+    return this._emitter.registerEvent("filter-opened", e, thisArg, disposables);
   }
 
   /**
@@ -127,7 +123,7 @@ export class DocumentRegistry implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidCloseDocument: Event<Emissions["document-closed"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("document-closed", e, thisArg, disposables);
+    return this._emitter.registerEvent("document-closed", e, thisArg, disposables);
   }
 
   /**
@@ -135,7 +131,7 @@ export class DocumentRegistry implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidCloseFilter: Event<Emissions["filter-closed"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("filter-closed", e, thisArg, disposables);
+    return this._emitter.registerEvent("filter-closed", e, thisArg, disposables);
   }
 
   /**
@@ -143,7 +139,7 @@ export class DocumentRegistry implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidChangeDocument: Event<Emissions["document-changed"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("document-changed", e, thisArg, disposables);
+    return this._emitter.registerEvent("document-changed", e, thisArg, disposables);
   }
 
   /**
@@ -151,7 +147,7 @@ export class DocumentRegistry implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidChangeFilter: Event<Emissions["filter-changed"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("filter-changed", e, thisArg, disposables);
+    return this._emitter.registerEvent("filter-changed", e, thisArg, disposables);
   }
 
   /**
@@ -160,7 +156,7 @@ export class DocumentRegistry implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   observeDocuments: Event<Emissions["document-opened"]> = (e, thisArg, disposables) => {
-    return this.emitter.observeEvent("document-opened", this.documents, e, thisArg, disposables);
+    return this._emitter.observeEvent("document-opened", this.documents, e, thisArg, disposables);
   }
 
   /**
@@ -169,33 +165,33 @@ export class DocumentRegistry implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   observeFilters: Event<Emissions["filter-opened"]> = (e, thisArg, disposables) => {
-    return this.emitter.observeEvent("filter-opened", this.filters, e, thisArg, disposables);
+    return this._emitter.observeEvent("filter-opened", this.filters, e, thisArg, disposables);
   }
 
   /** Registers a document as having been opened. */
-  private open(document: vscode.TextDocument): void {
-    this.emitter.emit("document-opened", document);
+  private _open(document: vscode.TextDocument): void {
+    this._emitter.emit("document-opened", document);
 
     if (document.languageId === "item-filter") {
-      this.emitter.emit("filter-opened", document);
+      this._emitter.emit("filter-opened", document);
     }
   }
 
   /** Unregisters a previously opened text editor. */
-  private close(document: vscode.TextDocument): void {
-    this.emitter.emit("document-closed", document);
+  private _close(document: vscode.TextDocument): void {
+    this._emitter.emit("document-closed", document);
 
     if (document.languageId === "item-filter") {
-      this.emitter.emit("filter-closed", document);
+      this._emitter.emit("filter-closed", document);
     }
   }
 
   /** Updates a previously opened document. */
-  private change(event: vscode.TextDocumentChangeEvent): void {
-    this.emitter.emit("document-changed", event);
+  private _change(event: vscode.TextDocumentChangeEvent): void {
+    this._emitter.emit("document-changed", event);
 
     if (event.document.languageId === "item-filter") {
-      this.emitter.emit("filter-changed", event);
+      this._emitter.emit("filter-changed", event);
     }
   }
 }

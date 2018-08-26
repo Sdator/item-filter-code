@@ -22,29 +22,21 @@ interface Emissions {
  * This does not support folder-level configuration values.
  */
 export class ConfigurationManager implements IDisposable {
-  private readonly emitter: Emitter<Emissions>;
-  private readonly subscriptions: IDisposable[];
+  private readonly _emitter: Emitter<Emissions>;
+  private readonly _subscription: IDisposable;
 
   values: ConfigurationValues;
 
   constructor() {
-    this.emitter = new Emitter();
-
-    this.subscriptions = [
-      vscode.workspace.onDidChangeConfiguration(this.change, this)
-    ];
-
-    this.values = this.updateValues();
+    this._emitter = new Emitter();
+    this._subscription = vscode.workspace.onDidChangeConfiguration(this._change, this);
+    this.values = this._updateValues();
   }
 
   /** Disposes of this manager and all of its subscriptions. */
   dispose(): void {
-    while (this.subscriptions.length) {
-      const s = this.subscriptions.pop();
-      if (s) s.dispose();
-    }
-
-    this.emitter.dispose();
+    this._subscription.dispose();
+    this._emitter.dispose();
   }
 
   /**
@@ -53,11 +45,11 @@ export class ConfigurationManager implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidChange: Event<Emissions["change"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("change", e, thisArg, disposables);
+    return this._emitter.registerEvent("change", e, thisArg, disposables);
   }
 
   /** Queries Visual Studio Code in order to retrieve a fully up-to-date configuration. */
-  private updateValues(): ConfigurationValues {
+  private _updateValues(): ConfigurationValues {
     const config = vscode.workspace.getConfiguration("item-filter");
 
     const baseWhitelist = config.get<string[]>("baseWhitelist");
@@ -94,12 +86,12 @@ export class ConfigurationManager implements IDisposable {
   }
 
   /** Updates the configuration values, emitting the result to any listeners. */
-  private change(event: vscode.ConfigurationChangeEvent): void {
+  private _change(event: vscode.ConfigurationChangeEvent): void {
     if (!event.affectsConfiguration("item-filter")) {
       return;
     }
 
-    this.values = this.updateValues();
-    this.emitter.emit("change", this.values);
+    this.values = this._updateValues();
+    this._emitter.emit("change", this.values);
   }
 }

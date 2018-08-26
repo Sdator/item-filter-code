@@ -1,5 +1,6 @@
 {
   "defaultSeverity": "warning",
+  "rulesDirectory": "out/lint",
   "rules": {
     "adjacent-overload-signatures": true,
     "align": [
@@ -195,6 +196,7 @@
     "no-this-assignment": true,
     "no-trailing-whitespace": true,
     "no-unbound-method": false,
+    "underscore-privates": true,
     "no-unnecessary-callback-wrapper": true,
     "no-unnecessary-class": true,
     "no-unnecessary-initializer": true,

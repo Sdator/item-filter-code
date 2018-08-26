@@ -6,7 +6,7 @@
 
 import * as vscode from "vscode";
 
-import { Emitter, Event, IDisposable } from "../../common/event-kit";
+import { CompositeDisposable, Emitter, Event, IDisposable } from "../../common/event-kit";
 import { ItemFilter } from "../../common/item-filter";
 import { ConfigurationValues } from "../../common/types";
 import { ConfigurationManager } from "../managers/configuration";
@@ -43,40 +43,36 @@ interface Emissions {
  * workspace.
  */
 export class ItemFilterManager implements IDisposable {
-  private readonly activeFilters: Map<string, ItemFilter>;
-  private readonly configManager: ConfigurationManager;
-  private readonly documentRegistry: DocumentRegistry;
-  private readonly emitter: Emitter<Emissions>;
-  private readonly subscriptions: IDisposable[];
+  private readonly _activeFilters: Map<string, ItemFilter>;
+  private readonly _configManager: ConfigurationManager;
+  private readonly _documentRegistry: DocumentRegistry;
+  private readonly _emitter: Emitter<Emissions>;
+  private readonly _subscriptions: CompositeDisposable;
 
   constructor(configManager: ConfigurationManager, documentRegistry: DocumentRegistry) {
-    this.configManager = configManager;
-    this.documentRegistry = documentRegistry;
-    this.activeFilters = new Map();
-    this.emitter = new Emitter();
+    this._configManager = configManager;
+    this._documentRegistry = documentRegistry;
+    this._activeFilters = new Map();
+    this._emitter = new Emitter();
 
-    this.subscriptions = [
-      this.documentRegistry.observeFilters(this.openDocument, this),
-      this.documentRegistry.onDidCloseFilter(this.closeDocument, this),
-      this.documentRegistry.onDidChangeFilter(this.updateDocument, this),
-      this.configManager.onDidChange(this.updateConfig, this)
-    ];
+    this._subscriptions = new CompositeDisposable(
+      this._documentRegistry.observeFilters(this._openDocument, this),
+      this._documentRegistry.onDidCloseFilter(this._closeDocument, this),
+      this._documentRegistry.onDidChangeFilter(this._updateDocument, this),
+      this._configManager.onDidChange(this._updateConfig, this)
+    );
   }
 
   /** Disposes of this registry and all of its subscriptions. */
   dispose(): void {
-    while (this.subscriptions.length) {
-      const s = this.subscriptions.pop();
-      if (s) s.dispose();
-    }
-
-    this.emitter.dispose();
-    this.activeFilters.clear();
+    this._subscriptions.dispose();
+    this._emitter.dispose();
+    this._activeFilters.clear();
   }
 
   /** Returns the item filter for the given URI, if one exists. */
   get(uri: string): ItemFilter | undefined {
-    return this.activeFilters.get(uri);
+    return this._activeFilters.get(uri);
   }
 
   /**
@@ -84,7 +80,7 @@ export class ItemFilterManager implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidOpenFilter: Event<Emissions["opened"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("opened", e, thisArg, disposables);
+    return this._emitter.registerEvent("opened", e, thisArg, disposables);
   }
 
   /**
@@ -92,7 +88,7 @@ export class ItemFilterManager implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidCloseFilter: Event<Emissions["closed"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("closed", e, thisArg, disposables);
+    return this._emitter.registerEvent("closed", e, thisArg, disposables);
   }
 
   /**
@@ -103,11 +99,11 @@ export class ItemFilterManager implements IDisposable {
   observeFilters: Event<Emissions["opened"]> = (e, thisArg, disposables) => {
     const collection: Set<FilterOpenedEvent> = new Set();
 
-    for (const [uri, filter] of this.activeFilters) {
+    for (const [uri, filter] of this._activeFilters) {
       collection.add({ uri, filter });
     }
 
-    return this.emitter.observeEvent("opened", collection, e, thisArg, disposables);
+    return this._emitter.observeEvent("opened", collection, e, thisArg, disposables);
   }
 
   /**
@@ -115,44 +111,44 @@ export class ItemFilterManager implements IDisposable {
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   onDidChangeFilter: Event<Emissions["changed"]> = (e, thisArg, disposables) => {
-    return this.emitter.registerEvent("changed", e, thisArg, disposables);
+    return this._emitter.registerEvent("changed", e, thisArg, disposables);
   }
 
   /** Opens an item filter with the contents of the given document. */
-  private openDocument(document: vscode.TextDocument): void {
+  private _openDocument(document: vscode.TextDocument): void {
     const uri = document.uri.toString();
-    const filter = new ItemFilter(this.configManager.values, document.getText());
-    this.activeFilters.set(uri, filter);
-    this.emitter.emit("opened", { uri, filter });
+    const filter = new ItemFilter(this._configManager.values, document.getText());
+    this._activeFilters.set(uri, filter);
+    this._emitter.emit("opened", { uri, filter });
   }
 
   /** Closes the item filter associated with the given text document. */
-  private closeDocument(document: vscode.TextDocument): void {
-    this.closeUri(document.uri.toString());
+  private _closeDocument(document: vscode.TextDocument): void {
+    this._closeUri(document.uri.toString());
   }
 
   /** Closes the item filter associated with the given identifier.  */
-  private closeUri(uri: string): void {
-    this.activeFilters.delete(uri);
-    this.emitter.emit("closed", { uri });
+  private _closeUri(uri: string): void {
+    this._activeFilters.delete(uri);
+    this._emitter.emit("closed", { uri });
   }
 
   /** Updates the item filter associated with the given event. */
-  private updateDocument(event: vscode.TextDocumentChangeEvent): void {
+  private _updateDocument(event: vscode.TextDocumentChangeEvent): void {
     const uri = event.document.uri.toString();
-    const filter = new ItemFilter(this.configManager.values, event.document.getText());
-    this.activeFilters.set(uri, filter);
-    this.emitter.emit("changed", { uri, filter });
+    const filter = new ItemFilter(this._configManager.values, event.document.getText());
+    this._activeFilters.set(uri, filter);
+    this._emitter.emit("changed", { uri, filter });
   }
 
   /** Performs any work necessary whenever a configuration value has changed. */
-  private updateConfig(config: ConfigurationValues): void {
-    for (const [uri] of this.activeFilters) {
-      const document = this.documentRegistry.getFilter(uri);
+  private _updateConfig(config: ConfigurationValues): void {
+    for (const [uri] of this._activeFilters) {
+      const document = this._documentRegistry.getFilter(uri);
       if (document) {
         const filter = new ItemFilter(config, document.getText());
-        this.activeFilters.set(uri, filter);
-        this.emitter.emit("changed", { uri, filter });
+        this._activeFilters.set(uri, filter);
+        this._emitter.emit("changed", { uri, filter });
       }
     }
   }
