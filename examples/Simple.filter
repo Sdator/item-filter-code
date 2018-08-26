@@ -1,0 +1,8 @@
+# A trivial item filter.
+Show # Currency->High Value
+  Class Currency
+  BaseType "Mirror of Kalandra"
+  SetFontSize 42
+  PlayAlertSound 10 300
+
+Show

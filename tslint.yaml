@@ -1,5 +1,0 @@
----
-extends: "@glencfl/tslint-config"
-rules:
-  no-console: false
-  no-null-keyword: false

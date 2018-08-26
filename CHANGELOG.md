@@ -2,6 +2,11 @@
 
 The history of changes to the extension.
 
+### Version 1.12.0 (TBD)
+- Stopped using the language server protocol, instead utilizing the VSCode API directly, reducing the memory usage of the extension by around 30 MB.
+- Added the missing `Avian Slippers` item base.
+- The value for the `SetFontSize` rule can now fall in the range of `[16,50]`, rather than `[18,45]`.
+
 ### Version 1.11.0 (July 5th, 2018)
 - Added all new uniques from Path of Exile version 3.3.
 - Added approximately 50 missing affixes for the `HasExplicitMod` rule.
@@ -30,7 +35,7 @@ The history of changes to the extension.
 If you find any mods that are missing from the extension, then an issue report would be helpful.
 
 ### Version 1.8.0 (May 30th, 2018)
-- Added the initial support for Patch of Exile version 3.3 and the Incursion league.
+- Added the initial support for Path of Exile version 3.3 and the Incursion league.
   + As with every major Path of Exile release, the new unique items will be added to the extension
   once all have been discovered.
 - Added support for the new `GemLevel` rule.

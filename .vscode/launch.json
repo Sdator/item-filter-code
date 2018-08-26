@@ -2,38 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Client",
+      "name": "Launch Extension",
       "type": "extensionHost",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}"
-      ],
-      "stopOnEntry": false,
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/out/client/**/*.js"
-      ]
-    },
-    {
-      "name": "Attach to Server",
-      "type": "node",
-      "request": "attach",
-      "port": 6009,
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/out/server/**/*.js"
-      ]
-    },
-    {
-      "name": "Launch Tests",
-      "type": "extensionHost",
-      "request": "launch",
-      "runtimeExecutable": "${execPath}",
-      "args": [
-        "${workspaceFolder}/src/test",
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test"
       ],
       "stopOnEntry": false,
       "sourceMaps": true,

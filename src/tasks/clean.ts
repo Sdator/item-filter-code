@@ -4,6 +4,27 @@
  * license information.
  * ===========================================================================*/
 
-import { clean } from "./index";
+import * as fs from "fs";
+import * as path from "path";
+import rimraf = require("rimraf");
 
-clean();
+import * as common from "../common";
+
+const temporaryDirs = [
+  common.outputRoot,
+  common.dataOutputRoot,
+  common.webviewOutputRoot,
+  path.join(common.projectRoot, "coverage"),
+];
+
+const temporaryFiles = [
+  path.join(common.projectRoot, "yarn-error.log"),
+];
+
+for (const dir of temporaryDirs) {
+  if (fs.existsSync(dir)) rimraf(dir, () => { });
+}
+
+for (const file of temporaryFiles) {
+  if (fs.existsSync(file)) fs.unlinkSync(file);
+}

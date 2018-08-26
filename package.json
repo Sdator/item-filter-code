@@ -2,7 +2,7 @@
   "name": "item-filter-code",
   "description": "Support for editing Path of Exile item filters within Visual Studio Code.",
   "displayName": "Item Filter Code",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "author": "Glen Marker",
   "publisher": "GlenCFL",
   "license": "MIT",
@@ -25,50 +25,33 @@
     "path of exile",
     "exile"
   ],
-  "icon": "media/icon.png",
-  "main": "./out/client/main",
+  "icon": "assets/images/icon.png",
+  "main": "./out/extension/main",
   "scripts": {
-    "vscode:prepublish": "npm run compile && npm run lint",
-    "compile:data": "ts-node src/tasks/data",
-    "compile:ts": "tsc -p .",
-    "compile": "npm run clean && npm run compile:ts && npm run compile:data",
-    "watch": "ts-node src/tasks/watch",
-    "lint": "ts-node src/tasks/lint",
-    "clean": "ts-node src/tasks/clean",
-    "coverage:on": "ts-node src/tasks/cov on",
-    "coverage:off": "ts-node src/tasks/cov off",
-    "postinstall": "node ./node_modules/vscode/bin/install"
+    "vscode:prepublish": "run-s clean build:release",
+    "build": "run-s build:code build:data",
+    "build:release": "run-s build:code:release build:data",
+    "build:data": "node out/tasks/data",
+    "build:code": "tsc --project src",
+    "build:code:release": "tsc --project src --sourceMap false",
+    "lint": "tslint --format stylish --project src/tsconfig.json",
+    "postinstall": "node ./node_modules/vscode/bin/install",
+    "clean": "node out/tasks/clean"
   },
   "dependencies": {
-    "vscode-languageclient": "^4.1.4",
-    "vscode-languageserver": "^4.1.3"
+    "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
-    "@glencfl/tslint-config": "^1.5.0",
-    "@types/chai": "^4.1.3",
-    "@types/chokidar": "^1.7.5",
-    "@types/fs-extra": "^5.0.2",
-    "@types/istanbul": "^0.4.30",
-    "@types/js-yaml": "^3.11.1",
-    "@types/lodash": "^4.14.109",
+    "@types/lodash.debounce": "^4.0.4",
     "@types/mkdirp": "^0.5.2",
-    "@types/mocha": "5.2.0",
+    "@types/node": "^10.9.2",
     "@types/rimraf": "^2.0.2",
-    "chai": "^4.1.2",
-    "chokidar": "^2.0.3",
-    "decache": "^4.4.0",
-    "fs-extra": "^6.0.1",
-    "istanbul": "^0.4.5",
-    "js-yaml": "^3.11.0",
-    "lodash": "^4.17.10",
     "mkdirp": "^0.5.1",
-    "mocha": "5.2.0",
-    "remap-istanbul": "^0.11.1",
+    "npm-run-all": "^4.1.3",
     "rimraf": "^2.6.2",
-    "ts-node": "^6.0.5",
     "tslint": "^5.10.0",
-    "typescript": "^2.8.3",
-    "vscode": "^1.1.18"
+    "typescript": "^2.9.2",
+    "vscode": "^1.1.21"
   },
   "engines": {
     "vscode": "^1.20.0"
@@ -86,14 +69,14 @@
         "extensions": [
           ".filter"
         ],
-        "configuration": "./language-configuration.json"
+        "configuration": "./languages/configs/item-filter.json"
       }
     ],
     "grammars": [
       {
         "language": "item-filter",
         "scopeName": "source.filter",
-        "path": "./syntaxes/item-filter.tmLanguage.json"
+        "path": "./languages/syntaxes/item-filter.tmLanguage.json"
       }
     ],
     "configuration": [

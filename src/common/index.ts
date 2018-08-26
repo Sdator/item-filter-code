@@ -6,30 +6,108 @@
 
 import * as path from "path";
 
-import { Configuration } from "../types";
-
 /** The root path of the project. */
 export const projectRoot = path.join(__dirname, "..", "..");
 
+/** The root path of the source directory. */
+export const sourceRoot = path.join(projectRoot, "src");
+
+/** The root path of the data source directory. */
+export const dataSourceRoot = path.join(projectRoot, "build", "data");
+
 /** The root path of the output directory. */
-export const buildRoot = path.join(projectRoot, "out");
+export const outputRoot = path.join(projectRoot, "out");
 
-/** The root path of the data file directory. */
-export const dataRoot = buildRoot;
+/** The root path of the data output directory. */
+export const dataOutputRoot = path.join(outputRoot, "data");
 
-/** Determines whether the given entity is an Error. */
-// tslint:disable-next-line:no-any
-export function isError(entity: any): entity is Error {
-  if (entity != null && entity instanceof Error) return true;
-  else return false;
+/** The root path of the assets directory. */
+export const assetRoot = path.join(projectRoot, "assets");
+
+/** The root path of the tools directory. */
+export const toolsRoot = path.join(assetRoot, "tools");
+
+/** The root path of the sound effects directory. */
+export const sfxRoot = path.join(assetRoot, "sfx");
+
+/** The root path of the webview source directory. */
+export const webviewSourceRoot = path.join(projectRoot, "src", "webviews");
+
+/** The root path of the webview output directory. */
+export const webviewOutputRoot = path.join(outputRoot, "webviews");
+
+/**
+ * A TypeScript-only check allowing us to implement things like exhaustive
+ * switch statements.
+ */
+export function assertUnreachable(_: never): never {
+  return _;
 }
 
-/** Determines whether the given entity contains our configuration variables. */
+/** Determines whether the two given arrays are strictly equal. */
+export function equalArrays<T>(lha: T[], rha: T[]): boolean {
+  if (lha === rha) return true;
+  if (lha.length !== rha.length) return false;
+
+  for (let i = 0; i < lha.length; i++) {
+    if (lha[i] !== rha[i]) return false;
+  }
+
+  return true;
+}
+
+/**
+ * Returns the ordinal representation of the given number. For example, the oridinal
+ * representation of `1` would be `1st`.
+ */
+export function getOrdinal(n: number): string {
+  const s = ["th", "st", "nd", "rd"];
+  const v = n % 100;
+  // tslint:disable-next-line:restrict-plus-operands
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+/** Splits the given text into lines. Only supports LF and CRLF. */
+export function splitLines(text: string): string[] {
+  return text.split(/\r?\n/g);
+}
+
+/**
+ * Splits the given text into lines, while preserving the linebreak at the end
+ * of each of those lines. Only supports LF and CRLF.
+ * @param text The text to be split into lines.
+ * @return The lines contained within the text.
+ */
+export function splitLinesWithBreaks(text: string): string[] {
+  const splitResult = text.split(/([^\n]*(?:\r?\n|$))/g);
+  const filterResult = splitResult.filter(value => value.length !== 0);
+
+  // We lose the last line if it's completely empty above, so we need to add it
+  // back in.
+  const index = text.lastIndexOf("\n") + 1;
+  if (text[index] === undefined) {
+    filterResult.push("");
+  }
+
+  return filterResult;
+}
+
+/**
+ * Returns a stylized representation of the given array. Given `[1, 2, 3]`, this
+ * function would by default return `"1, 2, and 3"`.
+ * @param array The array, expected to contain only primitive types.
+ * @param finalDivider Allows you to optionally set the text for the final divider.
+ * @return A string representation of the given array.
+ */
+// tslint:disable:no-unsafe-any
 // tslint:disable-next-line:no-any
-export function isConfiguration(entity: any): entity is Configuration {
-  if (entity != null && (<Configuration>entity)["item-filter"] != null) {
-    return true;
+export function stylizedArrayJoin(array: any, finalDivider = ", and "): string {
+  if (array.length === 0) {
+    return "";
+  } else if (array.length === 1) {
+    return `${array[0]}`;
   } else {
-    return false;
+    return `${array.slice(0, -1).join(", ")}${finalDivider} ${array.slice(-1)}`;
   }
 }
+// tslint:enable:no-unsafe-any

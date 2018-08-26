@@ -1,0 +1,84 @@
+{
+  "extraBases": [
+    "Blessing",
+    "Breachstone",
+    "Captured Soul",
+    "Cartographer's Seal",
+    "Cartographer's Sextant",
+    "Essence of Anger",
+    "Essence of Anguish",
+    "Essence of Contempt",
+    "Essence of Doubt",
+    "Essence of Dread",
+    "Essence of Envy",
+    "Essence of Fear",
+    "Essence of Greed",
+    "Essence of Hatred",
+    "Essence of Loathing",
+    "Essence of Misery",
+    "Essence of Rage",
+    "Essence of Scorn",
+    "Essence of Spite",
+    "Essence of Suffering",
+    "Essence of Torment",
+    "Essence of Woe",
+    "Essence of Wrath",
+    "Essence of Zeal",
+    "Eye Jewel",
+    "Hybrid Flask",
+    "Iron Net",
+    "Leaguestone",
+    "Life Flask",
+    "Mana Flask",
+    "Memory Fragment",
+    "Rope Net",
+    "Shaper's Orb",
+    "Steel Net",
+    {
+      "name": "Sacrifice Set",
+      "text": "\"Sacrifice at Dusk\" \"Sacrifice at Midnight\" \"Sacrifice at Dawn\" \"Sacrifice at Noon\""
+    },
+    {
+      "name": "Mortal Set",
+      "text": "\"Mortal Grief\" \"Mortal Rage\" \"Mortal Hope\" \"Mortal Ignorance\""
+    },
+    {
+      "name": "Pale Council Set",
+      "text": "\"Volkuur's Key\" \"Eber's Key\" \"Yriel's Key\" \"Inya's Key\""
+    },
+    {
+      "name": "Shaper Set",
+      "text": "\"Fragment of the Hydra\" \"Fragment of the Phoenix\" \"Fragment of the Minotaur\" \"Fragment of the Chimera\""
+    },
+    {
+      "name": "Talismans - Tier 1",
+      "text": "\"Ashscale Talisman\" \"Black Maw Talisman\" \"Bonespire Talisman\" \"Breakrib Talisman\" \"Chrysalis Talisman\" \"Deadhand Talisman\" \"Deep One Talisman\" \"Lone Antler Talisman\" \"Mandible Talisman\" \"Rot Head Talisman\" \"Undying Flesh Talisman\" \"Writhing Talisman\""
+    },
+    {
+      "name": "Talismans - Tier 2",
+      "text": "\"Avian Twins Talisman\" \"Clutching Talisman\" \"Fangjaw Talisman\" \"Hexclaw Talisman\" \"Horned Talisman\" \"Primal Skull Talisman\" \"Splitnewt Talisman\" \"Wereclaw Talisman\""
+    },
+    {
+      "name": "Talismans - Tier 3",
+      "text": "\"Longtooth Talisman\" \"Monkey Paw Talisman\" \"Monkey Twins Talisman\" \"Rotfeather Talisman\" \"Spinefuse Talisman\" \"Three Hands Talisman\" \"Three Rat Talisman\""
+    },
+    {
+      "name": "Talismans - Tier 4",
+      "text": "\"Greatwolf Talisman\""
+    },
+    {
+      "name": "Bestiary Nets",
+      "text": "\"Rope Net\" \"Iron Net\" \"Steel Net\" \"Thaumaturgical Net\" \"Necromancy Net\""
+    }
+  ],
+  "extraClasses": [
+    "Axes",
+    "Card",
+    "Currency",
+    "Flasks",
+    "Maces",
+    "Map Item",
+    "Skill Gems",
+    "Swords"
+  ]
+}

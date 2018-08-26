@@ -1,2 +1,11 @@
 {
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/tslint.json"
+      ],
+      "url": "./build/schemas/tslint.json"
+    }
+  ],
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

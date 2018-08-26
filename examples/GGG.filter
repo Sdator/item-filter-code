@@ -31,6 +31,7 @@ Show
     SetBackgroundColor 5 5 5 250
     SetBorderColor 180 96 0
     SetFontSize 38
+    PlayAlertSound 8 225
 
 # 6Socket Any
 Show
@@ -38,7 +39,7 @@ Show
     SetBackgroundColor 0 0 0
     SetBorderColor 180 96 0
     SetFontSize 38
-    PlayAlertSound 9 225
+    PlayAlertSound 1 225
 
 # Sacrificial Garb
 Show
@@ -90,15 +91,6 @@ Show
     SetBorderColor 0 0 0
     SetFontSize 42
     PlayAlertSound 10 300
-
-# Tencent Event Coins and Shards
-Show
-    BaseType "Event Coin" "Event Shard"
-    SetTextColor 0 0 0
-    SetBackgroundColor 180 96 0
-    SetBorderColor 0 0 0
-    SetFontSize 42
-    PlayAlertSound 9 225
 
 # Elder Items
 Show
@@ -163,7 +155,7 @@ Show
     SetBackgroundColor 255 244 75 250
     SetBorderColor 0 0 0
     SetFontSize 36
-    PlayAlertSound 9 225
+    PlayAlertSound 11 225
 
 # Currency - Essence
 Show
@@ -173,7 +165,7 @@ Show
     SetBackgroundColor 170 158 130
     SetBorderColor 0 0 0
     SetFontSize 36
-    PlayAlertSound 9 225
+    PlayAlertSound 12 225
 
 # Currency - Remnant of Corruption
 Show
@@ -201,7 +193,7 @@ Show
     SetBackgroundColor 181 75 255 250
     SetBorderColor 5 0 8 150
     SetFontSize 36
-    PlayAlertSound 9 225
+    PlayAlertSound 13 225
 
 # Currency - Breach Splinter
 Show
@@ -348,13 +340,31 @@ Show
     SetFontSize 42
     PlayAlertSound 9 225
 
+# Incursion Bombs/Keys
+Show 
+    BaseType "Stone of Passage" "Flashpowder Keg"
+    SetTextColor 0 0 0
+    SetBackgroundColor 50 200 50
+    SetBorderColor 255 255 255
+    SetFontSize 50
+    PlayAlertSound 4 50
+
+# Incursion Vials
+Show
+    BaseType "Vial of Dominance" "Vial of Summoning" "Vial of Awakening" "Vial of the Ritual" "Vial of Fate" "Vial of Consequence" "Vial of the Ghost" "Vial of Transcendence" "Vial of Sacrifice"
+    SetTextColor 0 0 0
+    SetBackgroundColor 200 150 50
+    SetBorderColor 255 255 255
+    SetFontSize 50
+    PlayAlertSound 4 50
+
 Show # Gems - Empower/Enhance/Enlighten/Portal
     Class "Gems"
     BaseType "Empower" "Enhance" "Enlighten" "Portal"
     SetTextColor 180 96 0
     SetBackgroundColor 5 5 5 250
     SetBorderColor 27 162 155
-    PlayAlertSound 9 225
+    PlayAlertSound 14 225
 
 Show # Gems - Portal/DetonateMines/AddedChaos
     Class "Gems"
@@ -509,7 +519,7 @@ Show # Divination Cards - All
     SetTextColor 0 186 254
     SetBorderColor 0 186 254
     SetFontSize 38
-    PlayAlertSound 9 230
+    PlayAlertSound 16 230
 
 # Chroma Orb Recipe 
 Show # Chromatic Orb Recipe - Norm
@@ -559,7 +569,7 @@ Show # Amulets, Rings, Belts - Endgame (Implicit) - Norm
     SetBackgroundColor 70 70 70
     SetBorderColor 127 127 127
     SetFontSize 38
-    PlayAlertSound 1 80
+    PlayAlertSound 3 80
 
 Show # Amulets, Rings, Belts - Endgame (Implicit) - Magic
     Class "Rings" "Amulets" "Belts"
