@@ -16,11 +16,25 @@ type RelevantClassMember =
   | ts.GetAccessorDeclaration
   | ts.SetAccessorDeclaration;
 
+const options = {
+  ignorePrivate: false,
+  ignorePublic: false
+};
+
 export class Rule extends tslint.Rules.AbstractRule {
-  static PUBLIC_FAILURE_STRING = "a public member's name cannot be prefixed with an underscore";
   static PRIVATE_FAILURE_STRING = "a private member's name must be prefixed with an underscore";
+  static PUBLIC_FAILURE_STRING = "a public member's name cannot be prefixed with an underscore";
 
   apply(sourceFile: ts.SourceFile): tslint.RuleFailure[] {
+    const args = this.getOptions().ruleArguments;
+
+    for (const arg of args) {
+      if (!(typeof arg === "string")) continue;
+
+      if (arg === "ignore-private") options.ignorePrivate = true;
+      else if (arg === "ignore-public") options.ignorePublic = true;
+    }
+
     return this.applyWithFunction(sourceFile, walk);
   }
 }
@@ -44,10 +58,18 @@ function checkNodeForViolations(ctx: tslint.WalkContext<void>, node: ts.Node): v
     return;
   }
 
-  if (nameStartsWithUnderscore(name.text) && !memberIsPrivate(node)) {
-    ctx.addFailureAtNode(name, Rule.PUBLIC_FAILURE_STRING);
-  } else if (!nameStartsWithUnderscore(name.text) && memberIsPrivate(node)) {
-    ctx.addFailureAtNode(name, Rule.PRIVATE_FAILURE_STRING);
+  if (!options.ignorePrivate) {
+    if (!nameStartsWithUnderscore(name.text) && memberIsPrivate(node)) {
+      const fixer = createPrivateFixer(node);
+      ctx.addFailureAtNode(name, Rule.PRIVATE_FAILURE_STRING, fixer);
+    }
+  }
+
+  if (!options.ignorePublic) {
+    if (nameStartsWithUnderscore(name.text) && !memberIsPrivate(node)) {
+      const fixer = createPublicFixer(node);
+      ctx.addFailureAtNode(name, Rule.PUBLIC_FAILURE_STRING, fixer);
+    }
   }
 }
 
@@ -73,4 +95,25 @@ function memberIsPrivate(node: ts.Declaration): boolean {
 
 function nameIsIdentifier(node: ts.Node): node is ts.Identifier {
   return node.kind === ts.SyntaxKind.Identifier;
+}
+
+function createPrivateFixer(node: RelevantClassMember): tslint.Replacement {
+  const name = node.name;
+  return new tslint.Replacement(name.getStart(), name.getWidth(), `_${name.getText()}`);
+}
+
+function createPublicFixer(node: RelevantClassMember): tslint.Replacement | undefined {
+  const name = node.name;
+  const nameText = node.name.getText();
+
+  let index = 0;
+  while (nameText.charCodeAt(index) === UNDERSCORE) {
+    if (index === nameText.length) {
+      return undefined;
+    }
+
+    index++;
+  }
+
+  return new tslint.Replacement(name.getStart(), name.getWidth(), nameText.substr(index));
 }
