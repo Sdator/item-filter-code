@@ -8,7 +8,7 @@
 // tslint:disable:ban-types no-any no-unsafe-any
 // TODO(glen): emitting data should be optional.
 
-import { IDisposable } from ".";
+import { IDisposable } from "./index";
 import { Disposable } from "./disposable";
 
 /**
