@@ -32,6 +32,14 @@ export interface FilterData {
     },
     stringIdentifiers: { [key: string]: string }
   };
+  minimapIcons: {
+    sizes: number[];
+    colors: string[];
+    shapes: string[];
+  };
+  dropEffects: {
+    colors: string[];
+  };
 }
 
 export interface UniqueItem {

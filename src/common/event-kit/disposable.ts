@@ -4,7 +4,7 @@
  * license information.
  * ===========================================================================*/
 
-import { IDisposable } from "./index";
+import { IDisposable } from ".";
 
 /**
  * A handle to a resource that can be disposed, optionally with an action being

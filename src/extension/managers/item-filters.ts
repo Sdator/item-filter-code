@@ -9,7 +9,7 @@ import * as vscode from "vscode";
 import { CompositeDisposable, Emitter, Event, IDisposable } from "../../common/event-kit";
 import { ItemFilter } from "../../common/item-filter";
 import { ConfigurationValues } from "../../common/types";
-import { ConfigurationManager } from "../managers/configuration";
+import { ConfigurationManager } from "./configuration";
 import { DocumentRegistry } from "../registries/documents";
 
 export interface FilterOpenedEvent {

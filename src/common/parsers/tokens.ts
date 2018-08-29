@@ -8,7 +8,8 @@ import { Range } from "../types";
 
 const numberRegex = /^(\s*)([-0-9]+)(\s|$)/;
 const wordRegex = /^(\s*)([A-Za-z\u00F6]+)(\s|$)/;
-const stringRegex = /^(\s*)("[^"]*"|[^\s\"\'><=]+)(\s|$)/;
+const wordStringRegex = /^(\s*)("[^"]*"|[^\s\"\'><=]+)(\s|$)/;
+const stringRegex = /^(\s*)("[^"]*")(\s|$)/;
 const commentRegex = /^(\s*)((#.*\S+)|(#\s*))(\s*)$/;
 const operatorRegex = /^(\s*)(<=|>=|=|<|>){1}(\s+|$)/;
 const booleanRegex = /^(\s*)("true"|true|"false"|false)(\s+|$)/i;
@@ -202,6 +203,22 @@ export class TokenParser {
   /**
    * Parses a string if one is next on the line.
    * Strings containing multiple words must be contained within double quotation marks.
+   */
+  nextWordString(): TokenParseResult<string> | undefined {
+    const result = this.parseSingleValue(wordStringRegex);
+
+    if (result) {
+      const quotationResult = quotationRegex.exec(result.value);
+      if (quotationResult) result.value = quotationResult[1];
+      return result;
+    } else {
+      return undefined;
+    }
+  }
+
+  /**
+   * Parses a string if one is next on the line.
+   * This string must be enclosed with double quotation marks.
    */
   nextString(): TokenParseResult<string> | undefined {
     const result = this.parseSingleValue(stringRegex);

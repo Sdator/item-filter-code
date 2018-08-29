@@ -81,6 +81,27 @@ export function bypassOperator(text: string, index: number): number | undefined 
 }
 
 /**
+ * Skips all whitespace, returning the index of the first non-whitespace character
+ * within the text.
+ * @param text The line text we're parsing.
+ * @param index The current index for the line.
+ * @return The index to the first non-whitespace character that follows.
+ */
+export function bypassWhitespace(text: string, index: number): number {
+  while (index < text.length) {
+    const character = text.charAt(index);
+
+    if (!whitespaceCharacterRegex.test(character)) {
+      break;
+    }
+
+    index++;
+  }
+
+  return index;
+}
+
+/**
  * Attempts to parse a keyword from the given line.
  * @param text The line of text within the item filter.
  * @param line The line number associated with the given text.

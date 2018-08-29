@@ -4,7 +4,7 @@
  * license information.
  * ===========================================================================*/
 
-import { IDisposable } from "./index";
+import { IDisposable } from ".";
 
 /**
  * Aggregates multiple disposable objects together into a single disposable,

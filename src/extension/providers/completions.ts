@@ -95,6 +95,10 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
           return getBooleanCompletions(this._config, position, lineText, currentIndex, eol);
         case "HasExplicitMod":
           return getModCompletions(this._config, position, lineText, currentIndex, eol);
+        case "MinimapIcon":
+          return getMinimapIconCompletions(position, lineText, currentIndex);
+        case "PlayEffect":
+          return getPlayEffectCompletions(position, lineText, currentIndex);
         default:
           return [];
       }
@@ -356,6 +360,150 @@ function getModCompletions(config: types.ConfigurationValues, pos: vscode.Positi
 
     valueRange.end.character++;
     pushCompletions(intoCodeRange(valueRange));
+  }
+
+  return result;
+}
+
+function getMinimapIconCompletions(pos: vscode.Position, text: string,
+  index: number): vscode.CompletionItem[] {
+
+  const result: vscode.CompletionItem[] = [];
+
+  const pushSizeCompletions = (range: vscode.Range) => {
+    for (const size of filterData.minimapIcons.sizes) {
+      result.push({
+        label: `${size}`,
+        range
+      });
+    }
+  };
+
+  const pushColorCompletions = (range: vscode.Range) => {
+    for (const color of filterData.minimapIcons.colors) {
+      result.push({
+        label: `${color}`,
+        range
+      });
+    }
+  };
+
+  const pushShapeCompletions = (range: vscode.Range) => {
+    for (const color of filterData.minimapIcons.shapes) {
+      result.push({
+        label: `${color}`,
+        range
+      });
+    }
+  };
+
+  let valueIndex = contextParser.bypassEqOperator(text, index);
+  if (valueIndex == null || pos.character < valueIndex) {
+    pushSizeCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+    return result;
+  } else {
+    const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
+    if (range == null) {
+      return result;
+    }
+
+    if (contextParser.isNextValue(range, pos)) {
+      pushSizeCompletions(intoCodeRange(range));
+      return result;
+    } else {
+      valueIndex = range.end.character + 1;
+    }
+  }
+
+  valueIndex = contextParser.bypassWhitespace(text, valueIndex);
+  if (pos.character <= valueIndex) {
+    pushColorCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+    return result;
+  } else {
+    const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
+    if (range == null) {
+      return result;
+    }
+
+    if (contextParser.isNextValue(range, pos)) {
+      pushColorCompletions(intoCodeRange(range));
+      return result;
+    } else {
+      valueIndex = range.end.character + 1;
+    }
+  }
+
+  valueIndex = contextParser.bypassWhitespace(text, valueIndex);
+  if (pos.character <= valueIndex) {
+    pushShapeCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+    return result;
+  } else {
+    const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
+    if (range == null) {
+      return result;
+    }
+
+    if (contextParser.isNextValue(range, pos)) {
+      pushShapeCompletions(intoCodeRange(range));
+      return result;
+    } else {
+      valueIndex = range.end.character + 1;
+    }
+  }
+
+  return result;
+}
+
+function getPlayEffectCompletions(pos: vscode.Position, text: string,
+  index: number): vscode.CompletionItem[] {
+
+  const result: vscode.CompletionItem[] = [];
+
+  const pushColorCompletions = (range: vscode.Range) => {
+    for (const color of filterData.dropEffects.colors) {
+      result.push({
+        label: `${color}`,
+        range
+      });
+    }
+  };
+
+  let valueIndex = contextParser.bypassEqOperator(text, index);
+  if (valueIndex == null || pos.character < valueIndex) {
+    pushColorCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+    return result;
+  } else {
+    const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
+    if (range == null) {
+      return result;
+    }
+
+    if (contextParser.isNextValue(range, pos)) {
+      pushColorCompletions(intoCodeRange(range));
+      return result;
+    } else {
+      valueIndex = range.end.character + 1;
+    }
+  }
+
+  valueIndex = contextParser.bypassWhitespace(text, valueIndex);
+  if (pos.character <= valueIndex) {
+    result.push({
+      label: "Temp",
+      range: new vscode.Range(pos.line, pos.character, pos.line, pos.character)
+    });
+  } else {
+    const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
+    if (range == null) {
+      return result;
+    }
+
+    if (contextParser.isNextValue(range, pos)) {
+      result.push({
+        label: "Temp",
+        range: intoCodeRange(range)
+      });
+    }
   }
 
   return result;

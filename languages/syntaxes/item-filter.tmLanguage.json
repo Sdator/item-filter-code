@@ -259,6 +259,15 @@
           "include": "#sound-rules"
         },
         {
+          "include": "#custom-sound-rule"
+        },
+        {
+          "include": "#minimap-icon-rule"
+        },
+        {
+          "include": "#play-effect-rule"
+        },
+        {
           "include": "#rarity-rule"
         },
         {
@@ -296,7 +305,7 @@
     "double-digit-number-rules": {
       "patterns": [
         {
-          "begin": "^\\s*(Quality|GemLevel)(?=\\s)",
+          "begin": "^\\s*(Quality|GemLevel|MapTier)(?=\\s)",
           "end": "\\s*$",
           "captures": {
             "1": {
@@ -445,6 +454,72 @@
             {
               "include": "#triple-digit-number"
             },
+            {
+              "include": "#word"
+            },
+            {
+              "include": "#trailing-comment"
+            }
+          ]
+        }
+      ]
+    },
+    "custom-sound-rule": {
+      "patterns": [
+        {
+          "begin": "^\\s*(CustomAlertSound)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#string"
+            },
+            {
+              "include": "#trailing-comment"
+            }
+          ]
+        }
+      ]
+    },
+    "minimap-icon-rule": {
+      "patterns": [
+        {
+          "begin": "^\\s*(MinimapIcon)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#single-digit-number"
+            },
+            {
+              "include": "#word"
+            },
+            {
+              "include": "#trailing-comment"
+            }
+          ]
+        }
+      ]
+    },
+    "play-effect-rule": {
+      "patterns": [
+        {
+          "begin": "^\\s*(PlayEffect)(?=\\s)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          },
+          "patterns": [
             {
               "include": "#word"
             },

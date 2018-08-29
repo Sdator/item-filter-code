@@ -7,7 +7,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 
-import { dataOutputRoot, splitLines } from "../../common";
+import { dataOutputRoot, splitLines, stylizedArrayJoin } from "../../common";
 import * as types from "../../common/types";
 import * as contextParser from "../../common/parsers/context";
 import { intoCodeRange } from "../converters";
@@ -66,6 +66,8 @@ export function getHoverResult(text: string, position: vscode.Position): vscode.
       return getHeightHover(position, text, currentIndex);
     case "Width":
       return getWidthHover(position, text, currentIndex);
+    case "MapTier":
+      return getMapTierHover(position, text, currentIndex);
     case "Rarity":
       return getRarityHover(position, text, currentIndex);
     case "SocketGroup":
@@ -87,6 +89,12 @@ export function getHoverResult(text: string, position: vscode.Position): vscode.
     case "PlayAlertSound":
     case "PlayAlertSoundPositional":
       return getSoundHover(position, text, currentIndex);
+    case "CustomAlertSound":
+      return getCustomSoundHover(position, text, currentIndex);
+    case "MinimapIcon":
+      return getMinimapIconHover(position, text, currentIndex);
+    case "PlayEffect":
+      return getPlayEffectHover(position, text, currentIndex);
     case "SetFontSize":
       return getFontSizeHover(position, text, currentIndex);
     default:
@@ -168,7 +176,7 @@ function getBaseTypeHover(position: vscode.Position, text: string, index: number
     }
   }
 
-  const matchedUniques: Array<string|types.UniqueItem> = [];
+  const matchedUniques: Array<string | types.UniqueItem> = [];
   for (const itemBase of matchedBases) {
     const uniques = uniqueData[itemBase];
     if (uniques && uniques.length >= 1) {
@@ -185,7 +193,7 @@ function getBaseTypeHover(position: vscode.Position, text: string, index: number
     output += "Uniques:\n";
     let uniquesPushed = 0;
     for (const unique of matchedUniques) {
-      if (typeof(unique) === "string") {
+      if (typeof (unique) === "string") {
         output += `- ${unique}\n`;
       } else {
         output += `- ${unique.name}`;
@@ -348,6 +356,99 @@ function getSoundHover(pos: vscode.Position, text: string, index: number): vscod
   return result;
 }
 
+function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
+  vscode.Hover | null {
+
+  let result: vscode.Hover | null = null;
+
+  let valueIndex = contextParser.bypassEqOperator(text, index);
+  if (valueIndex == null || pos.character < valueIndex) return result;
+
+  const firstValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+  if (firstValueRange == null) {
+    return result;
+  } else if (contextParser.isNextValue(firstValueRange, pos)) {
+    firstValueRange.end.character++;
+    const text = stylizedArrayJoin(filterData.minimapIcons.sizes, ", or ");
+    result = new vscode.Hover(
+      `The size of the icon on the minimap, which can be ${text}. The smallest value` +
+      " correlates to the largest icon size.",
+      intoCodeRange(firstValueRange)
+    );
+    return result;
+  }
+
+  valueIndex = firstValueRange.end.character + 1;
+  const secondValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+  if (secondValueRange == null) {
+    return result;
+  } else if (secondValueRange != null && contextParser.isNextValue(secondValueRange, pos)) {
+    secondValueRange.end.character++;
+    const text = stylizedArrayJoin(filterData.minimapIcons.colors, ", or ");
+    result = new vscode.Hover(
+      `The color of the icon on the minimap, which can be ${text}.`,
+      intoCodeRange(secondValueRange)
+    );
+    return result;
+  }
+
+  valueIndex = secondValueRange.end.character + 1;
+  const thirdValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+  if (thirdValueRange != null && contextParser.isNextValue(thirdValueRange, pos)) {
+    thirdValueRange.end.character++;
+    const text = stylizedArrayJoin(filterData.minimapIcons.shapes, ", or ");
+    result = new vscode.Hover(
+      `The shape of the icon on the minimap, which can be ${text}.`,
+      intoCodeRange(thirdValueRange)
+    );
+  }
+
+  return result;
+}
+
+function getPlayEffectHover(pos: vscode.Position, text: string, index: number):
+  vscode.Hover | null {
+
+  let result: vscode.Hover | null = null;
+
+  let valueIndex = contextParser.bypassEqOperator(text, index);
+  if (valueIndex == null || pos.character < valueIndex) return result;
+
+  const firstValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+  if (firstValueRange == null) {
+    return result;
+  } else if (contextParser.isNextValue(firstValueRange, pos)) {
+    firstValueRange.end.character++;
+    const text = stylizedArrayJoin(filterData.dropEffects.colors, ", or ");
+    result = new vscode.Hover(
+      `The color of the beam of light overtop of the item, which can be ${text}.`,
+      intoCodeRange(firstValueRange)
+    );
+    return result;
+  }
+
+  valueIndex = firstValueRange.end.character + 1;
+  const secondValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+  if (secondValueRange == null) {
+    return result;
+  } else if (secondValueRange != null && contextParser.isNextValue(secondValueRange, pos)) {
+    secondValueRange.end.character++;
+    result = new vscode.Hover(
+      "The use of Temp results in the item drop effect only temporarily being visible" +
+      " as the item is dropping to the ground.",
+      intoCodeRange(secondValueRange)
+    );
+    return result;
+  }
+
+  return result;
+}
+
 function getDropLevelHover(pos: vscode.Position, text: string, index: number):
   vscode.Hover | null {
 
@@ -412,6 +513,13 @@ function getWidthHover(pos: vscode.Position, text: string, index: number): vscod
   return getSingleValueHover(pos, text, index, contents, false);
 }
 
+function getMapTierHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
+  const ranges = filterData.ruleRanges["MapTier"];
+  const contents = "The tier of the map item, which can be a " +
+    `number from ${ranges.min} to ${ranges.max}.`;
+  return getSingleValueHover(pos, text, index, contents, false);
+}
+
 function getStackSizeHover(pos: vscode.Position, text: string, index: number):
   vscode.Hover | null {
 
@@ -430,16 +538,23 @@ function getSocketGroupHover(pos: vscode.Position, text: string, index: number):
   vscode.Hover | null {
 
   const contents = "The colors of the sockets within the item, with each character of " +
-  "the string representing the color of a single socket.\n\n" +
-  "The most common socket group being `RGB`, which indicates that the item " +
-  "has one red socket, one green socket, and one blue socket. The second most " +
-  "common socket group being `WWWWWW`, which indicates that the item has six " +
-  "white sockets.";
+    "the string representing the color of a single socket.\n\n" +
+    "The most common socket group being `RGB`, which indicates that the item " +
+    "has one red socket, one green socket, and one blue socket. The second most " +
+    "common socket group being `WWWWWW`, which indicates that the item has six " +
+    "white sockets.";
   return getSingleValueHover(pos, text, index, contents, true);
 }
 
 function getBooleanHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
   const contents = "A boolean with two possible values: `True` or `False`.";
+  return getSingleValueHover(pos, text, index, contents, true);
+}
+
+function getCustomSoundHover(pos: vscode.Position, text: string, index: number):
+  vscode.Hover | null {
+
+  const contents = "The file name or full file path for the custom sound.";
   return getSingleValueHover(pos, text, index, contents, true);
 }
 

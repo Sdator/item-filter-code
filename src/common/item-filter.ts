@@ -8,7 +8,7 @@ import * as assert from "assert";
 import * as path from "path";
 
 import * as types from "./types";
-import { dataOutputRoot, getOrdinal, splitLines } from "./index";
+import { dataOutputRoot, getOrdinal, splitLines } from ".";
 import { isKeywordedParseLineResult, KeywordedParseLineResult, LineParser } from "./parsers/lines";
 
 const filterData = <types.FilterData>require(path.join(dataOutputRoot, "filter.json"));

@@ -4,17 +4,17 @@
  * license information.
  * ===========================================================================*/
 
-import { CharacterCodes } from "./index";
+import { CharacterCodes } from ".";
 import { Position } from "../types";
 
-interface IItemFilterTokenizer {
+interface ITokenParser {
   isNumber(): boolean;
   // consumeNumber(): Node;
 
   isBoolean(): boolean;
   // consumeBoolean(): Node;
 
-  // isOperator(): boolean;
+  isOperator(): boolean;
   // consumeOperator(): Node;
 
   // isWord(): boolean;
@@ -105,6 +105,17 @@ export function isAlphabetical(ch: number): boolean {
 }
 
 /**
+ * Returns whether the given character code is valid within an item filter word value.
+ * @param ch A character code.
+ * @return A boolean indicating whether the character code is valid within a word.
+ */
+export function isValidWordCharacter(ch: number): boolean {
+  return isAlphabetical(ch) || isDigit(ch) || ch === CharacterCodes.openParen ||
+    ch === CharacterCodes.closeParen || ch === CharacterCodes.minus ||
+    ch === CharacterCodes.latinSmallOWithDiaeresis;
+}
+
+/**
  * Returns the character index for the position within the text.
  * @param text The full text containing the given position.
  * @param position A position within the given text.
@@ -150,7 +161,11 @@ export function getCharacterIndexForPosition(text: string, position: Position): 
     `max index of '${idx - 1}'`);
 }
 
-export class ItemFilterTokenizer implements IItemFilterTokenizer {
+/**
+ * A high-performance, forward-iterating token parser. This class is designed
+ * to facilitate the creation of top-down item filter parsers.
+*/
+export class TokenParser implements ITokenParser {
   private readonly _text: string;
   private readonly _startPosition: Position;
   private readonly _currentPosition: Position;
@@ -171,26 +186,22 @@ export class ItemFilterTokenizer implements IItemFilterTokenizer {
    * @return A boolean indicating whether the next token is a number.
    */
   isNumber(): boolean {
-    let idx = this._characterIndex;
+    let result = this._parseToken();
 
-    let digitFound = false;
-    while (idx < this._text.length) {
-      const ch = this._text.charCodeAt(idx);
-
-      if (digitFound && (isLineBreakingWhitespace(ch) || isTokenSeparatingWhitespace(ch))) {
-        return true;
-      }
-
-      if (isDigit(ch)) {
-        digitFound = true;
-      } else {
-        return false;
-      }
-
-      idx++;
+    if (!result) {
+      return false;
     }
 
-    return digitFound;
+    let [_, token] = result;
+    for (let i = 0; i < token.length; i++) {
+      const ch = token.charCodeAt(i);
+
+      if (!isDigit(ch)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -198,28 +209,88 @@ export class ItemFilterTokenizer implements IItemFilterTokenizer {
    * @return A boolean indicating whether the next token is a boolean.
    */
   isBoolean(): boolean {
-    let idx = this._characterIndex;
+    let result = this._parseToken();
+
+    if (!result) {
+      return false;
+    }
+
+    let [_, token] = result;
+    if (token === "True" || token === "False" || token === '"True"' || token === '"False"') {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Determines whether the token under the current position is an operator.
+   * @return A boolean indicating whether the next token is an operator.
+   */
+  isOperator(): boolean {
+    let result = this._parseToken();
+
+    if (!result) {
+      return false;
+    }
+
+    let [_, token] = result;
+    if (token.length === 1) {
+      const ch = token.charCodeAt(0);
+
+      return ch === CharacterCodes.greaterThan || ch === CharacterCodes.lessThan ||
+        ch === CharacterCodes.equals;
+    } else if (token.length === 2) {
+      const left = token.charCodeAt(0);
+      const right = token.charCodeAt(1);
+
+      return (left === CharacterCodes.greaterThan && right === CharacterCodes.equals) ||
+        (left === CharacterCodes.lessThan && right === CharacterCodes.equals);
+    }
+
+    return false;
+  }
+
+  /**
+   * Determines whether the token under the current position is a word.
+   * @return A boolean indicating whether the next token is a word.
+   */
+  // isWord(): boolean {
+  //   let result = this._parseToken();
+
+  //   if (!result) {
+  //     return false;
+  //   }
+
+  //   let [_, token] = result;
+  //   for ()
+  // }
+
+  /**
+   * Attempts to parse a string token from the current position in the text
+   * without modifying the state of the parser.
+   * @returns A tuple containing the end index and the token text if a token parsed successfully.
+   */
+  private _parseToken(): [number, string] | undefined {
+    const startIdx = this._characterIndex;
+    let endIdx = startIdx;
 
     let token = "";
-    while (idx < this._text.length) {
-      const ch = this._text.charCodeAt(idx);
+    while (endIdx < this._text.length) {
+      const ch = this._text.charCodeAt(endIdx);
 
       if (isLineBreakingWhitespace(ch) || isTokenSeparatingWhitespace(ch)) {
         break;
       }
 
       token += String.fromCharCode(ch);
-      idx++;
+      endIdx++;
     }
 
     if (token.length === 0) {
-      return false;
+      return undefined;
     }
 
-    if (token === "True" || token === "False" || token === '"True"' || token === '"False"') {
-      return true;
-    } else {
-      return false;
-    }
+    return [endIdx, this._text.slice(startIdx, endIdx)];
   }
 }

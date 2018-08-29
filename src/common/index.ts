@@ -107,7 +107,7 @@ export function stylizedArrayJoin(array: any, finalDivider = ", and "): string {
   } else if (array.length === 1) {
     return `${array[0]}`;
   } else {
-    return `${array.slice(0, -1).join(", ")}${finalDivider} ${array.slice(-1)}`;
+    return `${array.slice(0, -1).join(", ")}${finalDivider}${array.slice(-1)}`;
   }
 }
 // tslint:enable:no-unsafe-any

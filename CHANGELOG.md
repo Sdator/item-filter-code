@@ -2,7 +2,9 @@
 
 The history of changes to the extension.
 
-### Version 1.12.0 (TBD)
+### Version 1.12.0 (August 29th, 2018)
+- Added the initial support for Path of Exile version 3.4 and the Delve league.
+- Added basic support for the four new rules: `CustomAlertSound`, `MinimapIcon`, `PlayEffect`, and `MapTier`.
 - Stopped using the language server protocol, instead utilizing the VSCode API directly, reducing the memory usage of the extension by around 30 MB.
 - Added the missing `Avian Slippers` item base.
 - The value for the `SetFontSize` rule can now fall in the range of `[16,50]`, rather than `[18,45]`.

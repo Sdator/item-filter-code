@@ -8,7 +8,7 @@ import * as assert from "assert";
 import * as path from "path";
 
 import * as types from "../types";
-import { dataOutputRoot, stylizedArrayJoin } from "../index";
+import { dataOutputRoot, stylizedArrayJoin } from "..";
 import { TokenParser, TokenParseResult } from "./tokens";
 
 const itemData = <types.ItemData>require(path.join(dataOutputRoot, "items.json"));
@@ -135,6 +135,7 @@ export class LineParser {
       case "LinkedSockets":
       case "Height":
       case "Width":
+      case "MapTier":
         parseSingleNumberRule(lineInfo);
         break;
       case "SetFontSize":
@@ -174,6 +175,15 @@ export class LineParser {
       case "PlayAlertSound":
       case "PlayAlertSoundPositional":
         parseSoundRule(lineInfo);
+        break;
+      case "CustomAlertSound":
+        parseCustomSoundRule(lineInfo);
+        break;
+      case "MinimapIcon":
+        parseMinimapIconRule(lineInfo);
+        break;
+      case "PlayEffect":
+        parsePlayEffectRule(lineInfo);
         break;
       default:
         let whitelistedKeyword = false;
@@ -250,7 +260,7 @@ function parseRarityRule(line: LineInformation): void {
 
   line.parser.nextOperator();
 
-  const valueResult = line.parser.nextString();
+  const valueResult = line.parser.nextWordString();
   if (valueResult) {
     if (!filterData.rarities.includes(valueResult.value)) {
       line.result.diagnostics.push({
@@ -285,7 +295,7 @@ function parseSocketGroupRule(line: LineInformation): void {
     }
   }
 
-  const valueResult = line.parser.nextString();
+  const valueResult = line.parser.nextWordString();
   if (valueResult) {
     const groupRegex = new RegExp("^[rgbw]{1,6}$", "i");
     if (!groupRegex.test(valueResult.value)) {
@@ -497,6 +507,192 @@ function parseSoundRule(line: LineInformation) {
   }
 }
 
+function parseCustomSoundRule(line: LineInformation) {
+  const operatorResult = line.parser.nextOperator();
+  if (operatorResult) {
+    if (operatorResult.value !== "=") {
+      reportNonEqualityOperator(line, operatorResult);
+    }
+  }
+
+  const valueResult = line.parser.nextString();
+
+  if (valueResult) {
+    if (valueResult.value.length === 0) {
+      line.result.diagnostics.push({
+        message: `Empty value for a ${line.result.keyword} rule.` +
+          " Expected the string to contain either a file name or file path.",
+        range: valueResult.range
+      });
+    }
+  } else {
+    line.result.diagnostics.push({
+      message: `Missing value for a ${line.result.keyword} rule.` +
+        " Expected a string containing either the file name or file path.",
+      range: {
+        start: { line: line.result.row, character: line.parser.textStartIndex },
+        end: { line: line.result.row, character: line.parser.originalLength }
+      },
+      severity: types.DiagnosticSeverity.Error
+    });
+  }
+
+  if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
+}
+
+function parseMinimapIconRule(line: LineInformation): void {
+  const operatorResult = line.parser.nextOperator();
+  if (operatorResult) {
+    if (operatorResult.value !== "=") {
+      reportNonEqualityOperator(line, operatorResult);
+    }
+  }
+
+  const sizeResult = line.parser.nextNumber();
+  if (sizeResult) {
+    if (!filterData.minimapIcons.sizes.includes(sizeResult.value)) {
+      line.result.diagnostics.push({
+        message: `Invalid value for a ${line.result.keyword} rule. ` +
+        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.sizes)}.`,
+        range: sizeResult.range
+      });
+      return;
+    }
+  } else {
+    line.result.diagnostics.push({
+      message: `Missing value for a ${line.result.keyword} rule. ` +
+        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.sizes)}.`,
+      range: {
+        start: { line: line.result.row, character: line.parser.textStartIndex },
+        end: { line: line.result.row, character: line.parser.originalLength }
+      },
+      severity: types.DiagnosticSeverity.Error
+    });
+    return;
+  }
+
+  const colorResult = line.parser.nextWord();
+  if (colorResult) {
+    let found = false;
+    for (const color of filterData.minimapIcons.colors) {
+      if (colorResult.value === color) {
+        found = true;
+      }
+    }
+
+    if (!found) {
+      line.result.diagnostics.push({
+        message: `Invalid value for a ${line.result.keyword} rule. ` +
+        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.colors)}.`,
+        range: colorResult.range
+      });
+      return;
+    }
+  } else {
+    line.result.diagnostics.push({
+      message: `Missing value for a ${line.result.keyword} rule. ` +
+        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.colors)}.`,
+      range: {
+        start: { line: line.result.row, character: line.parser.textStartIndex },
+        end: { line: line.result.row, character: line.parser.originalLength }
+      },
+      severity: types.DiagnosticSeverity.Error
+    });
+    return;
+  }
+
+  const shapeResult = line.parser.nextWord();
+  if (shapeResult) {
+    let found = false;
+    for (const color of filterData.minimapIcons.shapes) {
+      if (shapeResult.value === color) {
+        found = true;
+      }
+    }
+
+    if (!found) {
+      line.result.diagnostics.push({
+        message: `Invalid value for a ${line.result.keyword} rule. ` +
+        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.shapes)}.`,
+        range: shapeResult.range
+      });
+      return;
+    }
+  } else {
+    line.result.diagnostics.push({
+      message: `Missing value for a ${line.result.keyword} rule. ` +
+        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.shapes)}.`,
+      range: {
+        start: { line: line.result.row, character: line.parser.textStartIndex },
+        end: { line: line.result.row, character: line.parser.originalLength }
+      },
+      severity: types.DiagnosticSeverity.Error
+    });
+    return;
+  }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
+}
+
+function parsePlayEffectRule(line: LineInformation) {
+  const operatorResult = line.parser.nextOperator();
+  if (operatorResult) {
+    if (operatorResult.value !== "=") {
+      reportNonEqualityOperator(line, operatorResult);
+    }
+  }
+
+  const colorResult = line.parser.nextWord();
+  if (colorResult) {
+    let found = false;
+    for (const color of filterData.dropEffects.colors) {
+      if (colorResult.value === color) {
+        found = true;
+      }
+    }
+
+    if (!found) {
+      line.result.diagnostics.push({
+        message: `Invalid value for a ${line.result.keyword} rule. ` +
+        `Valid values are: ${stylizedArrayJoin(filterData.dropEffects.colors)}.`,
+        range: colorResult.range
+      });
+      return;
+    }
+  } else {
+    line.result.diagnostics.push({
+      message: `Missing value for a ${line.result.keyword} rule. ` +
+        `Valid values are: ${stylizedArrayJoin(filterData.dropEffects.colors)}.`,
+      range: {
+        start: { line: line.result.row, character: line.parser.textStartIndex },
+        end: { line: line.result.row, character: line.parser.originalLength }
+      },
+      severity: types.DiagnosticSeverity.Error
+    });
+    return;
+  }
+
+  const tempResult = line.parser.nextWord();
+  if (tempResult) {
+    if (tempResult.value !== "Temp") {
+      line.result.diagnostics.push({
+        message: `Invalid value for a ${line.result.keyword} rule. ` +
+        "Valid values are: Temp.",
+        range: tempResult.range
+      });
+      return;
+    }
+  }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
+}
+
 function parseClassRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
@@ -508,7 +704,7 @@ function parseClassRule(line: LineInformation) {
   const parsedClasses: string[] = [];
 
   while (true) {
-    const valueResult = line.parser.nextString();
+    const valueResult = line.parser.nextWordString();
 
     if (valueResult) {
       if (parsedClasses.includes(valueResult.value)) {
@@ -614,7 +810,7 @@ function parseBaseTypeRule(line: LineInformation) {
   }
 
   while (true) {
-    const valueResult = line.parser.nextString();
+    const valueResult = line.parser.nextWordString();
 
     if (valueResult) {
       const value = valueResult.value;
@@ -701,7 +897,7 @@ function parseModRule(line: LineInformation): void {
     modData.full.suffixes;
 
   while (true) {
-    const valueResult = line.parser.nextString();
+    const valueResult = line.parser.nextWordString();
 
     if (valueResult) {
       const value = valueResult.value;

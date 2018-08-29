@@ -5,7 +5,9 @@ coverage/**
 data/**
 docs/**
 examples/**
+out/lint/**
 out/tasks/**
+out/test/**
 out/webviews/filter-preview/index.html
 src/**
 .codecov.yml
