@@ -2,6 +2,20 @@
 
 The history of changes to the extension.
 
+### Version 1.14.1 (August 30th, 2018)
+This release focuses on fixing errors within our data, further increasing support for the popular community item filters.
+
+- The `Class` and `BaseType` rules will no longer report multiple issues if only one value is provided with that value also being invalid.
+- Added all of the Essence affixes to the `HasExplicitMod` rule.
+- Added all of the abyss jewel affixes to the `HasExplicitMod` rule.
+- Fixed all typos within the existing mods for the `HasExplicitMod` rule.
+- Renamed the `Razor Sharp` mod to its correct name of `Razor-sharp`.
+- Renamed the `Leaguestone` item class to its correct name of `Leaguestones`.
+- The `Offering to the Goddess` base type now has the correct item class of `Map Fragments`.
+- The `Diamond Flask` base type now has the correct item class of `Critical Utility Flasks`.
+- Added the missing `Harbinger Map` item base.
+- Removed following invalid item bases: `Event Coin` and `Event Shard`.
+
 ### Version 1.14.0 (August 30th, 2018)
 This release finalizes our support for the new rule types being added in Path of Exile version 3.4, as we also improve our support for the popular community item filters.
 

@@ -495,6 +495,9 @@
     "Twin Claw",
     "Vaal Claw"
   ],
+  "Critical Utility Flasks": [
+    "Diamond Flask"
+  ],
   "Daggers": [
     "Ambusher",
     "Boot Blade",
@@ -915,9 +918,7 @@
     "Silver Key",
     "Treasure Key"
   ],
-  "Labyrinth Map Item": [
-    "Offering to the Goddess"
-  ],
+  "Labyrinth Map Item": [],
   "Labyrinth Trinket": [
     "Bane of the Loyal",
     "Black Rose of Anarchy",
@@ -930,7 +931,7 @@
     "Sand of Eternity",
     "Vial Of Power"
   ],
-  "Leaguestone": [
+  "Leaguestones": [
     "Ambush Leaguestone",
     "Anarchy Leaguestone",
     "Beyond Leaguestone",
@@ -990,6 +991,7 @@
     "Mortal Hope",
     "Mortal Ignorance",
     "Mortal Rage",
+    "Offering to the Goddess",
     "Sacrifice at Dawn",
     "Sacrifice at Dusk",
     "Sacrifice at Midnight",
@@ -1064,6 +1066,7 @@
     "Gorge Map",
     "Graveyard Map",
     "Grotto Map",
+    "Harbinger Map",
     "Haunted Mansion Map",
     "Iceberg Map",
     "Infested Valley Map",
@@ -1552,8 +1555,6 @@
     "Essence of Hysteria",
     "Essence of Insanity",
     "Eternal Orb",
-    "Event Coin",
-    "Event Shard",
     "Exalted Orb",
     "Exalted Shard",
     "Faceted Fossil",
@@ -1956,7 +1957,6 @@
     "Aquamarine Flask",
     "Basalt Flask",
     "Bismuth Flask",
-    "Diamond Flask",
     "Granite Flask",
     "Jade Flask",
     "Quartz Flask",
