@@ -11,6 +11,8 @@ This release finalizes our support for the new rule types added in Path of Exile
 - Added support for multiple values to the following rules: `ItemLevel`, `DropLevel`, `GemLevel`, `Quality`, `StackSize`, `Rarity`, `Sockets`, `LinkedSockets`, `SocketGroup`, `Height`, `Width`, and `MapTier`.
   + Multiple values are only allowed when the equals operator is used, as using other operators with multiple values makes little sense. When no operator is provided, the equals operator is implicit.
   + As a side effect, each of these rules now supports quoted values, same as the Path of Exile client.
+- Errors were cascading for several rule types, such as `CustomAlertSound` and `SetBorderColor`. The validation code no longer reports multiple errors in these cases, instead returning only the first error.
+- Corrected several minor spacing issues within the diagnostic messages.
 
 ### Version 1.13.0 (August 30th, 2018)
 This release improves our support for the new rule types added in Path of Exile version 3.4, as we fix issues stemming from false information in GGG's item filter information post.

@@ -512,6 +512,7 @@ function parseColorRule(line: LineInformation): void {
     }
   } else {
     reportMissingColor(line, min, max);
+    return;
   }
 
   let green: TokenParseResult<number> | undefined;
@@ -524,6 +525,7 @@ function parseColorRule(line: LineInformation): void {
     }
   } else {
     reportMissingColor(line, min, max);
+    return;
   }
 
   let blue: TokenParseResult<number> | undefined;
@@ -536,6 +538,7 @@ function parseColorRule(line: LineInformation): void {
     }
   } else {
     reportMissingColor(line, min, max);
+    return;
   }
 
   let alpha: TokenParseResult<number> | undefined;
@@ -591,7 +594,7 @@ function parseSoundRule(line: LineInformation) {
 
   const min = filterData.sounds.numberIdentifier.min;
   const max = filterData.sounds.numberIdentifier.max;
-  const secondPart = ` Expected a number from ${min}-${max} or a valid sound identifier.`;
+  const secondPart = `Expected a number from ${min}-${max} or a valid sound identifier.`;
 
   let invalidIdentifier = true;
   const wordResult = line.parser.nextWord();
@@ -653,7 +656,7 @@ function parseSoundRule(line: LineInformation) {
   if (volumeResult) {
     if (volumeResult.value < 0 || volumeResult.value > 300) {
       line.result.diagnostics.push({
-        message: `Invalid value for a ${line.result.keyword} rule.` +
+        message: `Invalid value for a ${line.result.keyword} rule. ` +
           "A volume is expected to be a value between 0 and 300.",
         range: volumeResult.range,
         severity: types.DiagnosticSeverity.Error
@@ -1199,7 +1202,7 @@ function reportInvalidColor(line: LineInformation, result: TokenParseResult<numb
 
   line.result.diagnostics.push({
     message: `Invalid value for a ${line.result.keyword} rule.` +
-      `Expected 3-4 numbers within the ${min}-${max} range.`,
+      ` Expected 3-4 numbers within the ${min}-${max} range.`,
     range: result.range,
     severity: types.DiagnosticSeverity.Error
   });
@@ -1208,7 +1211,7 @@ function reportInvalidColor(line: LineInformation, result: TokenParseResult<numb
 function reportMissingColor(line: LineInformation, min: number, max: number): void {
   line.result.diagnostics.push({
     message: `Missing value for a ${line.result.keyword} rule.` +
-      `Expected 3-4 numbers within the ${min}-${max} range.`,
+      ` Expected 3-4 numbers within the ${min}-${max} range.`,
     range: {
       start: { line: line.result.row, character: line.parser.textStartIndex },
       end: { line: line.result.row, character: line.parser.originalLength }
