@@ -11,6 +11,7 @@ import * as path from "path";
 
 import * as types from "../types";
 import { dataOutputRoot, stylizedArrayJoin } from "..";
+import { intoFilterOperator } from "../converters";
 import { TokenParser, TokenParseResult } from "./tokens";
 import { isAlphabetical, CharacterCodes } from "../parsers-nextgen";
 
@@ -160,7 +161,7 @@ export class LineParser {
         parseBooleanRule(lineInfo);
         break;
       case "DisableDropSound":
-        parseBooleanRule(lineInfo, true);
+        parseDisableDropSoundRule(lineInfo);
         break;
       case "HasExplicitMod":
         parseModRule(lineInfo);
@@ -239,6 +240,12 @@ function parseBooleanRule(line: LineInformation, optional = false): void {
   }
 }
 
+function parseDisableDropSoundRule(line: LineInformation): void {
+  if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Warning);
+  }
+}
+
 /**
  * Parses one or more numbers from the line.
  * @param equalsOnly True if only the equals operator is valid for this rule.
@@ -249,33 +256,20 @@ function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): vo
 
   let operatorType: types.FilterOperator;
   if (operatorResult) {
-    switch (operatorResult.value) {
-      case "=":
-        operatorType = types.FilterOperator.Equals;
-        break;
-      case ">":
-        operatorType = types.FilterOperator.GreaterThan;
-        break;
-      case ">=":
-        operatorType = types.FilterOperator.GreaterThanEquals;
-        break;
-      case "<":
-        operatorType = types.FilterOperator.LessThan;
-        break;
-      case "<=":
-        operatorType = types.FilterOperator.LessThanEquals;
-        break;
-      default:
-        line.result.diagnostics.push({
-          message: `Unknown operator for a ${line.result.keyword} rule.`,
-          range: operatorResult.range
-        });
-        return;
-    }
-
-    if (equalsOnly && operatorType !== types.FilterOperator.Equals) {
-      reportNonEqualsOperator(line, operatorResult);
+    const operator = intoFilterOperator(operatorResult.value);
+    if (operator === undefined) {
+      line.result.diagnostics.push({
+        message: `Unknown operator for a ${line.result.keyword} rule.`,
+        range: operatorResult.range
+      });
       return;
+    } else {
+      operatorType = operator;
+
+      if (equalsOnly && operatorType !== types.FilterOperator.Equals) {
+        reportNonEqualsOperator(line, operatorResult);
+        return;
+      }
     }
   } else {
     operatorType = types.FilterOperator.Equals;
@@ -290,16 +284,26 @@ function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): vo
 
     if (valueResult) {
       if (!opReported && parsedValues === 1 && operatorType !== types.FilterOperator.Equals) {
-        line.result.diagnostics.push({
-          message: `Invalid operator for an ${line.result.keyword} rule providing ` +
-            "multiple values. Only the equals operator is allowed in this context, " +
-            "as other operators are error prone.",
-          range: operatorResult ? operatorResult.range : {
-            start: { line: line.result.row, character: line.parser.textStartIndex },
-            end: { line: line.result.row, character: line.parser.originalLength }
-          },
-          severity: types.DiagnosticSeverity.Error
-        });
+        if (equalsOnly) {
+          reportNonEqualsOperator(line, operatorResult ? operatorResult : {
+            value: "",
+            range: {
+              start: { line: line.result.row, character: line.parser.textStartIndex },
+              end: { line: line.result.row, character: line.parser.originalLength }
+            }
+          });
+        } else {
+          line.result.diagnostics.push({
+            message: `Invalid operator for an ${line.result.keyword} rule providing ` +
+              "multiple values. Only the equals operator is allowed in this context, " +
+              "as other operators are error prone.",
+            range: operatorResult ? operatorResult.range : {
+              start: { line: line.result.row, character: line.parser.textStartIndex },
+              end: { line: line.result.row, character: line.parser.originalLength }
+            },
+            severity: types.DiagnosticSeverity.Error
+          });
+        }
 
         opReported = true;
       }
@@ -347,68 +351,141 @@ function parseSetFontSizeRule(line: LineInformation, equalsOnly = false): void {
 function parseRarityRule(line: LineInformation): void {
   const raritiesText = stylizedArrayJoin(filterData.rarities);
 
-  line.parser.nextOperator();
+  const operatorResult = line.parser.nextOperator();
 
-  const valueResult = line.parser.nextWordString();
-  if (valueResult) {
-    if (!filterData.rarities.includes(valueResult.value)) {
+  let operatorType: types.FilterOperator;
+  if (operatorResult) {
+    const operator = intoFilterOperator(operatorResult.value);
+    if (operator === undefined) {
       line.result.diagnostics.push({
-        message: `Invalid value for a ${line.result.keyword} rule.` +
-          ` Valid values are ${raritiesText}.`,
-        range: valueResult.range,
-        severity: types.DiagnosticSeverity.Error
+        message: `Unknown operator for a ${line.result.keyword} rule.`,
+        range: operatorResult.range
       });
+      return;
+    } else {
+      operatorType = operator;
     }
   } else {
-    line.result.diagnostics.push({
-      message: `Missing value for a ${line.result.keyword} rule.` +
-        ` Valid values are ${raritiesText}.`,
-      range: {
-        start: { line: line.result.row, character: line.parser.textStartIndex },
-        end: { line: line.result.row, character: line.parser.originalLength }
-      },
-      severity: types.DiagnosticSeverity.Error
-    });
+    operatorType = types.FilterOperator.Equals;
   }
 
-  if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  let parsedValues = 0;
+  let opReported = false;
+  while (true) {
+    const valueResult = line.parser.nextWordString();
+
+    if (valueResult) {
+      if (!opReported && parsedValues === 1 && operatorType !== types.FilterOperator.Equals) {
+        line.result.diagnostics.push({
+          message: `Invalid operator for a ${line.result.keyword} rule providing ` +
+            "multiple values. Only the equals operator is allowed in this context, " +
+            "as other operators are error prone.",
+          range: operatorResult ? operatorResult.range : {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          }
+        });
+
+        opReported = true;
+      }
+
+      if (!filterData.rarities.includes(valueResult.value)) {
+        line.result.diagnostics.push({
+          message: `Invalid value for a ${line.result.keyword} rule.` +
+            ` Valid values are ${raritiesText}.`,
+          range: valueResult.range,
+          severity: types.DiagnosticSeverity.Error
+        });
+      }
+
+      parsedValues++;
+    } else {
+      if (parsedValues === 0 && line.result.diagnostics.length === 0) {
+        line.result.diagnostics.push({
+          message: `Missing value for a ${line.result.keyword} rule.` +
+            ` Valid values are ${raritiesText}.`,
+          range: {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          },
+          severity: types.DiagnosticSeverity.Error
+        });
+      }
+
+      break;
+    }
   }
 }
 
 function parseSocketGroupRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
-  if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
-  }
 
-  const valueResult = line.parser.nextWordString();
-  if (valueResult) {
-    const groupRegex = new RegExp("^[rgbw]{1,6}$", "i");
-    if (!groupRegex.test(valueResult.value)) {
+  let operatorType: types.FilterOperator;
+  if (operatorResult) {
+    const operator = intoFilterOperator(operatorResult.value);
+    if (operator === undefined) {
       line.result.diagnostics.push({
-        message: `Invalid value for a ${line.result.keyword} rule.` +
-          " Expected a word consisting of the R, B, G, and W characters.",
-        range: valueResult.range,
-        severity: types.DiagnosticSeverity.Error
+        message: `Unknown operator for a ${line.result.keyword} rule.`,
+        range: operatorResult.range
       });
+      return;
+    } else {
+      operatorType = operator;
+
+      if (operatorType !== types.FilterOperator.Equals) {
+        reportNonEqualsOperator(line, operatorResult);
+        return;
+      }
     }
   } else {
-    line.result.diagnostics.push({
-      message: `Missing value for a ${line.result.keyword} rule.` +
-        " Expected a word consisting of the R, B, G, and W characters.",
-      range: {
-        start: { line: line.result.row, character: line.parser.textStartIndex },
-        end: { line: line.result.row, character: line.parser.originalLength }
-      },
-      severity: types.DiagnosticSeverity.Error
-    });
+    operatorType = types.FilterOperator.Equals;
   }
 
-  if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  const groupRegex = new RegExp("^[rgbw]{1,6}$", "i");
+
+  let parsedValues = 0;
+  let opReported = false;
+  while (true) {
+    const valueResult = line.parser.nextWordString();
+
+    if (valueResult) {
+      if (!opReported && parsedValues === 1 && operatorType !== types.FilterOperator.Equals) {
+        reportNonEqualsOperator(line, operatorResult ? operatorResult : {
+          value: "",
+          range: {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          }
+        });
+
+        opReported = true;
+      }
+
+      if (!groupRegex.test(valueResult.value)) {
+        line.result.diagnostics.push({
+          message: `Invalid value for a ${line.result.keyword} rule.` +
+            " Expected a word consisting of the R, B, G, and W characters.",
+          range: valueResult.range,
+          severity: types.DiagnosticSeverity.Error
+        });
+      }
+
+      parsedValues++;
+    } else {
+      if (parsedValues === 0 && line.result.diagnostics.length === 0) {
+        line.result.diagnostics.push({
+          message: `Missing value for a ${line.result.keyword} rule.` +
+            " Expected a word consisting of the R, B, G, and W characters.",
+          range: {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          },
+          severity: types.DiagnosticSeverity.Error
+        });
+      }
+
+      break;
+    }
   }
 }
 

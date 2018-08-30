@@ -278,6 +278,15 @@
         },
         {
           "include": "#set-font-size-rule"
+        },
+        {
+          "begin": "^\\s*(DisableDropSound)",
+          "end": "\\s*$",
+          "captures": {
+            "1": {
+              "name": "entity.name.function.filter"
+            }
+          }
         }
       ]
     },
@@ -404,7 +413,7 @@
     "boolean-rules": {
       "patterns": [
         {
-          "begin": "^\\s*(Identified|Corrupted|ElderItem|ShaperItem|ShapedMap|ElderMap|DisableDropSound)(?=\\s)",
+          "begin": "^\\s*(Identified|Corrupted|ElderItem|ShaperItem|ShapedMap|ElderMap)(?=\\s)",
           "end": "\\s*$",
           "captures": {
             "1": {

@@ -7,6 +7,7 @@ This release finalizes our support for the new rule types added in Path of Exile
 
 - Added several missing base types for the `Delve Socketable Currency` item class.
 - The value for the `LinkedSockets` rule can no longer be `0`, as it is misleading and works differently than expected in-game.
+- The `DisableDropSound` rule no longer takes a boolean as a parameter.
 - Added support for multiple values to the following rules: `ItemLevel`, `DropLevel`, `GemLevel`, `Quality`, `StackSize`, `Rarity`, `Sockets`, `LinkedSockets`, `SocketGroup`, `Height`, `Width`, and `MapTier`.
   + Multiple values are only allowed when the equals operator is used, as using other operators with multiple values makes little sense. When no operator is provided, the equals operator is implicit.
   + As a side effect, each of these rules now supports quoted values, same as the Path of Exile client.

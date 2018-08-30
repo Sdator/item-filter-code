@@ -91,7 +91,6 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
         case "ShaperItem":
         case "ShapedMap":
         case "ElderMap":
-        case "DisableDropSound":
           return getBooleanCompletions(this._config, position, lineText, currentIndex, eol);
         case "HasExplicitMod":
           return getModCompletions(this._config, position, lineText, currentIndex, eol);
@@ -544,7 +543,7 @@ function getRarityCompletions(config: types.ConfigurationValues, pos: vscode.Pos
 
   const result: vscode.CompletionItem[] = [];
 
-  const valueIndex = contextParser.bypassOperator(text, index);
+  let valueIndex = contextParser.bypassOperator(text, index);
 
   const pushCompletions = (range: vscode.Range) => {
     for (const rarity of filterData.rarities) {
@@ -556,11 +555,20 @@ function getRarityCompletions(config: types.ConfigurationValues, pos: vscode.Pos
     const range = new vscode.Range(pos.line, pos.character, pos.line, pos.character);
     pushCompletions(range);
   } else {
-    const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
-    if (range != null && contextParser.isNextValue(range, pos)) {
-      range.end.character++;
-      pushCompletions(intoCodeRange(range));
-    }
+    let valueRange: types.Range | undefined;
+    do {
+      valueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+      if (valueRange) {
+        valueIndex = valueRange.end.character + 1;
+      } else {
+        pushCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+        return result;
+      }
+    } while (!contextParser.isNextValue(valueRange, pos));
+
+    valueRange.end.character++;
+    pushCompletions(intoCodeRange(valueRange));
   }
 
   return result;

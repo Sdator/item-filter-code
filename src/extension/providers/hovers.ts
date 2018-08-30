@@ -78,7 +78,6 @@ export function getHoverResult(text: string, position: vscode.Position): vscode.
     case "ShaperItem":
     case "ShapedMap":
     case "ElderMap":
-    case "DisableDropSound":
       return getBooleanHover(position, text, currentIndex);
     case "HasExplicitMod":
       return getModHover(position, text, currentIndex);
@@ -502,7 +501,7 @@ function getDropLevelHover(pos: vscode.Position, text: string, index: number):
   const ranges = filterData.ruleRanges["DropLevel"];
   const contents = "The level at which an item begins dropping, which can be any " +
     `number from ${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getItemLevelHover(pos: vscode.Position, text: string, index: number):
@@ -511,7 +510,7 @@ function getItemLevelHover(pos: vscode.Position, text: string, index: number):
   const ranges = filterData.ruleRanges["ItemLevel"];
   const contents = "The level at which the item was generated, which can be any " +
     `number from ${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getGemLevelHover(pos: vscode.Position, text: string, index: number):
@@ -520,21 +519,21 @@ function getGemLevelHover(pos: vscode.Position, text: string, index: number):
   const ranges = filterData.ruleRanges["GemLevel"];
   const contents = "The level of the gem, which can be any number from " +
     `${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getSocketsHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
   const ranges = filterData.ruleRanges["Sockets"];
   const contents = "The number of sockets on the item, which can be any number from " +
     `${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getQualityHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
   const ranges = filterData.ruleRanges["Quality"];
   const contents = "The quality of the item, which can be any number from " +
     `${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getLinkedSocketsHover(pos: vscode.Position, text: string, index: number):
@@ -543,28 +542,28 @@ function getLinkedSocketsHover(pos: vscode.Position, text: string, index: number
   const ranges = filterData.ruleRanges["LinkedSockets"];
   const contents = "The number of linked sockets on the item, which can be either " +
     `0 or a number from ${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getHeightHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
   const ranges = filterData.ruleRanges["Height"];
   const contents = "The height of the item within the inventory, which can be a " +
     `number from ${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getWidthHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
   const ranges = filterData.ruleRanges["Width"];
   const contents = "The height of the item within the inventory, which can be a " +
     `number from ${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getMapTierHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
   const ranges = filterData.ruleRanges["MapTier"];
   const contents = "The tier of the map item, which can be a " +
     `number from ${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getStackSizeHover(pos: vscode.Position, text: string, index: number):
@@ -573,12 +572,12 @@ function getStackSizeHover(pos: vscode.Position, text: string, index: number):
   const ranges = filterData.ruleRanges["StackSize"];
   const content = "The stack size of the currency item, which can be any number from " +
     `${ranges.min} to ${ranges.max}.`;
-  return getSingleValueHover(pos, text, index, content, false);
+  return getRepeatingValueHover(pos, text, index, content, false);
 }
 
 function getRarityHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
   const contents = "The rarity of the item, which is a string such as `Rare` or `Unique`.";
-  return getSingleValueHover(pos, text, index, contents, false);
+  return getRepeatingValueHover(pos, text, index, contents, false);
 }
 
 function getSocketGroupHover(pos: vscode.Position, text: string, index: number):
@@ -590,7 +589,7 @@ function getSocketGroupHover(pos: vscode.Position, text: string, index: number):
     "has one red socket, one green socket, and one blue socket. The second most " +
     "common socket group being `WWWWWW`, which indicates that the item has six " +
     "white sockets.";
-  return getSingleValueHover(pos, text, index, contents, true);
+  return getRepeatingValueHover(pos, text, index, contents, true);
 }
 
 function getBooleanHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
@@ -630,4 +629,30 @@ function getSingleValueHover(pos: vscode.Position, text: string, index: number, 
   }
 
   return result;
+}
+
+function getRepeatingValueHover(pos: vscode.Position, text: string, index: number,
+  contents: string, equalsOnly: boolean): vscode.Hover | null {
+
+  let valueIndex = equalsOnly ? contextParser.bypassEqOperator(text, index) :
+    contextParser.bypassOperator(text, index);
+
+  if (valueIndex === undefined || pos.character < valueIndex) {
+    return null;
+  }
+
+  let valueRange: types.Range | undefined;
+  do {
+    valueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+    if (valueRange) {
+      valueIndex = valueRange.end.character + 1;
+    } else {
+      return null;
+    }
+  } while (!contextParser.isNextValue(valueRange, pos));
+
+  valueRange.end.character++;
+
+  return new vscode.Hover(contents, intoCodeRange(valueRange));
 }
