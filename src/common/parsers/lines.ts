@@ -1267,7 +1267,12 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
   if (isAlphabetical(firstCharacter) && secondCharacter === CharacterCodes.colon) {
     const exists = fs.existsSync(parse.value);
 
-    if (!exists) {
+    if (exists) {
+      line.result.sound = {
+        path: parse.value,
+        range: parse.range
+      };
+    } else {
       line.result.diagnostics.push({
         message: "Invalid value for a CustomAlertSound rule. Expected the given full" +
           " file path to exist on your system.",
@@ -1282,7 +1287,12 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
 
     const exists = fs.existsSync(fullFilePath);
 
-    if (!exists) {
+    if (exists) {
+      line.result.sound = {
+        path: fullFilePath,
+        range: parse.range
+      };
+    } else {
       line.result.diagnostics.push({
         message: "Invalid value for a CustomAlertSound rule. " +
           `Expected a file named ${parse.value} to exist at the following ` +

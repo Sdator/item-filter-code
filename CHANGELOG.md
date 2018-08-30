@@ -3,7 +3,7 @@
 The history of changes to the extension.
 
 ### Version 1.14.0 (TBD)
-This release finalizes our support for the new rule types added in Path of Exile version 3.4, as we improve our support for the popular community item filters.
+This release finalizes our support for the new rule types being added in Path of Exile version 3.4, as we also improve our support for the popular community item filters.
 
 - Added several missing base types for the `Delve Socketable Currency` item class.
 - The value for the `LinkedSockets` rule can no longer be `0`, as it is misleading and works differently than expected in-game.
@@ -13,9 +13,10 @@ This release finalizes our support for the new rule types added in Path of Exile
   + As a side effect, each of these rules now supports quoted values, same as the Path of Exile client.
 - Errors were cascading for several rule types, such as `CustomAlertSound` and `SetBorderColor`. The validation code no longer reports multiple errors in these cases, instead returning only the first error.
 - Corrected several minor spacing issues within the diagnostic messages.
+- On Windows, the custom sound provided to the `CustomAlertSound` rule can now be previewed, through the same editor decorations used by the `PlayAlertSound` rule, within the editor.
 
 ### Version 1.13.0 (August 30th, 2018)
-This release improves our support for the new rule types added in Path of Exile version 3.4, as we fix issues stemming from false information in GGG's item filter information post.
+This release improves our support for the new rule types being added in Path of Exile version 3.4, as we also fix issues stemming from incorrect information in GGG's item filter information post.
 
 - The tooltip hover for all values of the `MinimapIcon` rule now includes a preview if there were no validation errors.
 - Fixed the autocompletion behavior for the following rules: `MinimapIcon` and `PlayEffect`.

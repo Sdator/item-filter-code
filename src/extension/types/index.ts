@@ -13,9 +13,13 @@ export interface ConfigurationValues extends commonTypes.ConfigurationValues {
   linuxMPGPath: string;
 }
 
-export interface PlaySoundOptions {
+export interface PlayDefaultSoundOptions {
   id: string;
   volume: string;
+}
+
+export interface PlayCustomSoundOptions {
+  path: string;
 }
 
 export interface SoundInformation {

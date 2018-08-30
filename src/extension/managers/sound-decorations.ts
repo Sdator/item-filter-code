@@ -7,11 +7,11 @@
 import * as vscode from "vscode";
 
 import { CompositeDisposable, IDisposable } from "../../common/event-kit";
-import { SoundInformation } from "../../common/types";
+import { isDefaultSoundInformation, SoundInformation } from "../../common/types";
 import { EditorRegistry } from "../registries/editors";
 import { intoCodeRange } from "../converters";
 import { ItemFilterManager, FilterChangedEvent } from "./item-filters";
-import { PlaySoundOptions } from "../types";
+import { PlayDefaultSoundOptions, PlayCustomSoundOptions } from "../types";
 
 /**
  * Creates and manages sound decorations for each visible editor of the Visual
@@ -110,13 +110,24 @@ export class SoundDecorationManager implements IDisposable {
     const result: vscode.DecorationOptions[] = [];
 
     for (const sound of sounds) {
-      if (!sound.knownIdentifier) continue;
-      const soundFields: PlaySoundOptions = {
-        id: sound.identifier,
-        volume: `${sound.volume}`
-      };
+      let commandText: string;
+      if (isDefaultSoundInformation(sound)) {
+        if (!sound.knownIdentifier) continue;
 
-      const commandText = "command:item-filter.playSound?" + JSON.stringify(soundFields);
+        const fields: PlayDefaultSoundOptions = {
+          id: sound.identifier,
+          volume: `${sound.volume}`
+        };
+
+        commandText = "command:item-filter.playDefaultSound?" + JSON.stringify(fields);
+      } else {
+        const fields: PlayCustomSoundOptions = {
+          path: sound.path
+        };
+
+        commandText = "command:item-filter.playCustomSound?" + JSON.stringify(fields);
+      }
+
       const markdown = `[Play Sound](${encodeURI(commandText)})`;
       const markdownString = new vscode.MarkdownString(markdown);
       markdownString.isTrusted = true;

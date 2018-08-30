@@ -97,12 +97,19 @@ export interface ConfigurationValues {
   windowsDocumentFolder: string;
 }
 
-export interface SoundInformation {
+export interface DefaultSoundInformation {
   knownIdentifier: boolean;
   identifier: string;
   volume: number;
   range: Range;
 }
+
+export interface CustomSoundInformation {
+  path: string;
+  range: Range;
+}
+
+export type SoundInformation = DefaultSoundInformation | CustomSoundInformation;
 
 export interface FilterContext {
   config: ConfigurationValues;
@@ -128,4 +135,11 @@ export interface BlockContext {
 export function isError(entity: any): entity is Error {
   if (entity != null && entity instanceof Error) return true;
   else return false;
+}
+
+/** Determines whether the given sound information details a default sound. */
+export function isDefaultSoundInformation(info: SoundInformation):
+  info is DefaultSoundInformation {
+
+  return "identifier" in info;
 }

@@ -10,19 +10,24 @@ import * as vscode from "vscode";
 
 import { dataOutputRoot, sfxRoot, toolsRoot } from "../../common";
 import { SoundEffectData } from "../../common/types";
-import { PlaySoundOptions } from "../types";
+import { PlayDefaultSoundOptions, PlayCustomSoundOptions } from "../types";
 
 const soundData = require(path.join(dataOutputRoot, "sfx.json")) as SoundEffectData;
 
 export function registerPlaySound(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
-    vscode.commands.registerCommand("item-filter.playSound", ({ id, volume }: PlaySoundOptions) => {
-      playSound(id, parseInt(volume, 10));
-    })
+    vscode.commands.registerCommand("item-filter.playDefaultSound",
+      ({ id, volume }: PlayDefaultSoundOptions) => {
+        playDefaultSound(id, parseInt(volume, 10));
+      }),
+    vscode.commands.registerCommand("item-filter.playCustomSound",
+      ({ path }: PlayCustomSoundOptions) => {
+        playCustomSound(path);
+      })
   );
 }
 
-function playSound(identifier: string, volume: number) {
+function playDefaultSound(identifier: string, volume: number) {
   // Sound identifiers can be whitelisted, so just don't attempt to play any
   // sounds that we don't bundle.
   const soundFilePart = soundData[identifier];
@@ -31,11 +36,31 @@ function playSound(identifier: string, volume: number) {
   // GGG uses a scale of 0 to 300 for volume.
   const percentage = volume / 300;
 
+  const result = determinePlayer(soundPath, percentage);
+  if (result) {
+    const [player, args] = result;
+    cp.execFile(player, args);
+  }
+}
+
+function playCustomSound(path: string): void {
+  const result = determinePlayer(path, 1.0)
+
+  if (result) {
+    const [player, args] = result;
+    cp.execFile(player, args);
+  }
+}
+
+function determinePlayer(soundPath: string, volumePercentage: number):
+  [string, string[]] | undefined {
+
   // MPG123 uses a scale of 0 to 32768 in order to scale volume.
-  const scaledSamples = Math.trunc(32768 * percentage);
+  const scaledSamples = Math.trunc(32768 * volumePercentage);
 
   let player: string;
   let args: string[];
+
   if (process.platform === "win32") {
     const mpgPath = path.join(toolsRoot, "mpg123.exe");
     player = mpgPath;
@@ -59,12 +84,12 @@ function playSound(identifier: string, volume: number) {
     // afplay uses 0.0 to 1.0, so we're good on volume. This uses a different
     // method of scaling volume than mpg123, so it may or may not be more
     // accurate to what GGG itself does with the client.
-    const volume = percentage;
+    const volume = volumePercentage;
     player = "afplay";
     args = ["-v", `${volume}`, soundPath];
   } else {
     return;
   }
 
-  cp.execFile(player, args);
+  return [player, args];
 }
