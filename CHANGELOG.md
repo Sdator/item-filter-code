@@ -5,7 +5,7 @@ The history of changes to the extension.
 ### Version 1.14.1 (August 30th, 2018)
 This release focuses on fixing errors within our data, further increasing support for the popular community item filters.
 
-- The `Class` and `BaseType` rules will no longer report multiple issues if only one value is provided with that value also being invalid.
+- The `Class` rule will no longer report multiple issues if only one value is provided and that value is invalid.
 - Added all of the Essence affixes to the `HasExplicitMod` rule.
 - Added all of the abyss jewel affixes to the `HasExplicitMod` rule.
 - Fixed all typos within the existing mods for the `HasExplicitMod` rule.

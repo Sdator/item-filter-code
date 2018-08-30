@@ -904,7 +904,7 @@ function parseClassRule(line: LineInformation) {
         parsedClasses.push(valueResult.value);
       }
     } else {
-      if (parsedClasses.length === 0) {
+      if (parsedClasses.length === 0 && line.result.diagnostics.length === 0) {
         line.result.diagnostics.push({
           message: `Missing value for ${line.result.keyword} rule. A string value was expected.`,
           range: {
