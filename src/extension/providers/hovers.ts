@@ -7,7 +7,7 @@
 import * as path from "path";
 import * as vscode from "vscode";
 
-import { dataOutputRoot, splitLines, stylizedArrayJoin } from "../../common";
+import { assetRoot, dataOutputRoot, splitLines, stylizedArrayJoin } from "../../common";
 import * as types from "../../common/types";
 import * as contextParser from "../../common/parsers/context";
 import { intoCodeRange } from "../converters";
@@ -365,43 +365,90 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
   if (valueIndex == null || pos.character < valueIndex) return result;
 
   const firstValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+  let secondValueRange: types.Range | undefined;
+  let thirdValueRange: types.Range | undefined;
+
+  if (firstValueRange) {
+    valueIndex = firstValueRange.end.character + 1;
+    secondValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+  }
+
+  if (secondValueRange) {
+    valueIndex = secondValueRange.end.character + 1;
+    thirdValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+  }
+
+  let size: string | undefined;
+  let color: string | undefined;
+  let shape: string | undefined;
+
+  let previewText: string | undefined;
+  if (firstValueRange && secondValueRange && thirdValueRange) {
+    size = text.slice(firstValueRange.start.character, firstValueRange.end.character + 1);
+    color = text.slice(secondValueRange.start.character, secondValueRange.end.character + 1);
+    shape = text.slice(thirdValueRange.start.character, thirdValueRange.end.character + 1);
+
+    // Validates each of the values.
+    if (filterData.minimapIcons.sizes.includes(parseInt(size, 10)) &&
+      filterData.minimapIcons.colors.includes(color) &&
+      filterData.minimapIcons.shapes.includes(shape)) {
+
+      const previewUri = vscode.Uri.file(path.join(assetRoot, "minimap-icons",
+        `${shape.toLowerCase()}_${color.toLowerCase()}_${size}.png`))
+
+      previewText = "\n\nA preview of the shape at this size and color:" +
+        `\n\n![Minimap Icon Preview](${previewUri})`
+    }
+  }
 
   if (firstValueRange == null) {
     return result;
   } else if (contextParser.isNextValue(firstValueRange, pos)) {
     firstValueRange.end.character++;
     const text = stylizedArrayJoin(filterData.minimapIcons.sizes, ", or ");
+
+    let contents = `The size of the icon on the minimap, which can be ${text}. The ` +
+      "smallest value correlates to the largest icon size."
+    if (previewText) {
+      contents += previewText;
+    }
+
     result = new vscode.Hover(
-      `The size of the icon on the minimap, which can be ${text}. The smallest value` +
-      " correlates to the largest icon size.",
+      previewText ? new vscode.MarkdownString(contents) : contents,
       intoCodeRange(firstValueRange)
     );
     return result;
   }
-
-  valueIndex = firstValueRange.end.character + 1;
-  const secondValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
 
   if (secondValueRange == null) {
     return result;
   } else if (secondValueRange != null && contextParser.isNextValue(secondValueRange, pos)) {
     secondValueRange.end.character++;
     const text = stylizedArrayJoin(filterData.minimapIcons.colors, ", or ");
+
+    let contents = `The color of the icon on the minimap, which can be ${text}.`
+    if (previewText) {
+      contents += previewText;
+    }
+
     result = new vscode.Hover(
-      `The color of the icon on the minimap, which can be ${text}.`,
+      previewText ? new vscode.MarkdownString(contents) : contents,
       intoCodeRange(secondValueRange)
     );
     return result;
   }
 
-  valueIndex = secondValueRange.end.character + 1;
-  const thirdValueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
-
   if (thirdValueRange != null && contextParser.isNextValue(thirdValueRange, pos)) {
     thirdValueRange.end.character++;
-    const text = stylizedArrayJoin(filterData.minimapIcons.shapes, ", or ");
+    const validValuesText = stylizedArrayJoin(filterData.minimapIcons.shapes, ", or ");
+
+    let contents = `The shape of the icon on the minimap, which can be ${validValuesText}.`;
+    if (previewText) {
+      contents += previewText;
+    }
+
     result = new vscode.Hover(
-      `The shape of the icon on the minimap, which can be ${text}.`,
+      previewText ? new vscode.MarkdownString(contents) : contents,
       intoCodeRange(thirdValueRange)
     );
   }

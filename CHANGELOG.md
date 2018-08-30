@@ -2,6 +2,13 @@
 
 The history of changes to the extension.
 
+### Version 1.13.0 (August 30th, 2018)
+- The tooltip hover for all values of the `MinimapIcon` rule now includes a preview if there were no validation errors.
+- Fixed the autocompletion behavior for the following rules: `MinimapIcon` and `PlayEffect`.
+- On Windows, the file name or file path provided to the `CustomAlertSound` rule is now verified to exist on your system. This can be turned off by setting `item-filter.verifyCustomSounds` to false.
+  + Note that this takes an educated guess as to the location of your documents folder, which can sometimes fail. The `item-filter.windowsDocumentFolder` configuration variable allows you to set it manually.
+- Renamed the `Delve Stackable Currency` class to its correct name of `Delve Socketable Currency`.
+
 ### Version 1.12.0 (August 29th, 2018)
 - Added the initial support for Path of Exile version 3.4 and the Delve league.
 - Added basic support for the four new rules: `CustomAlertSound`, `MinimapIcon`, `PlayEffect`, and `MapTier`.

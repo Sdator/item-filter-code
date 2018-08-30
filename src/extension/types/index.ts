@@ -21,6 +21,8 @@ export interface ConfigurationValues {
   modQuotes: boolean;
   linuxMPGAvailable: boolean;
   linuxMPGPath: string;
+  verifyCustomSounds: boolean;
+  windowsDocumentFolder: string;
 }
 
 export interface PlaySoundOptions {

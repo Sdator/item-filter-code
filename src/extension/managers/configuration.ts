@@ -66,6 +66,8 @@ export class ConfigurationManager implements IDisposable {
     const modQuotes = config.get<boolean>("modQuotes");
     const linuxMPGAvailable = config.get<boolean>("linuxMPGAvailable");
     const linuxMPGPath = config.get<string>("linuxMPGPath");
+    const verifyCustomSounds = config.get<boolean>("verifyCustomSounds");
+    const windowsDocumentFolder = config.get<string>("windowsDocumentFolder");
 
     return {
       baseWhitelist: baseWhitelist ? baseWhitelist : [],
@@ -81,7 +83,9 @@ export class ConfigurationManager implements IDisposable {
       rarityQuotes: rarityQuotes == null ? false : rarityQuotes,
       modQuotes: modQuotes == null ? true : modQuotes,
       linuxMPGAvailable: linuxMPGAvailable == null ? false : linuxMPGAvailable,
-      linuxMPGPath: linuxMPGPath == null ? "" : linuxMPGPath
+      linuxMPGPath: linuxMPGPath == null ? "" : linuxMPGPath,
+      verifyCustomSounds: verifyCustomSounds == null ? true : verifyCustomSounds,
+      windowsDocumentFolder: windowsDocumentFolder == null ? "" : windowsDocumentFolder
     };
   }
 

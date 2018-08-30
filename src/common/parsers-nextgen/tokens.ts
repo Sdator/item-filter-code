@@ -26,6 +26,9 @@ interface ITokenParser {
   // isString(): boolean;
   // consumeString(): Node;
 
+  // isWordOrString(): boolean;
+  // consumeWordOrString(): Node;
+
   // isComment(): boolean;
   // consumeComment(): Node;
 

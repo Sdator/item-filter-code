@@ -93,6 +93,8 @@ export interface ConfigurationValues {
   booleanQuotes: boolean;
   rarityQuotes: boolean;
   modQuotes: boolean;
+  verifyCustomSounds: boolean;
+  windowsDocumentFolder: string;
 }
 
 export interface SoundInformation {

@@ -2,7 +2,7 @@
   "name": "item-filter-code",
   "description": "Support for editing Path of Exile item filters within Visual Studio Code.",
   "displayName": "Item Filter Code",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "author": "Glen Marker",
   "publisher": "GlenCFL",
   "license": "MIT",
@@ -207,6 +207,20 @@
           "item-filter.linuxMPGPath": {
             "title": "Linux MPG Path",
             "description": "The full path to the mpg123 binary on your system. You should include the file name of the binary as well in order for this to work properly.",
+            "type": "string",
+            "default": "",
+            "scope": "window"
+          },
+          "item-filter.verifyCustomSounds": {
+            "title": "Verify Custom Alert Sounds",
+            "description": "Whether to validate the existance of all files provided as the value to CustomAlertSound rules. Only applicable when using Windows.",
+            "type": "boolean",
+            "default": true,
+            "scope": "window"
+          },
+          "item-filter.windowsDocumentFolder": {
+            "title": "Windows User Document Folder",
+            "description": "The full path to your Documents folder.",
             "type": "string",
             "default": "",
             "scope": "window"

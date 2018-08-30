@@ -5,12 +5,16 @@
  * ===========================================================================*/
 
 import * as assert from "assert";
+import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 
 import * as types from "../types";
 import { dataOutputRoot, stylizedArrayJoin } from "..";
 import { TokenParser, TokenParseResult } from "./tokens";
+import { isAlphabetical, CharacterCodes } from "../parsers-nextgen";
 
+const whitespaceRegex = /^\s*$/;
 const itemData = <types.ItemData>require(path.join(dataOutputRoot, "items.json"));
 const filterData = <types.FilterData>require(path.join(dataOutputRoot, "filter.json"));
 const modData = <types.ModData>require(path.join(dataOutputRoot, "mods.json"));
@@ -87,7 +91,7 @@ export class LineParser {
         start: { line: parser.row, character: parser.textStartIndex },
         end: { line: parser.row, character: parser.textEndIndex }
       },
-      diagnostics: [],
+      diagnostics: []
     };
 
     if (parser.isEmpty() || parser.isCommented()) {
@@ -518,17 +522,11 @@ function parseCustomSoundRule(line: LineInformation) {
   const valueResult = line.parser.nextString();
 
   if (valueResult) {
-    if (valueResult.value.length === 0) {
-      line.result.diagnostics.push({
-        message: `Empty value for a ${line.result.keyword} rule.` +
-          " Expected the string to contain either a file name or file path.",
-        range: valueResult.range
-      });
-    }
+    verifyFilesExistence(line, valueResult);
   } else {
     line.result.diagnostics.push({
       message: `Missing value for a ${line.result.keyword} rule.` +
-        " Expected a string containing either the file name or file path.",
+        " Expected a string containing either the file name or a full file path.",
       range: {
         start: { line: line.result.row, character: line.parser.textStartIndex },
         end: { line: line.result.row, character: line.parser.originalLength }
@@ -555,7 +553,7 @@ function parseMinimapIconRule(line: LineInformation): void {
     if (!filterData.minimapIcons.sizes.includes(sizeResult.value)) {
       line.result.diagnostics.push({
         message: `Invalid value for a ${line.result.keyword} rule. ` +
-        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.sizes)}.`,
+          `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.sizes)}.`,
         range: sizeResult.range
       });
       return;
@@ -585,7 +583,7 @@ function parseMinimapIconRule(line: LineInformation): void {
     if (!found) {
       line.result.diagnostics.push({
         message: `Invalid value for a ${line.result.keyword} rule. ` +
-        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.colors)}.`,
+          `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.colors)}.`,
         range: colorResult.range
       });
       return;
@@ -615,7 +613,7 @@ function parseMinimapIconRule(line: LineInformation): void {
     if (!found) {
       line.result.diagnostics.push({
         message: `Invalid value for a ${line.result.keyword} rule. ` +
-        `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.shapes)}.`,
+          `Valid values are: ${stylizedArrayJoin(filterData.minimapIcons.shapes)}.`,
         range: shapeResult.range
       });
       return;
@@ -658,7 +656,7 @@ function parsePlayEffectRule(line: LineInformation) {
     if (!found) {
       line.result.diagnostics.push({
         message: `Invalid value for a ${line.result.keyword} rule. ` +
-        `Valid values are: ${stylizedArrayJoin(filterData.dropEffects.colors)}.`,
+          `Valid values are: ${stylizedArrayJoin(filterData.dropEffects.colors)}.`,
         range: colorResult.range
       });
       return;
@@ -681,7 +679,7 @@ function parsePlayEffectRule(line: LineInformation) {
     if (tempResult.value !== "Temp") {
       line.result.diagnostics.push({
         message: `Invalid value for a ${line.result.keyword} rule. ` +
-        "Valid values are: Temp.",
+          "Valid values are: Temp.",
         range: tempResult.range
       });
       return;
@@ -1082,4 +1080,66 @@ function reportDuplicateString(line: LineInformation, parse: TokenParseResult<st
     range: parse.range,
     severity: types.DiagnosticSeverity.Warning
   });
+}
+
+function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<string>): void {
+  const extension = path.extname(parse.value).toLowerCase();
+
+  if (parse.value.length === 0 || whitespaceRegex.test(parse.value)) {
+    line.result.diagnostics.push({
+      message: `Empty value for a ${line.result.keyword} rule.` +
+        " Expected the string to contain either a file name or full file path.",
+      range: parse.range
+    });
+  } else if (parse.value.length <= 4) {
+    // Going by what we know, the path must be at least 5 characters long in
+    // due to the file extension, with 'mp3' and 'wav' being supported.
+    line.result.diagnostics.push({
+      message: `Invalid value for a ${line.result.keyword} rule.` +
+        " Expected a file name or full file path ending with a file extension.",
+      range: parse.range
+    });
+  } else if (extension !== ".mp3" && extension != ".wav") {
+    line.result.diagnostics.push({
+      message: `Invalid value for a ${line.result.keyword} rule.` +
+        " Expected the file to end with either '.mp3' or '.wav'.",
+      range: parse.range
+    });
+  }
+
+  if (!line.config.verifyCustomSounds || os.platform() !== "win32") {
+    return;
+  }
+
+  const firstCharacter = parse.value.charCodeAt(0);
+  const secondCharacter = parse.value.charCodeAt(1);
+
+  // Were we given a full path?
+  if (isAlphabetical(firstCharacter) && secondCharacter === CharacterCodes.colon) {
+    const exists = fs.existsSync(parse.value);
+
+    if (!exists) {
+      line.result.diagnostics.push({
+        message: "Invalid value for a CustomAlertSound rule. Expected the given full" +
+          " file path to exist on your system.",
+        range: parse.range
+      });
+    }
+  } else {
+    const documentsPath = line.config.windowsDocumentFolder !== "" ?
+      line.config.windowsDocumentFolder : path.join(os.homedir(), "Documents");
+    const gameDataRoot = path.join(documentsPath, "My Games", "Path of Exile");
+    const fullFilePath = path.join(gameDataRoot, parse.value);
+
+    const exists = fs.existsSync(fullFilePath);
+
+    if (!exists) {
+      line.result.diagnostics.push({
+        message: "Invalid value for a CustomAlertSound rule. " +
+          `Expected a file named ${parse.value} to exist at the following ` +
+          `path:\n\n${gameDataRoot}`,
+        range: parse.range
+      });
+    }
+  }
 }

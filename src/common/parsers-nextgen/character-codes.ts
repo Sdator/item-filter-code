@@ -104,6 +104,7 @@ export const enum CharacterCodes {
 
   hash = 0x23, // Comments.
   doubleQuote = 0x22, // String delimiter.
+  colon = 0x3A,
 
   greaterThan = 0x3E,
   lessThan = 0x3C,

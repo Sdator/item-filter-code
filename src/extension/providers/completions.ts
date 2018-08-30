@@ -96,7 +96,7 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
         case "HasExplicitMod":
           return getModCompletions(this._config, position, lineText, currentIndex, eol);
         case "MinimapIcon":
-          return getMinimapIconCompletions(position, lineText, currentIndex);
+          return getMinimapIconCompletions(position, lineText, currentIndex, eol);
         case "PlayEffect":
           return getPlayEffectCompletions(position, lineText, currentIndex);
         default:
@@ -366,40 +366,23 @@ function getModCompletions(config: types.ConfigurationValues, pos: vscode.Positi
 }
 
 function getMinimapIconCompletions(pos: vscode.Position, text: string,
-  index: number): vscode.CompletionItem[] {
+  index: number, eol: vscode.EndOfLine): vscode.CompletionItem[] {
 
   const result: vscode.CompletionItem[] = [];
 
-  const pushSizeCompletions = (range: vscode.Range) => {
-    for (const size of filterData.minimapIcons.sizes) {
-      result.push({
-        label: `${size}`,
-        range
-      });
+  const pushCompletions = (range: vscode.Range, arr: string[]) => {
+    for (const v of arr) {
+      result.push(completionForStringRange(`${v}`, range, eol, false));
     }
   };
 
-  const pushColorCompletions = (range: vscode.Range) => {
-    for (const color of filterData.minimapIcons.colors) {
-      result.push({
-        label: `${color}`,
-        range
-      });
-    }
-  };
-
-  const pushShapeCompletions = (range: vscode.Range) => {
-    for (const color of filterData.minimapIcons.shapes) {
-      result.push({
-        label: `${color}`,
-        range
-      });
-    }
-  };
+  const sizeStrings: string[] = [];
+  filterData.minimapIcons.sizes.forEach(value => sizeStrings.push(`${value}`));
 
   let valueIndex = contextParser.bypassEqOperator(text, index);
   if (valueIndex == null || pos.character < valueIndex) {
-    pushSizeCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+    pushCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character),
+      sizeStrings);
     return result;
   } else {
     const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
@@ -408,16 +391,19 @@ function getMinimapIconCompletions(pos: vscode.Position, text: string,
     }
 
     if (contextParser.isNextValue(range, pos)) {
-      pushSizeCompletions(intoCodeRange(range));
+      range.end.character++;
+      pushCompletions(intoCodeRange(range), sizeStrings);
       return result;
     } else {
-      valueIndex = range.end.character + 1;
+      range.end.character++;
+      valueIndex = range.end.character;
     }
   }
 
   valueIndex = contextParser.bypassWhitespace(text, valueIndex);
   if (pos.character <= valueIndex) {
-    pushColorCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+    pushCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character),
+      filterData.minimapIcons.colors);
     return result;
   } else {
     const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
@@ -426,16 +412,19 @@ function getMinimapIconCompletions(pos: vscode.Position, text: string,
     }
 
     if (contextParser.isNextValue(range, pos)) {
-      pushColorCompletions(intoCodeRange(range));
+      range.end.character++;
+      pushCompletions(intoCodeRange(range), filterData.minimapIcons.colors);
       return result;
     } else {
-      valueIndex = range.end.character + 1;
+      range.end.character++;
+      valueIndex = range.end.character;
     }
   }
 
   valueIndex = contextParser.bypassWhitespace(text, valueIndex);
   if (pos.character <= valueIndex) {
-    pushShapeCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+    pushCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character),
+      filterData.minimapIcons.shapes);
     return result;
   } else {
     const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
@@ -444,10 +433,12 @@ function getMinimapIconCompletions(pos: vscode.Position, text: string,
     }
 
     if (contextParser.isNextValue(range, pos)) {
-      pushShapeCompletions(intoCodeRange(range));
+      range.end.character++;
+      pushCompletions(intoCodeRange(range), filterData.minimapIcons.shapes);
       return result;
     } else {
-      valueIndex = range.end.character + 1;
+      range.end.character++;
+      valueIndex = range.end.character;
     }
   }
 
@@ -479,9 +470,11 @@ function getPlayEffectCompletions(pos: vscode.Position, text: string,
     }
 
     if (contextParser.isNextValue(range, pos)) {
+      range.end.character++;
       pushColorCompletions(intoCodeRange(range));
       return result;
     } else {
+      range.end.character++;
       valueIndex = range.end.character + 1;
     }
   }
@@ -499,6 +492,7 @@ function getPlayEffectCompletions(pos: vscode.Position, text: string,
     }
 
     if (contextParser.isNextValue(range, pos)) {
+      range.end.character++;
       result.push({
         label: "Temp",
         range: intoCodeRange(range)

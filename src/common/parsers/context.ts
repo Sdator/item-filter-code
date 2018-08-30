@@ -81,18 +81,18 @@ export function bypassOperator(text: string, index: number): number | undefined 
 }
 
 /**
- * Skips all whitespace, returning the index of the first non-whitespace character
- * within the text.
+ * Skips all whitespace, returning the index immediately preceding the first
+ * non-whitespace character.
  * @param text The line text we're parsing.
  * @param index The current index for the line.
- * @return The index to the first non-whitespace character that follows.
+ * @return The index immediately preceding the first non-whitespace character.
  */
 export function bypassWhitespace(text: string, index: number): number {
   while (index < text.length) {
     const character = text.charAt(index);
 
     if (!whitespaceCharacterRegex.test(character)) {
-      break;
+      return index - 1;
     }
 
     index++;
