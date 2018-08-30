@@ -109,6 +109,14 @@ export interface FilterContext {
   blockFound: boolean;
 }
 
+export enum FilterOperator {
+  Equals,
+  GreaterThan,
+  GreaterThanEquals,
+  LessThan,
+  LessThanEquals
+}
+
 export interface BlockContext {
   root?: Range;
   classes: string[];

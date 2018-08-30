@@ -127,10 +127,7 @@
     },
     "LinkedSockets": {
       "min": 2,
-      "max": 6,
-      "additionals": [
-        0
-      ]
+      "max": 6
     },
     "Height": {
       "min": 1,

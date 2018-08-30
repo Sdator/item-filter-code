@@ -2,7 +2,18 @@
 
 The history of changes to the extension.
 
+### Version 1.14.0 (TBD)
+This release finalizes our support for the new rule types added in Path of Exile version 3.4, as we improve our support for the popular community item filters.
+
+- Added several missing base types for the `Delve Socketable Currency` item class.
+- The value for the `LinkedSockets` rule can no longer be `0`, as it is misleading and works differently than expected in-game.
+- Added support for multiple values to the following rules: `ItemLevel`, `DropLevel`, `GemLevel`, `Quality`, `StackSize`, `Rarity`, `Sockets`, `LinkedSockets`, `SocketGroup`, `Height`, `Width`, and `MapTier`.
+  + Multiple values are only allowed when the equals operator is used, as using other operators with multiple values makes little sense. When no operator is provided, the equals operator is implicit.
+  + As a side effect, each of these rules now supports quoted values, same as the Path of Exile client.
+
 ### Version 1.13.0 (August 30th, 2018)
+This release improves our support for the new rule types added in Path of Exile version 3.4, as we fix issues stemming from false information in GGG's item filter information post.
+
 - The tooltip hover for all values of the `MinimapIcon` rule now includes a preview if there were no validation errors.
 - Fixed the autocompletion behavior for the following rules: `MinimapIcon` and `PlayEffect`.
 - On Windows, the file name or file path provided to the `CustomAlertSound` rule is now verified to exist on your system. This can be turned off by setting `item-filter.verifyCustomSounds` to false.

@@ -19,8 +19,7 @@ export interface FilterData {
   ruleRanges: {
     [key: string]: {
       min: number,
-      max: number,
-      additionals?: number[]
+      max: number
     }
   };
   rarities: string[];

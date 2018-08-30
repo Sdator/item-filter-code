@@ -140,10 +140,10 @@ export class LineParser {
       case "Height":
       case "Width":
       case "MapTier":
-        parseSingleNumberRule(lineInfo);
+        parseRepeatingNumberRule(lineInfo);
         break;
       case "SetFontSize":
-        parseSingleNumberRule(lineInfo, true);
+        parseSetFontSizeRule(lineInfo, true);
         break;
       case "Rarity":
         parseRarityRule(lineInfo);
@@ -218,7 +218,7 @@ function parseBooleanRule(line: LineInformation, optional = false): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -240,19 +240,104 @@ function parseBooleanRule(line: LineInformation, optional = false): void {
 }
 
 /**
- * Parses a single number rule from the line.
- * @param equalityOnly True if only the equality operator is valid for this rule.
+ * Parses one or more numbers from the line.
+ * @param equalsOnly True if only the equals operator is valid for this rule.
  * Defaults to false.
  */
-function parseSingleNumberRule(line: LineInformation, equalityOnly = false): void {
+function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): void {
   const operatorResult = line.parser.nextOperator();
-  if (operatorResult && equalityOnly) {
+
+  let operatorType: types.FilterOperator;
+  if (operatorResult) {
+    switch (operatorResult.value) {
+      case "=":
+        operatorType = types.FilterOperator.Equals;
+        break;
+      case ">":
+        operatorType = types.FilterOperator.GreaterThan;
+        break;
+      case ">=":
+        operatorType = types.FilterOperator.GreaterThanEquals;
+        break;
+      case "<":
+        operatorType = types.FilterOperator.LessThan;
+        break;
+      case "<=":
+        operatorType = types.FilterOperator.LessThanEquals;
+        break;
+      default:
+        line.result.diagnostics.push({
+          message: `Unknown operator for a ${line.result.keyword} rule.`,
+          range: operatorResult.range
+        });
+        return;
+    }
+
+    if (equalsOnly && operatorType !== types.FilterOperator.Equals) {
+      reportNonEqualsOperator(line, operatorResult);
+      return;
+    }
+  } else {
+    operatorType = types.FilterOperator.Equals;
+  }
+
+  const ruleRange = filterData.ruleRanges[line.result.keyword];
+
+  let parsedValues = 0;
+  let opReported = false;
+  while (true) {
+    const valueResult = line.parser.nextWordString();
+
+    if (valueResult) {
+      if (!opReported && parsedValues === 1 && operatorType !== types.FilterOperator.Equals) {
+        line.result.diagnostics.push({
+          message: `Invalid operator for an ${line.result.keyword} rule providing ` +
+            "multiple values. Only the equals operator is allowed in this context, " +
+            "as other operators are error prone.",
+          range: operatorResult ? operatorResult.range : {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          },
+          severity: types.DiagnosticSeverity.Error
+        });
+
+        opReported = true;
+      }
+
+      validateNumber(line, valueResult, ruleRange.min, ruleRange.max)
+      parsedValues++;
+    } else {
+      if (parsedValues === 0 && line.result.diagnostics.length === 0) {
+        line.result.diagnostics.push({
+          message: `Missing value for an ${line.result.keyword} rule. ` +
+            `A value between ${ruleRange.min} and ${ruleRange.max} was expected.`,
+          range: {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          },
+          severity: types.DiagnosticSeverity.Error
+        });
+      }
+
+      break;
+    }
+  }
+}
+
+/**
+ * Parses a single number rule from the line.
+ * @param equalsOnly True if only the equals operator is valid for this rule.
+ * Defaults to false.
+ */
+function parseSetFontSizeRule(line: LineInformation, equalsOnly = false): void {
+  const operatorResult = line.parser.nextOperator();
+  if (operatorResult && equalsOnly) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
-  expectNumber(line);
+  expectNumber(line, false);
 
   if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
     reportTrailingText(line, types.DiagnosticSeverity.Error);
@@ -295,7 +380,7 @@ function parseSocketGroupRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -336,7 +421,7 @@ function parseColorRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -418,7 +503,7 @@ function parseSoundRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -515,7 +600,7 @@ function parseCustomSoundRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -544,7 +629,7 @@ function parseMinimapIconRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -640,7 +725,7 @@ function parsePlayEffectRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -695,7 +780,7 @@ function parseClassRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -777,7 +862,7 @@ function parseBaseTypeRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -885,7 +970,7 @@ function parseModRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
     if (operatorResult.value !== "=") {
-      reportNonEqualityOperator(line, operatorResult);
+      reportNonEqualsOperator(line, operatorResult);
     }
   }
 
@@ -962,44 +1047,25 @@ export function isKeywordedParseLineResult(obj: object): obj is KeywordedParseLi
   return (<KeywordedParseLineResult>obj).keyword != null;
 }
 
-function expectNumber(line: LineInformation): TokenParseResult<number> | undefined {
+function expectNumber(line: LineInformation, quoted = true): void {
   const rangeLimits = filterData.ruleRanges[line.result.keyword];
   assert(rangeLimits !== undefined);
   const min = rangeLimits.min;
   const max = rangeLimits.max;
-  const additionals = rangeLimits.additionals ? rangeLimits.additionals : [];
 
-  const numberResult = line.parser.nextNumber();
-
-  let secondPart: string;
-  if (additionals.length > 0) {
-    const additionalText = stylizedArrayJoin(additionals, ", or ");
-    secondPart = ` Valid values are either ${min}-${max} or ${additionalText}.`;
+  let numberResult: TokenParseResult<string> | TokenParseResult<number> | undefined;
+  if (quoted) {
+    numberResult = line.parser.nextString();
   } else {
-    secondPart = ` Valid values are between ${min} and ${max}.`;
+    numberResult = line.parser.nextNumber();
   }
 
   if (numberResult) {
-    let invalid = numberResult.value < min || numberResult.value > max;
-
-    if (invalid) {
-      for (const v of additionals) {
-        if (numberResult.value === v) invalid = false;
-      }
-    }
-
-    if (invalid) {
-      line.result.diagnostics.push({
-        message: `Invalid value for a ${line.result.keyword} rule. ${secondPart}`,
-        range: numberResult.range,
-        severity: types.DiagnosticSeverity.Error
-      });
-    } else {
-      return numberResult;
-    }
+    validateNumber(line, numberResult, min, max);
   } else {
     line.result.diagnostics.push({
-      message: `Missing value for a ${line.result.keyword} rule. ${secondPart}`,
+      message: `Missing value for a ${line.result.keyword} rule. Expected a value ` +
+        `between ${min} and ${max}.`,
       range: {
         start: { line: line.result.row, character: line.parser.textStartIndex },
         end: { line: line.result.row, character: line.parser.originalLength }
@@ -1042,9 +1108,9 @@ function reportTrailingText(line: LineInformation, severity: types.DiagnosticSev
   });
 }
 
-function reportNonEqualityOperator(line: LineInformation, parse: TokenParseResult<string>): void {
+function reportNonEqualsOperator(line: LineInformation, parse: TokenParseResult<string>): void {
   line.result.diagnostics.push({
-    message: `Invalid operator for the ${line.result.keyword} rule. Only the equality` +
+    message: `Invalid operator for the ${line.result.keyword} rule. Only the equals` +
       " operator is supported by this rule.",
     range: parse.range,
     severity: types.DiagnosticSeverity.Error
@@ -1091,6 +1157,7 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
         " Expected the string to contain either a file name or full file path.",
       range: parse.range
     });
+    return;
   } else if (parse.value.length <= 4) {
     // Going by what we know, the path must be at least 5 characters long in
     // due to the file extension, with 'mp3' and 'wav' being supported.
@@ -1099,12 +1166,14 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
         " Expected a file name or full file path ending with a file extension.",
       range: parse.range
     });
+    return;
   } else if (extension !== ".mp3" && extension != ".wav") {
     line.result.diagnostics.push({
       message: `Invalid value for a ${line.result.keyword} rule.` +
         " Expected the file to end with either '.mp3' or '.wav'.",
       range: parse.range
     });
+    return;
   }
 
   if (!line.config.verifyCustomSounds || os.platform() !== "win32") {
@@ -1141,5 +1210,43 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
         range: parse.range
       });
     }
+  }
+}
+
+function validateNumber(line: LineInformation, parse: TokenParseResult<string> |
+  TokenParseResult<number>, min: number, max: number): void {
+
+  let message = `Invalid value for a ${line.result.keyword} rule. Valid values ` +
+    `are between ${min} and ${max}.`
+
+  let parsedValue: number;
+  if (typeof parse.value === "string") {
+    for (const char of parse.value) {
+      const value = parseInt(char, 10);
+
+      if (isNaN(value)) {
+        line.result.diagnostics.push({
+          message,
+          range: parse.range,
+          severity: types.DiagnosticSeverity.Error
+        });
+
+        return;
+      }
+    }
+
+    parsedValue = parseInt(parse.value);
+  } else {
+    parsedValue = parse.value;
+  }
+
+  if (parsedValue < min || parsedValue > max) {
+    line.result.diagnostics.push({
+      message,
+      range: parse.range,
+      severity: types.DiagnosticSeverity.Error
+    });
+  } else {
+    return;
   }
 }

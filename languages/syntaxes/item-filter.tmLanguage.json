@@ -205,7 +205,7 @@
         }
       ]
     },
-    "equality-operator": {
+    "equals-operator": {
       "patterns": [
         {
           "match": "\\s+(=)(?=\\s)",
@@ -297,6 +297,9 @@
             },
             {
               "include": "#single-digit-number"
+            },
+            {
+              "include": "#string"
             }
           ]
         }
@@ -318,6 +321,9 @@
             },
             {
               "include": "#double-digit-number"
+            },
+            {
+              "include": "#string"
             }
           ]
         }
@@ -339,6 +345,9 @@
             },
             {
               "include": "#triple-digit-number"
+            },
+            {
+              "include": "#string"
             }
           ]
         }
@@ -360,6 +369,9 @@
             },
             {
               "include": "#quadruple-digit-number"
+            },
+            {
+              "include": "#string"
             }
           ]
         }
@@ -377,7 +389,7 @@
           },
           "patterns": [
             {
-              "include": "#equality-operator"
+              "include": "#equals-operator"
             },
             {
               "include": "#word"
@@ -401,7 +413,7 @@
           },
           "patterns": [
             {
-              "include": "#equality-operator"
+              "include": "#equals-operator"
             },
             {
               "include": "#boolean"
@@ -425,7 +437,7 @@
           },
           "patterns": [
             {
-              "include": "#equality-operator"
+              "include": "#equals-operator"
             },
             {
               "include": "#triple-digit-number"
@@ -587,7 +599,7 @@
           },
           "patterns": [
             {
-              "include": "#equality-operator"
+              "include": "#equals-operator"
             },
             {
               "include": "#socket-colors"
@@ -611,7 +623,7 @@
           },
           "patterns": [
             {
-              "include": "#equality-operator"
+              "include": "#equals-operator"
             },
             {
               "include": "#double-digit-number"

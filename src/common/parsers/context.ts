@@ -10,7 +10,7 @@ const keywordRegex = /^(\s*)([A-Z]+)(?=\s|$)/i;
 const whitespaceCharacterRegex = /\s/;
 
 /**
- * Bypasses all equality operators and whitespace prior to the first potential
+ * Bypasses all equals operators and whitespace prior to the first potential
  * value of the filter rule.
  * @param text The line text we're parsing.
  * @param index The current index for the line. This should generally be the
@@ -25,14 +25,14 @@ export function bypassEqOperator(text: string, index: number): number | undefine
 
   if (index >= text.length) return undefined;
 
-  let equalityFound = false;
+  let equalsFound = false;
   for (let i = index; i < text.length; i++) {
     const character = text.charAt(i);
     if (character === "=") {
-      if (equalityFound) {
+      if (equalsFound) {
         return undefined;
       } else {
-        equalityFound = true;
+        equalsFound = true;
       }
     } else if (!whitespaceCharacterRegex.test(character)) {
       return i;
@@ -43,7 +43,7 @@ export function bypassEqOperator(text: string, index: number): number | undefine
 }
 
 /**
- * Bypasses all equality operators and whitespace prior to the first potential
+ * Bypasses all equals operators and whitespace prior to the first potential
  * value of the filter rule.
  * @param text The line text we're parsing.
  * @param index The current index for the line. This should generally be the

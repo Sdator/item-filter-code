@@ -613,11 +613,11 @@ function getFontSizeHover(pos: vscode.Position, text: string, index: number): vs
 }
 
 function getSingleValueHover(pos: vscode.Position, text: string, index: number, contents: string,
-  equalityOnly: boolean): vscode.Hover | null {
+  equalsOnly: boolean): vscode.Hover | null {
 
   let result: vscode.Hover | null = null;
 
-  const valueIndex = equalityOnly ? contextParser.bypassEqOperator(text, index) :
+  const valueIndex = equalsOnly ? contextParser.bypassEqOperator(text, index) :
     contextParser.bypassOperator(text, index);
 
   if (valueIndex != null && pos.character >= valueIndex) {

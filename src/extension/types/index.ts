@@ -6,23 +6,11 @@
 
 import { Range } from "vscode";
 
-export interface ConfigurationValues {
-  baseWhitelist: string[];
-  classWhitelist: string[];
-  ruleWhitelist: string[];
-  soundWhitelist: string[];
-  modWhitelist: string[];
-  performanceHints: boolean;
-  alwaysShowAlpha: boolean;
-  limitedModPool: boolean;
-  itemValueQuotes: boolean;
-  booleanQuotes: boolean;
-  rarityQuotes: boolean;
-  modQuotes: boolean;
+import * as commonTypes from "../../common/types";
+
+export interface ConfigurationValues extends commonTypes.ConfigurationValues {
   linuxMPGAvailable: boolean;
   linuxMPGPath: string;
-  verifyCustomSounds: boolean;
-  windowsDocumentFolder: string;
 }
 
 export interface PlaySoundOptions {
