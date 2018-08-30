@@ -2,7 +2,7 @@
 
 The history of changes to the extension.
 
-### Version 1.14.0 (TBD)
+### Version 1.14.0 (August 30th, 2018)
 This release finalizes our support for the new rule types being added in Path of Exile version 3.4, as we also improve our support for the popular community item filters.
 
 - Added several missing base types for the `Delve Socketable Currency` item class.
@@ -14,6 +14,8 @@ This release finalizes our support for the new rule types being added in Path of
 - Errors were cascading for several rule types, such as `CustomAlertSound` and `SetBorderColor`. The validation code no longer reports multiple errors in these cases, instead returning only the first error.
 - Corrected several minor spacing issues within the diagnostic messages.
 - On Windows, the custom sound provided to the `CustomAlertSound` rule can now be previewed, through the same editor decorations used by the `PlayAlertSound` rule, within the editor.
+- On Windows, there is now autocompletion for the file name or file path value of the `CustomAlertSound` rule.
+  + As previously mentioned, the `item-filter.windowsDocumentFolder` configuration variable can be used to set your documents folder in the event that the educated guess doesn't work on your system.
 
 ### Version 1.13.0 (August 30th, 2018)
 This release improves our support for the new rule types being added in Path of Exile version 3.4, as we also fix issues stemming from incorrect information in GGG's item filter information post.

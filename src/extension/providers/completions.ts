@@ -13,6 +13,8 @@
 // Filtering suggestions based on block constraints would be intrusive and
 // is better handled through diagnostics.
 
+import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 import * as vscode from "vscode";
 import { dataOutputRoot, splitLines } from "../../common";
@@ -31,6 +33,8 @@ const modData = <types.ModData>require(path.join(dataOutputRoot, "mods.json"));
 const whitespaceRegex = /^\s*$/;
 const whitespaceCharacterRegex = /\s/;
 const spaceRegex = / /;
+
+export const completionTriggerCharacters = ['"', '\\'];
 
 export class FilterCompletionProvider implements vscode.CompletionItemProvider, IDisposable {
   private _config: types.ConfigurationValues;
@@ -98,6 +102,8 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
           return getMinimapIconCompletions(position, lineText, currentIndex, eol);
         case "PlayEffect":
           return getPlayEffectCompletions(position, lineText, currentIndex);
+        case "CustomAlertSound":
+          return getCustomSoundCompletions(this._config, position, lineText, currentIndex, eol);
         default:
           return [];
       }
@@ -502,6 +508,30 @@ function getPlayEffectCompletions(pos: vscode.Position, text: string,
   return result;
 }
 
+function getCustomSoundCompletions(config: types.ConfigurationValues, pos: vscode.Position,
+  text: string, index: number, eol: vscode.EndOfLine): vscode.CompletionItem[] {
+
+  // The filter is being created for another system.
+  if (os.platform() !== "win32") {
+    return [];
+  }
+
+  const valueIndex = contextParser.bypassEqOperator(text, index);
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    return [];
+  } else {
+    const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
+    if (range != null && contextParser.isNextValue(range, pos)) {
+      const currentFilePath = text.slice(range.start.character + 1, range.end.character);
+      range.end.character++;
+      return getPathCompletions(config, currentFilePath, intoCodeRange(range), pos);
+    }
+  }
+
+  return [];
+}
+
 function getAlertSoundCompletions(config: types.ConfigurationValues, pos: vscode.Position,
   text: string, index: number, eol: vscode.EndOfLine): vscode.CompletionItem[] {
 
@@ -595,6 +625,96 @@ function getBooleanCompletions(config: types.ConfigurationValues, pos: vscode.Po
     if (range != null && contextParser.isNextValue(range, pos)) {
       range.end.character++;
       pushCompletions(intoCodeRange(range));
+    }
+  }
+
+  return result;
+}
+
+function getPathCompletions(config: types.ConfigurationValues, text: string,
+  range: vscode.Range, pos: vscode.Position): vscode.CompletionItem[] {
+
+  const result: vscode.CompletionItem[] = [];
+
+  const croppedPath = text.substr(0, pos.character - range.start.character - 1);
+
+  let directory: string;
+  let currentText: string;
+  if (croppedPath.charAt(croppedPath.length - 1) === '\\') {
+    directory = croppedPath;
+    currentText = "";
+  } else {
+    directory = path.dirname(croppedPath);
+    currentText = path.basename(croppedPath);
+  }
+
+  const documentsPath = config.windowsDocumentFolder !== "" ?
+    config.windowsDocumentFolder : path.join(os.homedir(), "Documents");
+  const gameDataRoot = path.join(documentsPath, "My Games", "Path of Exile");
+  const gameDataListings = fs.readdirSync(gameDataRoot);
+
+  for (const item of gameDataListings) {
+    const extension = path.extname(item);
+    if (extension !== ".mp3" && extension != ".wav") {
+      continue;
+    }
+
+    const itemPath = path.join(gameDataRoot, item);
+    let stats: fs.Stats | undefined;
+    try {
+      stats = fs.statSync(itemPath);
+    } catch (e) { }
+
+    if (stats && stats.isFile()) {
+      if (item.includes(currentText)) {
+        result.push({
+          label: item,
+          insertText: `"${item}"`,
+          filterText: `"${item}"`,
+          range,
+          kind: vscode.CompletionItemKind.File
+        });
+      }
+    }
+  }
+
+  if (directory === ".") {
+    return result;
+  }
+
+  const hasSeparator = directory.charAt(directory.length - 1) === '\\';
+
+  const filesystemListings = fs.readdirSync(directory);
+  for (const item of filesystemListings) {
+    const itemPath = path.join(directory, item);
+    let stats: fs.Stats | undefined;
+    try {
+      stats = fs.statSync(itemPath);
+    } catch (e) { }
+
+    if (stats && stats.isDirectory()) {
+      if (currentText.length === 0 || item.includes(currentText)) {
+        result.push({
+          label: item,
+          insertText: hasSeparator ? `${directory}${item}` : `${directory}\\${item}`,
+          filterText: hasSeparator ? `"${directory}${item}"` : `"${directory}\\${currentText}"`,
+          range: new vscode.Range(
+            range.start.line, range.start.character + 1,
+            range.end.line, range.end.character - 1
+          ),
+          kind: vscode.CompletionItemKind.Folder
+        });
+      }
+    } else if (stats && stats.isFile()) {
+      if (item.includes(currentText)) {
+        result.push({
+          label: item,
+          insertText: hasSeparator ? `"${directory}${item}"` : `"${directory}\\${item}"`,
+          filterText: hasSeparator ? `"${directory}${item}"` : `"${directory}\\${currentText}"`,
+          range,
+          kind: vscode.CompletionItemKind.File
+        });
+      }
     }
   }
 

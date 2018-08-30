@@ -12,7 +12,7 @@ import { EditorRegistry } from "./registries/editors";
 import { ConfigurationManager } from "./managers/configuration";
 import { ItemFilterManager } from "./managers/item-filters";
 import { SoundDecorationManager } from "./managers/sound-decorations";
-import { FilterCompletionProvider } from "./providers/completions";
+import { completionTriggerCharacters, FilterCompletionProvider } from "./providers/completions";
 import { FilterDiagnosticsProvider } from "./providers/diagnostics";
 import { FilterHoverProvider } from "./providers/hovers";
 import { FilterColorProvider } from "./providers/colors";
@@ -45,7 +45,8 @@ export function activate(context: vscode.ExtensionContext): void {
     completionProvider,
     diagnosticProvider,
     colorProvider,
-    vscode.languages.registerCompletionItemProvider(selector, completionProvider, '"'),
+    vscode.languages.registerCompletionItemProvider(selector, completionProvider,
+      ...completionTriggerCharacters),
     vscode.languages.registerHoverProvider(selector, hoverProvider),
     vscode.languages.registerColorProvider(selector, colorProvider)
   );
