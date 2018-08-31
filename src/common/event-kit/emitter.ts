@@ -9,6 +9,7 @@
 // TODO(glen): emitting data should be optional.
 
 import { IDisposable } from ".";
+import { CompositeDisposable } from "./composite-disposable";
 import { Disposable } from "./disposable";
 
 /**
@@ -21,6 +22,7 @@ import { Disposable } from "./disposable";
 export class Emitter<Emissions = { [key: string]: any }> implements IDisposable {
   private _disposed: boolean;
   private readonly _eventHandlers: Map<string, Function[]>;
+  private _subscriptions: CompositeDisposable;
 
   /** Returns whether this emitter has been disposed of previously. */
   get disposed(): boolean {
@@ -30,19 +32,23 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
   /** Create a new Emitter. */
   constructor() {
     this._disposed = false;
-    this._eventHandlers = new Map;
+    this._eventHandlers = new Map();
+    this._subscriptions = new CompositeDisposable();
   }
 
   /** Clear out any existing subscribers. */
   clear(): void {
+    this._subscriptions.dispose();
+    this._subscriptions = new CompositeDisposable();
+
     this._eventHandlers.clear();
   }
 
   /** Unsubscribe all handlers. */
-  dispose(): boolean {
+  dispose(): void {
+    this._subscriptions.dispose();
     this._eventHandlers.clear();
     this._disposed = true;
-    return true;
   }
 
   /** Returns whether this emitter has been disposed of previously. */
@@ -80,9 +86,13 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
       this._eventHandlers.set(event as string, [handler]);
     }
 
-    return new Disposable(() => {
+    const cleanup = new Disposable(() => {
+      this._subscriptions.remove(cleanup);
       this._off(event as string, handler);
     });
+
+    this._subscriptions.add(cleanup);
+    return cleanup;
   }
 
   /**

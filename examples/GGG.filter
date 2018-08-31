@@ -1,4 +1,4 @@
-﻿Show
+Show
     Class "Hideout Doodads" "Microtransactions"
     SetTextColor 255 192 203
 
@@ -7,6 +7,7 @@ Show
     Class "Quest"
     SetBackgroundColor 5 5 5 250
     SetFontSize 36
+    PlayEffect White Temp
 
 # Tabula Rasa Catcher
 Show
@@ -15,6 +16,8 @@ Show
     Rarity = Unique
     SetBorderColor 180 96 0
     SetFontSize 40
+    MinimapIcon 2 White Circle
+    PlayEffect White
 
 # 6Link Any
 Show
@@ -24,6 +27,8 @@ Show
     SetBorderColor 0 0 0
     SetFontSize 45
     PlayAlertSound 5 300
+    MinimapIcon 1 Red Hexagon
+    PlayEffect Red
 
 # 5Link Any
 Show
@@ -32,6 +37,8 @@ Show
     SetBorderColor 180 96 0
     SetFontSize 38
     PlayAlertSound 8 225
+    MinimapIcon 2 Red Hexagon
+    PlayEffect Red Temp
 
 # 6Socket Any
 Show
@@ -40,6 +47,8 @@ Show
     SetBorderColor 180 96 0
     SetFontSize 38
     PlayAlertSound 1 225
+    MinimapIcon 2 Yellow Hexagon
+    PlayEffect Red Temp
 
 # Sacrificial Garb
 Show
@@ -55,6 +64,8 @@ Show
     SetBorderColor 180 96 0
     SetFontSize 45
     PlayAlertSound 10 300
+    MinimapIcon 0 Yellow Star
+    PlayEffect Yellow
 
 # Currency - Mirror Shaper
 Show
@@ -64,6 +75,8 @@ Show
     SetBorderColor 180 96 0
     SetFontSize 45
     PlayAlertSound 10 300
+    MinimapIcon 0 Yellow Star
+    PlayEffect Yellow
 
 # Currency - Eternal (Legacy)
 Show
@@ -73,6 +86,8 @@ Show
     SetBorderColor 0 0 0
     SetFontSize 42
     PlayAlertSound 10 300
+    MinimapIcon 0 Brown Star
+    PlayEffect Brown
 
 # Currency - Divine Shaper
 Show
@@ -82,6 +97,8 @@ Show
     SetBorderColor 0 0 0
     SetFontSize 42
     PlayAlertSound 10 300
+    MinimapIcon 1 Brown Star
+    PlayEffect Brown Temp
 
 # Currency - Exalted Shaper
 Show
@@ -91,20 +108,26 @@ Show
     SetBorderColor 0 0 0
     SetFontSize 42
     PlayAlertSound 10 300
+    MinimapIcon 0 Brown Star
+    PlayEffect Brown
 
 # Elder Items
 Show
-	ElderItem True
+    ElderItem True
     SetBorderColor 128 0 128
     SetFontSize 42
-	PlayAlertSound 15 300
+    PlayAlertSound 15 300
+    MinimapIcon 2 Blue Circle
+    PlayEffect Blue
 
 # Shaper Items
 Show
-	ShaperItem True
+    ShaperItem True
     SetBorderColor 128 0 128
     SetFontSize 42
-	PlayAlertSound 15 300
+    PlayAlertSound 15 300
+    MinimapIcon 2 Blue Circle
+    PlayEffect Blue
 
 # Abyss Jewels
 Show
@@ -113,6 +136,7 @@ Show
     SetBackgroundColor 0 0 0
     SetBorderColor 255 40 0 220
     SetFontSize 42
+    PlayEffect Green Temp
 
 # Currency - Valuable
 Show
@@ -122,6 +146,7 @@ Show
     SetBorderColor 170 158 130
     SetFontSize 42
     PlayAlertSound 9 225
+    PlayEffect Brown Temp
 
 # Currency - Medium Value
 Show
@@ -130,6 +155,7 @@ Show
     SetBackgroundColor 0 0 0
     SetBorderColor 0 0 0
     SetFontSize 38
+    PlayEffect Yellow Temp
 
 # Currency - Low Value
 Show
@@ -156,6 +182,8 @@ Show
     SetBorderColor 0 0 0
     SetFontSize 36
     PlayAlertSound 11 225
+    MinimapIcon 1 White Star
+    PlayEffect Yellow
 
 # Currency - Essence
 Show
@@ -166,6 +194,7 @@ Show
     SetBorderColor 0 0 0
     SetFontSize 36
     PlayAlertSound 12 225
+    PlayEffect White Temp
 
 # Currency - Remnant of Corruption
 Show
@@ -176,6 +205,7 @@ Show
     SetBorderColor 150 0 0
     SetFontSize 38
     PlayAlertSound 9 225
+    PlayEffect Red Temp
 
 # Currency - Perandus Coin
 Show
@@ -184,6 +214,8 @@ Show
     SetBackgroundColor 100 110 59 250
     SetBorderColor 163 141 109
     SetFontSize 36
+    MinimapIcon 2 Green Star
+    PlayEffect Green Temp
 
 # Currency - Prophecy
 Show
@@ -194,6 +226,7 @@ Show
     SetBorderColor 5 0 8 150
     SetFontSize 36
     PlayAlertSound 13 225
+    PlayEffect Blue Temp
 
 # Currency - Breach Splinter
 Show
@@ -204,6 +237,7 @@ Show
     SetBorderColor 136 136 255
     SetFontSize 36
     PlayAlertSound 7 225
+    PlayEffect Red Temp
 
 # Currency - Breach Blessing
 Show
@@ -213,6 +247,8 @@ Show
     SetBackgroundColor 74 0 160 200
     SetFontSize 40
     PlayAlertSound 7 225
+    MinimapIcon 1 Red Star
+    PlayEffect Red
 
 # Maps - Map Fragments - Breachstones
 Show
@@ -222,6 +258,8 @@ Show
     SetBorderColor 255 255 255
     SetFontSize 40
     PlayAlertSound 2 200
+    MinimapIcon 0 Red Star
+    PlayEffect Red
 
 # Currency - Leaguestones Magic
 Show
@@ -248,12 +286,14 @@ Show
 # Currency - Reliquary Keys
 Show
     Class "Map"
-    BaseType "Ancient Reliquary Key"
+    BaseType "Ancient Reliquary Key" "Timeworn Reliquary Key"
     SetTextColor 231 180 120
     SetBackgroundColor 150 0 0
     SetBorderColor 180 96 0
     SetFontSize 45
     PlayAlertSound 5 245
+    MinimapIcon 0 Brown Diamond
+    PlayEffect Brown
 
 # Currency - Harbinger Shards
 Show
@@ -264,6 +304,7 @@ Show
     SetBorderColor 18 103 186
     SetFontSize 36
     PlayAlertSound 7 225
+    PlayEffect Blue Temp
 
 # Currency - Harbinger Orbs
 Show
@@ -274,6 +315,32 @@ Show
     SetBorderColor 18 103 186
     SetFontSize 42
     PlayAlertSound 6 225
+    MinimapIcon 2 Blue Star
+    PlayEffect Blue
+
+# Currency - Fossils
+Show
+    Class "Stackable Currency"
+    BaseType "Scorched Fossil" "Frigid Fossil" "Metallic Fossil" "Jagged Fossil" "Aberrant Fossil" "Pristine Fossil" "Dense Fossil" "Corroded Fossil" "Prismatic Fossil" "Aetheric Fossil" "Serrated Fossil" "Lucent Fossil" "Shuddering Fossil" "Bound Fossil" "Perfect Fossil" "Enchanted Fossil" "Encrusted Fossil" "Faceted Fossil" "Bloodstained Fossil" "Hollow Fossil" "Fractured Fossil" "Glyphic Fossil" "Tangled Fossil" "Sanctified Fossil" "Gilded Fossil"
+    SetTextColor 0 0 0
+    SetBackgroundColor 255 174 0
+    SetBorderColor 255 106 0
+    SetFontSize 40
+    PlayAlertSound 9 225
+    MinimapIcon 0 Yellow Diamond
+    PlayEffect Yellow
+
+# Currency - Resonators
+Show
+    Class "Delve Socketable Currency"
+    BaseType "Primitive Alchemical Resonator" "Potent Alchemical Resonator" "Powerful Alchemical Resonator" "Prime Alchemical Resonator" "Primitive Chaotic Resonator" "Potent Chaotic Resonator" "Powerful Chaotic Resonator" "Prime Chaotic Resonator"
+    SetTextColor 219 238 255
+    SetBackgroundColor 0 135 255
+    SetBorderColor 191 225 255
+    SetFontSize 40
+    PlayAlertSound 9 225
+    MinimapIcon 0 Blue Diamond
+    PlayEffect Blue 
 
 # Talisman - Rare
 Show
@@ -284,6 +351,8 @@ Show
     SetBackgroundColor 11 178 57
     SetBorderColor 170 158 130
     PlayAlertSound 3 80
+    MinimapIcon 1 Green Triangle
+    PlayEffect Green
 
 # Talisman - Magic
 Show
@@ -294,6 +363,8 @@ Show
     SetBackgroundColor 11 178 57
     SetBorderColor 170 158 130
     PlayAlertSound 3 80
+    MinimapIcon 2 Green Triangle
+    PlayEffect Green Temp
 
 # Talisman - Normal
 Show
@@ -304,6 +375,7 @@ Show
     SetBackgroundColor 11 178 57
     SetBorderColor 170 158 130
     PlayAlertSound 3 80
+    PlayEffect Green Temp
 
 # Bestiary Nets - Valuable
 Show
@@ -365,6 +437,8 @@ Show # Gems - Empower/Enhance/Enlighten/Portal
     SetBackgroundColor 5 5 5 250
     SetBorderColor 27 162 155
     PlayAlertSound 14 225
+    MinimapIcon 2 White Triangle
+    PlayEffect White
 
 Show # Gems - Portal/DetonateMines/AddedChaos
     Class "Gems"
@@ -380,6 +454,7 @@ Show # Gems - Qual10+
     SetTextColor 27 162 155
     SetBackgroundColor 5 5 5 250
     SetBorderColor 30 144 255
+    PlayEffect Blue Temp
 
 # Gems - Qual+
 Show # Gems - Qual+
@@ -396,6 +471,7 @@ Show # Gems - Vaal
     SetTextColor 27 162 155
     SetBackgroundColor 5 5 5 250
     SetBorderColor 210 0 0
+    PlayEffect Red Temp
 
 # Gems - All
 Show # Gems - All
@@ -411,17 +487,20 @@ Show
     SetBorderColor 180 96 0
     SetFontSize 40
     PlayAlertSound 5 225
+    PlayEffect Brown Temp    
 
 # Shaped Maps
 Show
     Class "Maps"
-	ShapedMap True
+    ShapedMap True
     Rarity < Rare
     SetTextColor 0 0 0
     SetBackgroundColor 54 100 146
     SetBorderColor 0 0 0
     SetFontSize 40
-	
+    MinimapIcon 2 Blue Square
+    PlayEffect Blue
+    
 # Maps - DropLevel 78+
 Show
     DropLevel >= 78
@@ -429,6 +508,8 @@ Show
     SetBorderColor 150 0 0 # Maps - 78+
     SetFontSize 45
     PlayAlertSound 6 250
+    MinimapIcon 1 Red Square
+    PlayEffect Red
 
 # Maps - DropLevel 73 - 77
 Show # Maps - DropLevel 73 - 77
@@ -438,6 +519,8 @@ Show # Maps - DropLevel 73 - 77
     SetBackgroundColor 5 5 5 250
     SetFontSize 38
     PlayAlertSound 2 200
+    MinimapIcon 2 Yellow Square
+    PlayEffect Yellow Temp
 
 # Maps - DropLevel <= 72
 Show # Maps - DropLevel <= 72
@@ -459,6 +542,8 @@ Show # Maps - Map Frag - Divine Vessel
     SetBorderColor 255 165 0
     SetFontSize 40
     PlayAlertSound 4 250
+    MinimapIcon 2 Blue Triangle
+    PlayEffect Blue Temp
 
 # Maps - Divine Vessel - Filled
 Show
@@ -468,6 +553,8 @@ Show
     SetBorderColor 56 34 158 250
     SetFontSize 40
     PlayAlertSound 4 250
+    MinimapIcon 2 Blue Triangle
+    PlayEffect Blue
 
 # Maps - Map Frag - Mortal Hope
 Show # Maps - Map Frag - Mortal Hope
@@ -476,6 +563,7 @@ Show # Maps - Map Frag - Mortal Hope
     SetBorderColor 150 0 0
     SetFontSize 40
     PlayAlertSound 6 250
+    PlayEffect Red Temp
 
 # Maps - Map Frag - Shaper Fragments
 Show # Maps - Map Frag - Shaper Fragments
@@ -484,6 +572,8 @@ Show # Maps - Map Frag - Shaper Fragments
     SetBorderColor 74 0 160 200
     SetFontSize 40
     PlayAlertSound 4 200
+    MinimapIcon 0 White Square 
+    PlayEffect White
 
 # Maps - Map Frag - Sacrifice at Midnight
 Show # Maps - Map Frag - Sacrifice at Midnight
@@ -492,6 +582,7 @@ Show # Maps - Map Frag - Sacrifice at Midnight
     SetBorderColor 150 0 0
     SetFontSize 35
     PlayAlertSound 2 200
+    PlayEffect Red Temp
 
 # Maps - Map Frag - All
 Show # Maps - Map Frag - All
@@ -520,6 +611,7 @@ Show # Divination Cards - All
     SetBorderColor 0 186 254
     SetFontSize 38
     PlayAlertSound 16 230
+    PlayEffect Blue Temp
 
 # Chroma Orb Recipe 
 Show # Chromatic Orb Recipe - Norm
@@ -542,6 +634,15 @@ Show # Chromatic Orb Recipe - Rare
     SetBackgroundColor 5 5 5 250
     SetBorderColor 20 150 10
     SetFontSize 36
+
+Show # Delve Mod Items
+    Identified True
+    HasExplicitMod "Subterranean" "of the Underground" "of Weaponcraft" "of Spellcraft" "of Crafting"
+    SetTextColor 242 198 235
+    SetBackgroundColor 155 23 135
+    SetBorderColor 40 22 38
+    SetFontSize 25
+    PlayAlertSound 9 225 
 
 # Rares - T1 Weapon
 Show
@@ -570,6 +671,7 @@ Show # Amulets, Rings, Belts - Endgame (Implicit) - Norm
     SetBorderColor 127 127 127
     SetFontSize 38
     PlayAlertSound 3 80
+    PlayEffect White Temp
 
 Show # Amulets, Rings, Belts - Endgame (Implicit) - Magic
     Class "Rings" "Amulets" "Belts"
@@ -579,6 +681,7 @@ Show # Amulets, Rings, Belts - Endgame (Implicit) - Magic
     SetBackgroundColor 70 70 70
     SetBorderColor 127 127 127
     SetFontSize 36
+    PlayEffect White Temp
 
 Show # Amulets, Rings, Belts - Endgame (Implicit) - Rare
     Class "Rings" "Amulets" "Belts"
@@ -588,6 +691,7 @@ Show # Amulets, Rings, Belts - Endgame (Implicit) - Rare
     SetBackgroundColor 70 70 70
     SetBorderColor 127 127 127
     SetFontSize 36
+    PlayEffect White Temp
 
 # Low Level & Race Catcher
 Show

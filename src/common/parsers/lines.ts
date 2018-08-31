@@ -10,7 +10,7 @@ import * as os from "os";
 import * as path from "path";
 
 import * as types from "../types";
-import { dataOutputRoot, stylizedArrayJoin } from "..";
+import { assertUnreachable, dataOutputRoot, stylizedArrayJoin } from "..";
 import { intoFilterOperator } from "../converters";
 import { TokenParser, TokenParseResult } from "./tokens";
 import { isAlphabetical, CharacterCodes } from "../parsers-nextgen";
@@ -242,7 +242,7 @@ function parseBooleanRule(line: LineInformation, optional = false): void {
 
 function parseDisableDropSoundRule(line: LineInformation): void {
   if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, types.DiagnosticSeverity.Warning);
+    reportTrailingText(line, types.DiagnosticSeverity.Hint);
   }
 }
 
@@ -699,10 +699,6 @@ function parseCustomSoundRule(line: LineInformation) {
       severity: types.DiagnosticSeverity.Error
     });
   }
-
-  if (!line.parser.isEmpty() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, types.DiagnosticSeverity.Error);
-  }
 }
 
 function parseMinimapIconRule(line: LineInformation): void {
@@ -795,10 +791,6 @@ function parseMinimapIconRule(line: LineInformation): void {
     });
     return;
   }
-
-  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, types.DiagnosticSeverity.Error);
-  }
 }
 
 function parsePlayEffectRule(line: LineInformation) {
@@ -849,10 +841,6 @@ function parsePlayEffectRule(line: LineInformation) {
       });
       return;
     }
-  }
-
-  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, types.DiagnosticSeverity.Error);
   }
 }
 
@@ -1177,9 +1165,20 @@ function reportTrailingText(line: LineInformation, severity: types.DiagnosticSev
     end: { line: line.result.row, character: line.parser.textEndIndex }
   };
 
-  const message = severity === types.DiagnosticSeverity.Warning ?
-    "This trailing text will be ignored by Path of Exile." :
-    "This trailing text will be considered an error by Path of Exile.";
+  let message: string;
+
+  switch (severity) {
+    case types.DiagnosticSeverity.Error:
+      message = "This trailing text will be considered an error by Path of Exile.";
+      break;
+    case types.DiagnosticSeverity.Warning:
+    case types.DiagnosticSeverity.Hint:
+    case types.DiagnosticSeverity.Information:
+      message = "This trailing text will be ignored by Path of Exile.";
+      break;
+    default:
+      return assertUnreachable(severity);
+  }
 
   line.result.diagnostics.push({
     message,
@@ -1224,7 +1223,7 @@ function reportDuplicateString(line: LineInformation, parse: TokenParseResult<st
   line.result.diagnostics.push({
     message: `Duplicate value detected within a ${line.result.keyword} rule.`,
     range: parse.range,
-    severity: types.DiagnosticSeverity.Warning
+    severity: types.DiagnosticSeverity.Hint
   });
 }
 
