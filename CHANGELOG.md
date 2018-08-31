@@ -7,10 +7,10 @@ The history of changes to the extension.
 - Fixed an issue where closing an unsaved item filter would cause diagnostics to stick around within the editor.
 - When autocompleting a file path for the `CustomAlertSound` rule, only `mp3` and `wav` files will be shown.
 - Updated the `MinimapIcon` images using data from the official client, making them identical to what you will see in-game.
-- Trailing text for the follow rules are no longer considered an error: `CustomAlertSound`, `CustomAlertSound`, and `PlayEffect`.
-- Trailing text for the `DisableDropSound` rule is now reported through a hint, rather than a warning.
+- Trailing text for the follow rules is no longer considered an error: `CustomAlertSound`, `CustomAlertSound`, and `PlayEffect`.
+- Trailing text for the `DisableDropSound` rule is now reported as a hint, rather than a warning.
 - Added the missing `of Conflagrating` affix for the `HasExplicitMod` rule.
-- Duplicate values for the `Class` and `BaseType` rule are now hints, rather than warnings.
+- Duplicate values for the `Class` and `BaseType` rule are now reported as hints, rather than warnings.
 
 ### Version 1.14.1 (August 30th, 2018)
 This release focuses on fixing errors within our data, further increasing support for the popular community item filters.
