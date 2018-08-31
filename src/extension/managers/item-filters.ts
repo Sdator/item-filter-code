@@ -135,6 +135,10 @@ export class ItemFilterManager implements IDisposable {
 
   /** Updates the item filter associated with the given event. */
   private _updateDocument(event: vscode.TextDocumentChangeEvent): void {
+    if (event.contentChanges.length === 0) {
+      return;
+    }
+
     const uri = event.document.uri.toString();
     const filter = new ItemFilter(this._configManager.values, event.document.getText());
     this._activeFilters.set(uri, filter);

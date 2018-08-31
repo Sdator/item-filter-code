@@ -2,6 +2,11 @@
 
 The history of changes to the extension.
 
+### Version 1.14.2 (TBD)
+- Fixed a bug where item filters would be reprocessed spuriously, often twice in a row.
+- Fixed an issue where closing an unsaved item filter would cause diagnostics to stick around within the editor.
+- When autocompleting a file path for the `CustomAlertSound` rule, only `mp3` and `wav` files will be shown.
+
 ### Version 1.14.1 (August 30th, 2018)
 This release focuses on fixing errors within our data, further increasing support for the popular community item filters.
 
@@ -14,7 +19,7 @@ This release focuses on fixing errors within our data, further increasing suppor
 - The `Offering to the Goddess` base type now has the correct item class of `Map Fragments`.
 - The `Diamond Flask` base type now has the correct item class of `Critical Utility Flasks`.
 - Added the missing `Harbinger Map` item base.
-- Removed following invalid item bases: `Event Coin` and `Event Shard`.
+- Removed the following invalid item bases: `Event Coin` and `Event Shard`.
 
 ### Version 1.14.0 (August 30th, 2018)
 This release finalizes our support for the new rule types being added in Path of Exile version 3.4, as we also improve our support for the popular community item filters.

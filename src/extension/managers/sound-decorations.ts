@@ -95,6 +95,12 @@ export class SoundDecorationManager implements IDisposable {
   private async _update(event: FilterChangedEvent): Promise<void> {
     const payload = await event.filter.payload;
     const decorations = this._createDecorations(payload.soundInformation);
+
+    // This document may have since been closed.
+    if (this._filterManager.get(event.uri) == null) {
+      return;
+    }
+
     this._cache.set(event.uri, decorations);
 
     for (const editor of this._editorRegistry.editors) {

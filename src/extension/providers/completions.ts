@@ -706,6 +706,11 @@ function getPathCompletions(config: types.ConfigurationValues, text: string,
         });
       }
     } else if (stats && stats.isFile()) {
+      const extension = path.extname(item);
+      if (extension !== ".mp3" && extension != ".wav") {
+        continue;
+      }
+
       if (item.includes(currentText)) {
         result.push({
           label: item,

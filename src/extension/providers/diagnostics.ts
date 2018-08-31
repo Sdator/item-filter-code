@@ -31,12 +31,17 @@ export class FilterDiagnosticsProvider implements IDisposable {
     this._diagnostics.dispose();
   }
 
-  private async _add(event: ifm.FilterOpenedEvent): Promise<void> {
+  private async _add(event: ifm.FilterOpenedEvent, update = false): Promise<void> {
     const result = await event.filter.payload;
 
     const diagnostics: vscode.Diagnostic[] = [];
     for (const filterDiagnostic of result.diagnostics) {
       diagnostics.push(intoCodeDiagnostic(filterDiagnostic));
+    }
+
+    // This filter may have been removed as we were processing the changes.
+    if (update && this._filterManager.get(event.uri) == null) {
+      return;
     }
 
     this._diagnostics.set(vscode.Uri.parse(event.uri), diagnostics);
@@ -47,6 +52,6 @@ export class FilterDiagnosticsProvider implements IDisposable {
   }
 
   private async _update(event: ifm.FilterChangedEvent): Promise<void> {
-    return this._add(event);
+    return this._add(event, true);
   }
 }
