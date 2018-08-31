@@ -3,6 +3,8 @@
 The history of changes to the extension.
 
 ### Version 1.14.2 (August 31st, 2018)
+This release applies some final polish to our support for the Delve league, as we also ensure that all popular community filters are fully supported.
+
 - Fixed a bug where item filters would be reprocessed spuriously, often twice in a row.
 - Fixed an issue where closing an unsaved item filter would cause diagnostics to stick around within the editor.
 - When autocompleting a file path for the `CustomAlertSound` rule, only `mp3` and `wav` files will be shown.
