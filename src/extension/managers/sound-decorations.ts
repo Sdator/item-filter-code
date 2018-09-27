@@ -7,7 +7,7 @@
 import * as vscode from "vscode";
 
 import { CompositeDisposable, IDisposable } from "../../common/event-kit";
-import { isDefaultSoundInformation, SoundInformation } from "../../common/types";
+import { isDefaultSoundInformation, CustomSoundType, SoundInformation } from "../../common/types";
 import { EditorRegistry } from "../registries/editors";
 import { intoCodeRange } from "../converters";
 import { ItemFilterManager, FilterChangedEvent } from "./item-filters";
@@ -127,6 +127,11 @@ export class SoundDecorationManager implements IDisposable {
 
         commandText = "command:item-filter.playDefaultSound?" + JSON.stringify(fields);
       } else {
+        // MPG123 only works for MP3 files.
+        if (sound.type !== CustomSoundType.MP3) {
+          continue;
+        }
+
         const fields: PlayCustomSoundOptions = {
           path: sound.path
         };

@@ -2,6 +2,16 @@
 
 The history of changes to the extension.
 
+### Version 1.14.3 (September 27th, 2018)
+This release adds every new unique added alongside the Delve league, while also providing several minor bug fixes.
+
+- Updated the list of uniques to include those added in patch 3.4.
+- Added the missing Bestiary item mods: `of Craiceann`, `of Farrul`, `of Fenumus`, and `of Saqawal`.
+- Removed the invalid `of Adaptation` item mod.
+- Sound decorations will now only be displayed for MP3 files, as MPG123 does not support other file types.
+- When using the color picker, the alpha value will now always be shown. We had previously assumed that the default value was 255, which was incorrect.
+  + Due to this, the `item-filter.alwaysShowAlpha` configuration variable has been removed.
+
 ### Version 1.14.2 (August 31st, 2018)
 This release applies some final polish to our support for the Delve league, as we also ensure that all popular community filters are fully supported.
 

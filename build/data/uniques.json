@@ -153,6 +153,13 @@
       "name": "Saqawal's Nest"
     }
   ],
+  "Blood Sceptre": [
+    {
+      "boss": "Ahuatotli, the Blind",
+      "league": "Delve",
+      "name": "Cerberus Limb"
+    }
+  ],
   "Blue Pearl Amulet": [
     "Gloomfang"
   ],
@@ -392,7 +399,8 @@
     "Solaris Lorica"
   ],
   "Coral Amulet": [
-    "Araku Tiki"
+    "Araku Tiki",
+    "The Primordial Chain"
   ],
   "Coral Ring": [
     "Bloodboil",
@@ -647,7 +655,8 @@
     "Abyssus"
   ],
   "Ezomyte Staff": [
-    "Cane of Unravelling"
+    "Cane of Unravelling",
+    "Soulwrest"
   ],
   "Ezomyte Tower Shield": [
     {
@@ -720,6 +729,7 @@
   ],
   "Gold Amulet": [
     "Bisco's Collar",
+    "Perquil's Toe",
     "The Ignomon",
     "Winterheart",
     {
@@ -999,7 +1009,8 @@
   ],
   "Judgement Staff": [
     "Hegemony's Era",
-    "Pledge of Hands"
+    "Pledge of Hands",
+    "The Grey Spire"
   ],
   "Karui Chopper": [
     "Kaom's Primacy"
@@ -1114,10 +1125,18 @@
       "boss": "Craiceann",
       "league": "Bestiary",
       "name": "Craiceann's Chitin"
+    },
+    {
+      "boss": "Aul, the Crystal King",
+      "league": "Delve",
+      "name": "Crown of the Tyrant"
     }
   ],
   "Marble Amulet": [
     "Bloodgrip"
+  ],
+  "Maze Map": [
+    "Doryani's Machinarium"
   ],
   "Meatgrinder": [
     {
@@ -1239,6 +1258,11 @@
     {
       "league": "Prophecy",
       "name": "Hinekora's Sight"
+    },
+    {
+      "boss": "Aul, the Crystal King",
+      "league": "Delve",
+      "name": "Aul's Uprising"
     }
   ],
   "Opal Ring": [
@@ -1301,6 +1325,9 @@
   ],
   "Pinnacle Tower Shield": [
     "Lioneye's Remorse"
+  ],
+  "Plague Mask": [
+    "Curtain Call"
   ],
   "Plank Kite Shield": [
     "Springleaf"
@@ -1422,6 +1449,13 @@
   "Riveted Boots": [
     "Ralakesh's Impatience"
   ],
+  "Riveted Gloves": [
+    {
+      "boss": "Kurgal, the Blackblooded",
+      "league": "Delve",
+      "name": "Command of the Pit"
+    }
+  ],
   "Rock Breaker": [
     "Clayshaper"
   ],
@@ -1459,6 +1493,8 @@
     }
   ],
   "Ruby Ring": [
+    "Ahkeli's Mountain",
+    "Ahkeli's Valley",
     "Emberwake",
     "Mokou's Embrace",
     {
@@ -1543,7 +1579,12 @@
     {
       "league": "Bloodlines",
       "name": "Tasalio's Sign"
-    }
+    },
+    "Uzaza's Meadow",
+    "Uzaza's Mountain"
+  ],
+  "Satin Gloves": [
+    "Demon Stitcher"
   ],
   "Scholar Boots": [
     "Shavronne's Pace"
@@ -1665,6 +1706,10 @@
       "name": "Atziri's Step"
     },
     {
+      "location": "Doryani's Machinarium",
+      "name": "Doryani's Delusion"
+    },
+    {
       "boss": "Farrul",
       "league": "Bestiary",
       "name": "Farrul's Chase"
@@ -1685,6 +1730,10 @@
     "Honourhome"
   ],
   "Sorcerer Boots": [
+    {
+      "location": "Doryani's Machinarium",
+      "name": "Doryani's Delusion"
+    },
     "Skyforth",
     {
       "league": "Warbands",
@@ -1844,7 +1893,11 @@
     }
   ],
   "Titan Greaves": [
-    "Kaom's Roots"
+    "Kaom's Roots",
+    {
+      "location": "Doryani's Machinarium",
+      "name": "Doryani's Delusion"
+    }
   ],
   "Titanium Spirit Shield": [
     "Rathpith Globe"
@@ -1861,6 +1914,8 @@
   ],
   "Topaz Ring": [
     "Kikazaru",
+    "Putembo's Meadow",
+    "Putembo's Valley",
     {
       "league": "Bloodlines",
       "name": "Valako's Sign"
@@ -1954,6 +2009,7 @@
     "Angler's Plait",
     "Essence Worm",
     "Malachai's Artifice",
+    "Mark of Submission",
     "The Hungry Loop",
     {
       "league": "Warbands",
@@ -2086,6 +2142,7 @@
     "Sudden Ignition",
     "Survival Instincts",
     "The Golden Rule",
+    "Unnatural Instinct",
     "Volley Fire",
     {
       "boss": "The Vaal Omnitect",

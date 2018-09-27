@@ -58,7 +58,6 @@ export class ConfigurationManager implements IDisposable {
     const soundWhitelist = config.get<string[]>("soundWhitelist");
     const modWhitelist = config.get<string[]>("modWhitelist");
     const performanceHints = config.get<boolean>("performanceHints");
-    const alwaysShowAlpha = config.get<boolean>("alwaysShowAlpha");
     const limitedModPool = config.get<boolean>("limitedModPool");
     const itemValueQuotes = config.get<boolean>("itemValueQuotes");
     const booleanQuotes = config.get<boolean>("booleanQuotes");
@@ -76,7 +75,6 @@ export class ConfigurationManager implements IDisposable {
       soundWhitelist: soundWhitelist ? soundWhitelist : [],
       modWhitelist: modWhitelist ? modWhitelist : [],
       performanceHints: performanceHints == null ? true : performanceHints,
-      alwaysShowAlpha: alwaysShowAlpha == null ? false : alwaysShowAlpha,
       limitedModPool: limitedModPool == null ? false : limitedModPool,
       itemValueQuotes: itemValueQuotes == null ? true : itemValueQuotes,
       booleanQuotes: booleanQuotes == null ? false : booleanQuotes,

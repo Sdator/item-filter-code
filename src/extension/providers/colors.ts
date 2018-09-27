@@ -61,10 +61,7 @@ export class FilterColorProvider implements vscode.DocumentColorProvider, IDispo
     const green = Math.trunc(color.green * 255);
     const blue = Math.trunc(color.blue * 255);
     const alpha = Math.trunc(color.alpha * 255);
-    const appendAlpha = alpha === 255 ? false : true;
-
-    let colorString = `${red} ${green} ${blue}`;
-    if (this._config.alwaysShowAlpha || appendAlpha) colorString += ` ${alpha}`;
+    const colorString = `${red} ${green} ${blue} ${alpha}`;
 
     result.push({
       label: "Color Picker",

@@ -87,7 +87,6 @@ export interface ConfigurationValues {
   soundWhitelist: string[];
   modWhitelist: string[];
   performanceHints: boolean;
-  alwaysShowAlpha: boolean;
   limitedModPool: boolean;
   itemValueQuotes: boolean;
   booleanQuotes: boolean;
@@ -104,7 +103,14 @@ export interface DefaultSoundInformation {
   range: Range;
 }
 
+export enum CustomSoundType {
+  Unknown = 0,
+  WAV = 1,
+  MP3 = 2
+}
+
 export interface CustomSoundInformation {
+  type: CustomSoundType;
   path: string;
   range: Range;
 }
@@ -142,4 +148,17 @@ export function isDefaultSoundInformation(info: SoundInformation):
   info is DefaultSoundInformation {
 
   return "identifier" in info;
+}
+
+export function extensionToSoundType(ext: string): CustomSoundType {
+  const value = ext.toLowerCase();
+
+  switch (value) {
+    case ".mp3":
+      return CustomSoundType.MP3;
+    case ".wav":
+      return CustomSoundType.WAV;
+    default:
+      return CustomSoundType.Unknown;
+  }
 }

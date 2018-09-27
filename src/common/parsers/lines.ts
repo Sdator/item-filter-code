@@ -1268,6 +1268,7 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
 
     if (exists) {
       line.result.sound = {
+        type: types.extensionToSoundType(extension),
         path: parse.value,
         range: parse.range
       };
@@ -1288,6 +1289,7 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
 
     if (exists) {
       line.result.sound = {
+        type: types.extensionToSoundType(extension),
         path: fullFilePath,
         range: parse.range
       };

@@ -2,7 +2,7 @@
   "name": "item-filter-code",
   "description": "Support for editing Path of Exile item filters within Visual Studio Code.",
   "displayName": "Item Filter Code",
-  "version": "1.14.2",
+  "version": "1.14.3",
   "author": "Glen Marker",
   "publisher": "GlenCFL",
   "license": "MIT",
@@ -153,13 +153,6 @@
             "description": "Whether to display performance hints within the editor.",
             "type": "boolean",
             "default": true,
-            "scope": "window"
-          },
-          "item-filter.alwaysShowAlpha": {
-            "title": "Always Show Alpha",
-            "description": "When using the color picker, output the alpha channel number for fully apparent colors.",
-            "type": "boolean",
-            "default": false,
             "scope": "window"
           },
           "item-filter.limitedModPool": {
