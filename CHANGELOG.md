@@ -2,6 +2,9 @@
 
 The history of changes to the extension.
 
+### Version 1.14.4 (September 27th, 2018)
+- Added the following missing item classes: `Small Relic`, `Medium Relics`, and `Large Relics`.
+
 ### Version 1.14.3 (September 27th, 2018)
 This release adds every new unique added alongside the Delve league, while also providing several minor bug fixes.
 
