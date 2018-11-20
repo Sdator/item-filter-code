@@ -8,11 +8,11 @@ import * as vscode from "vscode";
 
 import { registerPlaySound } from "./commands";
 import { DocumentRegistry } from "./registries/documents";
-import { EditorRegistry } from "./registries/editors";
+import { VisibleEditorRegistry } from "./registries/visible-editors";
 import { ConfigurationManager } from "./managers/configuration";
 import { ItemFilterManager } from "./managers/item-filters";
 import { SoundDecorationManager } from "./managers/sound-decorations";
-import { completionTriggerCharacters, FilterCompletionProvider } from "./providers/completions";
+import { completionTriggers, FilterCompletionProvider } from "./providers/completions";
 import { FilterDiagnosticsProvider } from "./providers/diagnostics";
 import { FilterHoverProvider } from "./providers/hovers";
 import { FilterColorProvider } from "./providers/colors";
@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext): void {
   registerPlaySound(context);
 
   const documentRegistry = new DocumentRegistry();
-  const editorRegistry = new EditorRegistry(documentRegistry);
+  const editorRegistry = new VisibleEditorRegistry(documentRegistry);
   const configManager = new ConfigurationManager();
   const filterManager = new ItemFilterManager(configManager, documentRegistry);
   const soundManager = new SoundDecorationManager(editorRegistry, filterManager);
@@ -46,7 +46,7 @@ export function activate(context: vscode.ExtensionContext): void {
     diagnosticProvider,
     colorProvider,
     vscode.languages.registerCompletionItemProvider(selector, completionProvider,
-      ...completionTriggerCharacters),
+      ...completionTriggers),
     vscode.languages.registerHoverProvider(selector, hoverProvider),
     vscode.languages.registerColorProvider(selector, colorProvider)
   );

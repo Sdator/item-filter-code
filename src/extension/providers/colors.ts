@@ -8,7 +8,7 @@ import * as vscode from "vscode";
 
 import { IDisposable } from "../../common/event-kit";
 import { ConfigurationValues } from "../../common/types";
-import { intoCodeColorInformation } from "../converters";
+import { colorInfo2CodeColorInfo } from "../converters";
 import { ConfigurationManager } from "../managers/configuration";
 import { ItemFilterManager } from "../managers/item-filters";
 
@@ -46,7 +46,7 @@ export class FilterColorProvider implements vscode.DocumentColorProvider, IDispo
     const payload = await filter.payload;
     const result: vscode.ColorInformation[] = [];
     for (const colorInfo of payload.colorInformation) {
-      result.push(intoCodeColorInformation(colorInfo));
+      result.push(colorInfo2CodeColorInfo(colorInfo));
     }
 
     return result;

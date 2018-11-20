@@ -21,7 +21,7 @@ import { dataOutputRoot, splitLines } from "../../common";
 import { IDisposable } from "../../common/event-kit";
 import * as contextParser from "../../common/parsers/context";
 import * as types from "../../common/types";
-import { intoCodeRange } from "../converters";
+import { range2CodeRange } from "../converters";
 import { ConfigurationManager } from "../managers/configuration";
 
 const itemData = <types.ItemData>require(path.join(dataOutputRoot, "items.json"));
@@ -34,7 +34,7 @@ const whitespaceRegex = /^\s*$/;
 const whitespaceCharacterRegex = /\s/;
 const spaceRegex = / /;
 
-export const completionTriggerCharacters = ['"', '\\'];
+export const completionTriggers = ['"', "\\"];
 
 export class FilterCompletionProvider implements vscode.CompletionItemProvider, IDisposable {
   private _config: types.ConfigurationValues;
@@ -253,7 +253,7 @@ function getClassCompletions(config: types.ConfigurationValues, pos: vscode.Posi
     } while (!contextParser.isNextValue(valueRange, pos));
 
     valueRange.end.character++;
-    pushCompletions(intoCodeRange(valueRange));
+    pushCompletions(range2CodeRange(valueRange));
   }
 
   return result;
@@ -315,7 +315,7 @@ function getBaseCompletions(config: types.ConfigurationValues, pos: vscode.Posit
     } while (!contextParser.isNextValue(valueRange, pos));
 
     valueRange.end.character++;
-    pushCompletions(intoCodeRange(valueRange));
+    pushCompletions(range2CodeRange(valueRange));
   }
 
   return result;
@@ -364,7 +364,7 @@ function getModCompletions(config: types.ConfigurationValues, pos: vscode.Positi
     } while (!contextParser.isNextValue(valueRange, pos));
 
     valueRange.end.character++;
-    pushCompletions(intoCodeRange(valueRange));
+    pushCompletions(range2CodeRange(valueRange));
   }
 
   return result;
@@ -397,7 +397,7 @@ function getMinimapIconCompletions(pos: vscode.Position, text: string,
 
     if (contextParser.isNextValue(range, pos)) {
       range.end.character++;
-      pushCompletions(intoCodeRange(range), sizeStrings);
+      pushCompletions(range2CodeRange(range), sizeStrings);
       return result;
     } else {
       range.end.character++;
@@ -418,7 +418,7 @@ function getMinimapIconCompletions(pos: vscode.Position, text: string,
 
     if (contextParser.isNextValue(range, pos)) {
       range.end.character++;
-      pushCompletions(intoCodeRange(range), filterData.minimapIcons.colors);
+      pushCompletions(range2CodeRange(range), filterData.minimapIcons.colors);
       return result;
     } else {
       range.end.character++;
@@ -439,7 +439,7 @@ function getMinimapIconCompletions(pos: vscode.Position, text: string,
 
     if (contextParser.isNextValue(range, pos)) {
       range.end.character++;
-      pushCompletions(intoCodeRange(range), filterData.minimapIcons.shapes);
+      pushCompletions(range2CodeRange(range), filterData.minimapIcons.shapes);
       return result;
     } else {
       range.end.character++;
@@ -476,7 +476,7 @@ function getPlayEffectCompletions(pos: vscode.Position, text: string,
 
     if (contextParser.isNextValue(range, pos)) {
       range.end.character++;
-      pushColorCompletions(intoCodeRange(range));
+      pushColorCompletions(range2CodeRange(range));
       return result;
     } else {
       range.end.character++;
@@ -500,7 +500,7 @@ function getPlayEffectCompletions(pos: vscode.Position, text: string,
       range.end.character++;
       result.push({
         label: "Temp",
-        range: intoCodeRange(range)
+        range: range2CodeRange(range)
       });
     }
   }
@@ -525,7 +525,7 @@ function getCustomSoundCompletions(config: types.ConfigurationValues, pos: vscod
     if (range != null && contextParser.isNextValue(range, pos)) {
       const currentFilePath = text.slice(range.start.character + 1, range.end.character);
       range.end.character++;
-      return getPathCompletions(config, currentFilePath, intoCodeRange(range), pos);
+      return getPathCompletions(config, currentFilePath, range2CodeRange(range), pos);
     }
   }
 
@@ -561,7 +561,7 @@ function getAlertSoundCompletions(config: types.ConfigurationValues, pos: vscode
     const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
     if (range != null && contextParser.isNextValue(range, pos)) {
       range.end.character++;
-      pushCompletions(intoCodeRange(range));
+      pushCompletions(range2CodeRange(range));
     }
   }
 
@@ -598,7 +598,7 @@ function getRarityCompletions(config: types.ConfigurationValues, pos: vscode.Pos
     } while (!contextParser.isNextValue(valueRange, pos));
 
     valueRange.end.character++;
-    pushCompletions(intoCodeRange(valueRange));
+    pushCompletions(range2CodeRange(valueRange));
   }
 
   return result;
@@ -624,7 +624,7 @@ function getBooleanCompletions(config: types.ConfigurationValues, pos: vscode.Po
     const range = contextParser.getNextValueRange(text, pos.line, valueIndex);
     if (range != null && contextParser.isNextValue(range, pos)) {
       range.end.character++;
-      pushCompletions(intoCodeRange(range));
+      pushCompletions(range2CodeRange(range));
     }
   }
 
@@ -640,7 +640,7 @@ function getPathCompletions(config: types.ConfigurationValues, text: string,
 
   let directory: string;
   let currentText: string;
-  if (croppedPath.charAt(croppedPath.length - 1) === '\\') {
+  if (croppedPath.charAt(croppedPath.length - 1) === "\\") {
     directory = croppedPath;
     currentText = "";
   } else {
@@ -655,7 +655,7 @@ function getPathCompletions(config: types.ConfigurationValues, text: string,
 
   for (const item of gameDataListings) {
     const extension = path.extname(item);
-    if (extension !== ".mp3" && extension != ".wav") {
+    if (extension !== ".mp3" && extension !== ".wav") {
       continue;
     }
 
@@ -682,7 +682,7 @@ function getPathCompletions(config: types.ConfigurationValues, text: string,
     return result;
   }
 
-  const hasSeparator = directory.charAt(directory.length - 1) === '\\';
+  const hasSeparator = directory.charAt(directory.length - 1) === "\\";
 
   const filesystemListings = fs.readdirSync(directory);
   for (const item of filesystemListings) {
@@ -707,7 +707,7 @@ function getPathCompletions(config: types.ConfigurationValues, text: string,
       }
     } else if (stats && stats.isFile()) {
       const extension = path.extname(item);
-      if (extension !== ".mp3" && extension != ".wav") {
+      if (extension !== ".mp3" && extension !== ".wav") {
         continue;
       }
 

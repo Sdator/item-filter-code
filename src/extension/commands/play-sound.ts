@@ -44,7 +44,7 @@ function playDefaultSound(identifier: string, volume: number) {
 }
 
 function playCustomSound(path: string): void {
-  const result = determinePlayer(path, 1.0)
+  const result = determinePlayer(path, 1);
 
   if (result) {
     const [player, args] = result;
@@ -76,7 +76,7 @@ function determinePlayer(soundPath: string, volumePercentage: number):
     } else if (availability) {
       player = "mpg123";
     } else {
-      return;
+      return undefined;
     }
 
     args = ["-q", "-f", `${scaledSamples}`, soundPath];
@@ -88,7 +88,7 @@ function determinePlayer(soundPath: string, volumePercentage: number):
     player = "afplay";
     args = ["-v", `${volume}`, soundPath];
   } else {
-    return;
+    return undefined;
   }
 
   return [player, args];

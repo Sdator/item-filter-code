@@ -10,7 +10,7 @@ import * as vscode from "vscode";
 import { assetRoot, dataOutputRoot, splitLines, stylizedArrayJoin } from "../../common";
 import * as types from "../../common/types";
 import * as contextParser from "../../common/parsers/context";
-import { intoCodeRange } from "../converters";
+import { range2CodeRange } from "../converters";
 
 const itemData = <types.ItemData>require(path.join(dataOutputRoot, "items.json"));
 const filterData = <types.FilterData>require(path.join(dataOutputRoot, "filter.json"));
@@ -39,7 +39,7 @@ export function getHoverResult(text: string, position: vscode.Position): vscode.
     const keywordDescription = filterData.keywordDescriptions[keyword];
 
     if (keywordDescription) {
-      return new vscode.Hover(keywordDescription, intoCodeRange(keywordRange));
+      return new vscode.Hover(keywordDescription, range2CodeRange(keywordRange));
     } else {
       return null;
     }
@@ -217,7 +217,7 @@ function getBaseTypeHover(position: vscode.Position, text: string, index: number
     }
   }
 
-  return new vscode.Hover(output, intoCodeRange(valueRange));
+  return new vscode.Hover(output, range2CodeRange(valueRange));
 }
 
 function getClassHover(position: vscode.Position, text: string, index: number):
@@ -288,7 +288,7 @@ function getClassHover(position: vscode.Position, text: string, index: number):
     output += `Items: \`${containedItems}\``;
   }
 
-  return new vscode.Hover(output, intoCodeRange(valueRange));
+  return new vscode.Hover(output, range2CodeRange(valueRange));
 }
 
 function getModHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
@@ -315,7 +315,7 @@ function getModHover(pos: vscode.Position, text: string, index: number): vscode.
 
   return new vscode.Hover(
     "The name of an explicit item mod, such as `Tyrannical`.",
-    intoCodeRange(valueRange)
+    range2CodeRange(valueRange)
   );
 }
 
@@ -336,7 +336,7 @@ function getSoundHover(pos: vscode.Position, text: string, index: number): vscod
       "from 1 to 16 or a string.\n\nThe only current sounds using a string identifier " +
       "would be those in the Shaper set, which includes identifiers such as `ShVaal` " +
       "and `ShMirror`.",
-      intoCodeRange(firstValueRange)
+      range2CodeRange(firstValueRange)
     );
     return result;
   }
@@ -348,7 +348,7 @@ function getSoundHover(pos: vscode.Position, text: string, index: number): vscod
     secondValueRange.end.character++;
     result = new vscode.Hover(
       "The volume level for the alert sound, which can be a number from 0 to 300.",
-      intoCodeRange(secondValueRange)
+      range2CodeRange(secondValueRange)
     );
   }
 
@@ -393,10 +393,10 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
       filterData.minimapIcons.shapes.includes(shape)) {
 
       const previewUri = vscode.Uri.file(path.join(assetRoot, "minimap-icons",
-        `${shape.toLowerCase()}_${color.toLowerCase()}_${size}.png`))
+        `${shape.toLowerCase()}_${color.toLowerCase()}_${size}.png`));
 
       previewText = "\n\nA preview of the shape at this size and color:" +
-        `\n\n![Minimap Icon Preview](${previewUri})`
+        `\n\n![Minimap Icon Preview](${previewUri})`;
     }
   }
 
@@ -407,14 +407,14 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
     const text = stylizedArrayJoin(filterData.minimapIcons.sizes, ", or ");
 
     let contents = `The size of the icon on the minimap, which can be ${text}. The ` +
-      "smallest value correlates to the largest icon size."
+      "smallest value correlates to the largest icon size.";
     if (previewText) {
       contents += previewText;
     }
 
     result = new vscode.Hover(
       previewText ? new vscode.MarkdownString(contents) : contents,
-      intoCodeRange(firstValueRange)
+      range2CodeRange(firstValueRange)
     );
     return result;
   }
@@ -425,14 +425,14 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
     secondValueRange.end.character++;
     const text = stylizedArrayJoin(filterData.minimapIcons.colors, ", or ");
 
-    let contents = `The color of the icon on the minimap, which can be ${text}.`
+    let contents = `The color of the icon on the minimap, which can be ${text}.`;
     if (previewText) {
       contents += previewText;
     }
 
     result = new vscode.Hover(
       previewText ? new vscode.MarkdownString(contents) : contents,
-      intoCodeRange(secondValueRange)
+      range2CodeRange(secondValueRange)
     );
     return result;
   }
@@ -448,7 +448,7 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
 
     result = new vscode.Hover(
       previewText ? new vscode.MarkdownString(contents) : contents,
-      intoCodeRange(thirdValueRange)
+      range2CodeRange(thirdValueRange)
     );
   }
 
@@ -472,7 +472,7 @@ function getPlayEffectHover(pos: vscode.Position, text: string, index: number):
     const text = stylizedArrayJoin(filterData.dropEffects.colors, ", or ");
     result = new vscode.Hover(
       `The color of the beam of light overtop of the item, which can be ${text}.`,
-      intoCodeRange(firstValueRange)
+      range2CodeRange(firstValueRange)
     );
     return result;
   }
@@ -487,7 +487,7 @@ function getPlayEffectHover(pos: vscode.Position, text: string, index: number):
     result = new vscode.Hover(
       "The use of Temp results in the item drop effect only temporarily being visible" +
       " as the item is dropping to the ground.",
-      intoCodeRange(secondValueRange)
+      range2CodeRange(secondValueRange)
     );
     return result;
   }
@@ -624,7 +624,7 @@ function getSingleValueHover(pos: vscode.Position, text: string, index: number, 
 
     if (valueRange != null && contextParser.isNextValue(valueRange, pos)) {
       valueRange.end.character++;
-      result = new vscode.Hover(contents, intoCodeRange(valueRange));
+      result = new vscode.Hover(contents, range2CodeRange(valueRange));
     }
   }
 
@@ -654,5 +654,5 @@ function getRepeatingValueHover(pos: vscode.Position, text: string, index: numbe
 
   valueRange.end.character++;
 
-  return new vscode.Hover(contents, intoCodeRange(valueRange));
+  return new vscode.Hover(contents, range2CodeRange(valueRange));
 }

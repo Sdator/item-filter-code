@@ -7,7 +7,7 @@
 import * as vscode from "vscode";
 
 import { CompositeDisposable, IDisposable } from "../../common/event-kit";
-import { intoCodeDiagnostic } from "../converters";
+import { diagnostic2CodeDiagnostic } from "../converters";
 import * as ifm from "../managers/item-filters";
 
 export class FilterDiagnosticsProvider implements IDisposable {
@@ -36,7 +36,7 @@ export class FilterDiagnosticsProvider implements IDisposable {
 
     const diagnostics: vscode.Diagnostic[] = [];
     for (const filterDiagnostic of result.diagnostics) {
-      diagnostics.push(intoCodeDiagnostic(filterDiagnostic));
+      diagnostics.push(diagnostic2CodeDiagnostic(filterDiagnostic));
     }
 
     // This filter may have been removed as we were processing the changes.

@@ -44,6 +44,7 @@
     "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
+    "@glencfl/tslint-config": "^1.6.0",
     "@types/chai": "^4.1.4",
     "@types/chai-as-promised": "^7.1.0",
     "@types/fs-extra": "^5.0.4",
@@ -51,14 +52,14 @@
     "@types/lodash.debounce": "^4.0.4",
     "@types/mkdirp": "^0.5.2",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.9.2",
+    "@types/node": "^10.12.9",
     "@types/rimraf": "^2.0.2",
-    "@types/sinon": "^5.0.1",
-    "@types/sinon-chai": "^3.2.0",
+    "@types/sinon": "^5.0.7",
+    "@types/sinon-chai": "^3.2.1",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
-    "decache": "^4.4.0",
-    "fs-extra": "^7.0.0",
+    "decache": "^4.5.0",
+    "fs-extra": "^7.0.1",
     "istanbul": "^0.4.5",
     "mkdirp": "^0.5.1",
     "mocha": "^5.2.0",
@@ -68,9 +69,7 @@
     "sinon": "^6.1.5",
     "sinon-chai": "^3.2.0",
     "ts-node": "^7.0.1",
-    "tslint": "^5.10.0",
-    "tsutils": "^2.27.2",
-    "typescript": "^2.9.2",
+    "typescript": "^3.1.6",
     "vscode": "^1.1.21"
   },
   "engines": {
@@ -206,7 +205,7 @@
           },
           "item-filter.verifyCustomSounds": {
             "title": "Verify Custom Alert Sounds",
-            "description": "Whether to validate the existance of all files provided as the value to CustomAlertSound rules. Only applicable when using Windows.",
+            "description": "Whether to validate the existence of all files provided as the value to CustomAlertSound rules. Only applicable when using Windows.",
             "type": "boolean",
             "default": true,
             "scope": "window"

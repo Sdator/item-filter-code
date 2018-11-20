@@ -5,4 +5,4 @@
  * ===========================================================================*/
 
 export * from "./documents";
-export * from "./editors";
+export * from "./visible-editors";

@@ -39,11 +39,11 @@ SetTextColor | Equals | 3-4 integers in the [0-255] range. | Yes | No
 SetBackgroundColor | Equals | 3-4 integers in the [0-255] range. | Yes | No
 PlayAlertSound | Equals | A Word or an integer in the [1-16] range, followed by an optional integer in the [0-300] range. | Yes | Yes
 PlayAlertSoundPositional | Equals | A Word or an integer in the [1-16] range, followed by an optional integer in the [0-300] range. | Yes | Yes
-CustomAlertSound | Equals | A quoted string. | ??? | Yes
+CustomAlertSound | Equals | A quoted string. | Yes | Yes
 SetFontSize | Equals | An integer in the [16-50] range. | No | No
 DisableDropSound | Equals | Ignored | Yes | No
-MinimapIcon | Equals | An integer followed two words. | ??? | ???
-PlayEffect | Equals | A word. | ??? | ???
+MinimapIcon | Equals | An integer followed two words. | No | Yes
+PlayEffect | Equals | A word. | No | Yes
 
 > Integer: a numerical value that can optionally be surrounded by quotation marks.
 
@@ -61,4 +61,4 @@ PlayEffect | Equals | A word. | ??? | ???
 - The `LinkedSockets` value can actually be zero, but this is misleading and doesn't work as expected in-game.
 - The `SetFontSize` rule does not take multiple values and has a specialized error when multiple are provided.
 - The value of the `DisableDropSound` rule is completely ignored. The rule being present within a block will always disable the drop sound.
-- There is a lot of oddity surrounding Elder and Shaper items in-game. They seem to disable certain other attributes within item filters, like `Quality`.
+- The second value for the `PlayEffect` rule can technically be anything, but only `Temp` has an impact within the game.

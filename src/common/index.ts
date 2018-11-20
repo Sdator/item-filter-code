@@ -57,7 +57,7 @@ export function equalArrays<T>(lha: T[], rha: T[]): boolean {
 }
 
 /**
- * Returns the ordinal representation of the given number. For example, the oridinal
+ * Returns the ordinal representation of the given number. For example, the ordinal
  * representation of `1` would be `1st`.
  */
 export function getOrdinal(n: number): string {
@@ -73,7 +73,7 @@ export function splitLines(text: string): string[] {
 }
 
 /**
- * Splits the given text into lines, while preserving the linebreak at the end
+ * Splits the given text into lines, while preserving the line break at the end
  * of each of those lines. Only supports LF and CRLF.
  * @param text The text to be split into lines.
  * @return The lines contained within the text.

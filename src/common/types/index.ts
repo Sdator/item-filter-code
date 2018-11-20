@@ -26,6 +26,30 @@ export interface Range {
   end: Position;
 }
 
+/** Represents a selection of text on a single line. */
+export interface Span {
+  /** The zero-based start index for the selection. */
+  start: number;
+
+  /** The zero-based end index for the selection. */
+  end: number;
+}
+
+/** Represents an entity within an item filter. */
+export interface Token {
+  /** The text of the entity. */
+  text: string;
+
+  /** The span of this token within the original line text. */
+  span: Span;
+}
+
+/** Represents an invalid entity within an item filter. */
+export interface ErrorToken extends Token {
+  /** An error message detailing the reasoning the token is invalid. */
+  error: string;
+}
+
 /** Represents a color in RGBA space. */
 export interface Color {
   /** The red component of this color in the range [0-1]. */
@@ -73,7 +97,7 @@ export interface Diagnostic {
 
 /** Represents a color range from a document. */
 export interface ColorInformation {
-  /** The range in the document where this color appers. */
+  /** The range in the document where this color appears. */
   range: Range;
 
   /** The actual color value for this color range. */

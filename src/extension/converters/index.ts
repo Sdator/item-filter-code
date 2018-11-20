@@ -13,7 +13,7 @@ import * as types from "../../common/types";
  * Converts a position from our own representation into the VSCode type.
  * @param position A position received as part of the result of a parse.
  */
-export function intoCodePosition(position: types.Position): vscode.Position {
+export function position2CodePosition(position: types.Position): vscode.Position {
   return new vscode.Position(position.line, position.character);
 }
 
@@ -21,19 +21,27 @@ export function intoCodePosition(position: types.Position): vscode.Position {
  * Converts a range from our own representation into the VSCode type.
  * @param range A range received as part of the result of a parse.
  */
-export function intoCodeRange(range: types.Range) {
-  return new vscode.Range(intoCodePosition(range.start), intoCodePosition(range.end));
+export function range2CodeRange(range: types.Range) {
+  return new vscode.Range(position2CodePosition(range.start), position2CodePosition(range.end));
+}
+
+/**
+ * Converts a span into a VSCode Range.
+ * @param span A span received as part of the result of a parse.
+ */
+export function span2CodeRange(span: types.Span, line: number) {
+  return new vscode.Range(line, span.start, line, span.end);
 }
 
 /**
  * Converts a diagnostic from our own representation into the VSCode type.
  * @param diagnostic A diagnostic received as part of the result of a parse.
  */
-export function intoCodeDiagnostic(diagnostic: types.Diagnostic): vscode.Diagnostic {
+export function diagnostic2CodeDiagnostic(diagnostic: types.Diagnostic): vscode.Diagnostic {
   return new vscode.Diagnostic(
-    intoCodeRange(diagnostic.range),
+    range2CodeRange(diagnostic.range),
     diagnostic.message,
-    intoCodeDiagnosticSeverity(diagnostic.severity)
+    diagSeverity2CodeDiagSeverity(diagnostic.severity)
   );
 }
 
@@ -41,7 +49,7 @@ export function intoCodeDiagnostic(diagnostic: types.Diagnostic): vscode.Diagnos
  * Converts a diagnostic severity from our own representation into the VSCode type.
  * @param severity A diagnostic severity received as part of the result of a parse.
  */
-export function intoCodeDiagnosticSeverity(severity: types.DiagnosticSeverity | undefined):
+export function diagSeverity2CodeDiagSeverity(severity: types.DiagnosticSeverity | undefined):
   vscode.DiagnosticSeverity | undefined {
 
   if (severity == null) {
@@ -66,7 +74,7 @@ export function intoCodeDiagnosticSeverity(severity: types.DiagnosticSeverity | 
  * Converts a color from our own representation into the VSCode type.
  * @param color A color received as part of the result of a parse.
  */
-export function intoCodeColor(color: types.Color): vscode.Color {
+export function color2CodeColor(color: types.Color): vscode.Color {
   return new vscode.Color(color.red, color.green, color.blue, color.alpha);
 }
 
@@ -74,9 +82,9 @@ export function intoCodeColor(color: types.Color): vscode.Color {
  * Converts color information from our own representation into the VSCode type.
  * @param colorInfo Color information received as part of the result of a parse.
  */
-export function intoCodeColorInformation(colorInfo: types.ColorInformation):
+export function colorInfo2CodeColorInfo(colorInfo: types.ColorInformation):
   vscode.ColorInformation {
 
-  return new vscode.ColorInformation(intoCodeRange(colorInfo.range),
-    intoCodeColor(colorInfo.color));
+  return new vscode.ColorInformation(range2CodeRange(colorInfo.range),
+    color2CodeColor(colorInfo.color));
 }

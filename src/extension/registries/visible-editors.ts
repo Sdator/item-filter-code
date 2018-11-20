@@ -30,7 +30,7 @@ interface Emissions {
  * list of those text editors and the ability to subscribe to several events
  * involving them.
  */
-export class EditorRegistry implements IDisposable {
+export class VisibleEditorRegistry implements IDisposable {
   private readonly _documentRegistry: DocumentRegistry;
   private readonly _editors: Set<vscode.TextEditor>;
   private readonly _emitter: Emitter<Emissions>;

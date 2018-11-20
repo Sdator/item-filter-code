@@ -26,6 +26,7 @@ export interface TokenParseResult<T> {
 
 /** Parses item filter tokens from a line. */
 export class TokenParser {
+  // TODO(glen): privatize these properties.
   text: string;
   readonly originalLength: number;
   readonly row: number;

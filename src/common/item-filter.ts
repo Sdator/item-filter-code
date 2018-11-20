@@ -9,7 +9,7 @@ import * as path from "path";
 
 import * as types from "./types";
 import { dataOutputRoot, getOrdinal, splitLines } from ".";
-import { isKeywordedParseLineResult, KeywordedParseLineResult, LineParser } from "./parsers/lines";
+import { isKeywordParseLineResult, KeywordParseLineResult, LineParser } from "./parsers/lines";
 
 const filterData = <types.FilterData>require(path.join(dataOutputRoot, "filter.json"));
 
@@ -62,7 +62,7 @@ export class ItemFilter {
       const parser = new LineParser(config, filterContext, blockContext);
       const parse = parser.parse(line, i);
 
-      if (isKeywordedParseLineResult(parse)) {
+      if (isKeywordParseLineResult(parse)) {
         if (parse.knownKeyword) {
           performBlockDiagnostics(filterContext, blockContext, parse);
         }
@@ -88,7 +88,7 @@ export class ItemFilter {
 }
 
 function performBlockDiagnostics(filterContext: FilterContext, blockContext: BlockContext,
-  parse: KeywordedParseLineResult) {
+  parse: KeywordParseLineResult) {
 
   if (parse.keyword === "Show" || parse.keyword === "Hide") {
     filterContext.blockFound = true;

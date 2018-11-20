@@ -7,7 +7,7 @@
 import * as types from "../types";
 
 /** Returns the operator type that correlates to the given text, if any. */
-export function intoFilterOperator(text: string): types.FilterOperator | undefined {
+export function text2FilterOperator(text: string): types.FilterOperator | undefined {
   switch (text) {
     case "=":
       return types.FilterOperator.Equals;

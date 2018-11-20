@@ -167,7 +167,7 @@ export function getCharacterIndexForPosition(text: string, position: Position): 
 /**
  * A high-performance, forward-iterating token parser. This class is designed
  * to facilitate the creation of top-down item filter parsers.
-*/
+ */
 export class TokenParser implements ITokenParser {
   private readonly _text: string;
   private readonly _startPosition: Position;
@@ -189,13 +189,13 @@ export class TokenParser implements ITokenParser {
    * @return A boolean indicating whether the next token is a number.
    */
   isNumber(): boolean {
-    let result = this._parseToken();
+    const result = this._parseToken();
 
     if (!result) {
       return false;
     }
 
-    let [_, token] = result;
+    const [_, token] = result;
     for (let i = 0; i < token.length; i++) {
       const ch = token.charCodeAt(i);
 
@@ -212,13 +212,13 @@ export class TokenParser implements ITokenParser {
    * @return A boolean indicating whether the next token is a boolean.
    */
   isBoolean(): boolean {
-    let result = this._parseToken();
+    const result = this._parseToken();
 
     if (!result) {
       return false;
     }
 
-    let [_, token] = result;
+    const [_, token] = result;
     if (token === "True" || token === "False" || token === '"True"' || token === '"False"') {
       return true;
     } else {
@@ -231,13 +231,13 @@ export class TokenParser implements ITokenParser {
    * @return A boolean indicating whether the next token is an operator.
    */
   isOperator(): boolean {
-    let result = this._parseToken();
+    const result = this._parseToken();
 
     if (!result) {
       return false;
     }
 
-    let [_, token] = result;
+    const [_, token] = result;
     if (token.length === 1) {
       const ch = token.charCodeAt(0);
 

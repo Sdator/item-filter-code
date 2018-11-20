@@ -8,8 +8,8 @@ import * as vscode from "vscode";
 
 import { CompositeDisposable, IDisposable } from "../../common/event-kit";
 import { isDefaultSoundInformation, CustomSoundType, SoundInformation } from "../../common/types";
-import { EditorRegistry } from "../registries/editors";
-import { intoCodeRange } from "../converters";
+import { VisibleEditorRegistry } from "../registries/visible-editors";
+import { range2CodeRange } from "../converters";
 import { ItemFilterManager, FilterChangedEvent } from "./item-filters";
 import { PlayDefaultSoundOptions, PlayCustomSoundOptions } from "../types";
 
@@ -20,11 +20,11 @@ import { PlayDefaultSoundOptions, PlayCustomSoundOptions } from "../types";
 export class SoundDecorationManager implements IDisposable {
   private readonly _cache: Map<string, vscode.DecorationOptions[]>;
   private readonly _decorationType: vscode.TextEditorDecorationType;
-  private readonly _editorRegistry: EditorRegistry;
+  private readonly _editorRegistry: VisibleEditorRegistry;
   private readonly _filterManager: ItemFilterManager;
   private readonly _subscriptions: CompositeDisposable;
 
-  constructor(editorRegistry: EditorRegistry, filterManager: ItemFilterManager) {
+  constructor(editorRegistry: VisibleEditorRegistry, filterManager: ItemFilterManager) {
     this._cache = new Map();
     this._editorRegistry = editorRegistry;
     this._filterManager = filterManager;
@@ -144,7 +144,7 @@ export class SoundDecorationManager implements IDisposable {
       markdownString.isTrusted = true;
 
       const decoration: vscode.DecorationOptions = {
-        range: intoCodeRange(sound.range),
+        range: range2CodeRange(sound.range),
         hoverMessage: markdownString
       };
 

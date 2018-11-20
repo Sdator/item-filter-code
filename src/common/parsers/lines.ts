@@ -11,7 +11,7 @@ import * as path from "path";
 
 import * as types from "../types";
 import { assertUnreachable, dataOutputRoot, stylizedArrayJoin } from "..";
-import { intoFilterOperator } from "../converters";
+import { text2FilterOperator } from "../converters";
 import { TokenParser, TokenParseResult } from "./tokens";
 import { isAlphabetical, CharacterCodes } from "../parsers-nextgen";
 
@@ -39,7 +39,7 @@ export interface BaseParseLineResult {
 }
 
 /** The result of parsing an item filter line containing a keyword. */
-export interface KeywordedParseLineResult extends BaseParseLineResult {
+export interface KeywordParseLineResult extends BaseParseLineResult {
   /** The keyword of the parsed line. */
   keyword: string;
 
@@ -50,12 +50,12 @@ export interface KeywordedParseLineResult extends BaseParseLineResult {
   knownKeyword: boolean;
 }
 
-export type ParseLineResult = BaseParseLineResult | KeywordedParseLineResult;
+export type ParseLineResult = BaseParseLineResult | KeywordParseLineResult;
 
 /** A bundle of all data relevant when dealing with the current line. */
 export interface LineInformation {
   /** The ongoing result of parsing the current line. */
-  result: KeywordedParseLineResult;
+  result: KeywordParseLineResult;
 
   /** The configuration variables for the extension. */
   config: types.ConfigurationValues;
@@ -99,8 +99,8 @@ export class LineParser {
       return baseResult;
     }
 
-    const keywordResult = parser.nextWord();
-    if (!keywordResult) {
+    const wordResult = parser.nextWord();
+    if (!wordResult) {
       baseResult.diagnostics.push({
         message: "Unreadable keyword, likely due to a stray character.",
         range: baseResult.lineRange,
@@ -109,24 +109,24 @@ export class LineParser {
       return baseResult;
     }
 
-    const keywordedResult: KeywordedParseLineResult = {
+    const keywordResult: KeywordParseLineResult = {
       row,
       lineRange: baseResult.lineRange,
       diagnostics: baseResult.diagnostics,
-      keyword: keywordResult.value,
-      keywordRange: keywordResult.range,
+      keyword: wordResult.value,
+      keywordRange: wordResult.range,
       knownKeyword: true,
     };
 
     const lineInfo: LineInformation = {
-      result: keywordedResult,
+      result: keywordResult,
       config: this._config,
       filterContext: this._filterContext,
       blockContext: this._blockContext,
       parser,
     };
 
-    switch (keywordedResult.keyword) {
+    switch (keywordResult.keyword) {
       case "Show":
       case "Hide":
         parseBlock(lineInfo);
@@ -193,14 +193,14 @@ export class LineParser {
       default:
         let whitelistedKeyword = false;
         for (const wlr of this._config.ruleWhitelist) {
-          if (keywordedResult.keyword === wlr) whitelistedKeyword = true;
+          if (keywordResult.keyword === wlr) whitelistedKeyword = true;
         }
 
-        keywordedResult.knownKeyword = false;
+        keywordResult.knownKeyword = false;
         if (!whitelistedKeyword) reportUnknownKeyword(lineInfo);
     }
 
-    return keywordedResult;
+    return keywordResult;
   }
 }
 
@@ -256,7 +256,7 @@ function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): vo
 
   let operatorType: types.FilterOperator;
   if (operatorResult) {
-    const operator = intoFilterOperator(operatorResult.value);
+    const operator = text2FilterOperator(operatorResult.value);
     if (operator === undefined) {
       line.result.diagnostics.push({
         message: `Unknown operator for a ${line.result.keyword} rule.`,
@@ -308,7 +308,7 @@ function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): vo
         opReported = true;
       }
 
-      validateNumber(line, valueResult, ruleRange.min, ruleRange.max)
+      validateNumber(line, valueResult, ruleRange.min, ruleRange.max);
       parsedValues++;
     } else {
       if (parsedValues === 0 && line.result.diagnostics.length === 0) {
@@ -355,7 +355,7 @@ function parseRarityRule(line: LineInformation): void {
 
   let operatorType: types.FilterOperator;
   if (operatorResult) {
-    const operator = intoFilterOperator(operatorResult.value);
+    const operator = text2FilterOperator(operatorResult.value);
     if (operator === undefined) {
       line.result.diagnostics.push({
         message: `Unknown operator for a ${line.result.keyword} rule.`,
@@ -422,7 +422,7 @@ function parseSocketGroupRule(line: LineInformation): void {
 
   let operatorType: types.FilterOperator;
   if (operatorResult) {
-    const operator = intoFilterOperator(operatorResult.value);
+    const operator = text2FilterOperator(operatorResult.value);
     if (operator === undefined) {
       line.result.diagnostics.push({
         message: `Unknown operator for a ${line.result.keyword} rule.`,
@@ -909,7 +909,7 @@ function parseClassRule(line: LineInformation) {
 }
 
 function parseBaseTypeRule(line: LineInformation) {
-  // This function is the hotpath of the entire language server. Validating
+  // This function is the hot path of the entire extension. Validating
   // values naively requires you to look through potentially 2,000 values
   // in order to find the match. We currently use two techniques to get that
   // number down as low as possible in the majority of cases, though sometimes
@@ -1111,8 +1111,8 @@ function parseModRule(line: LineInformation): void {
   }
 }
 
-export function isKeywordedParseLineResult(obj: object): obj is KeywordedParseLineResult {
-  return (<KeywordedParseLineResult>obj).keyword != null;
+export function isKeywordParseLineResult(obj: object): obj is KeywordParseLineResult {
+  return (<KeywordParseLineResult>obj).keyword != null;
 }
 
 function expectNumber(line: LineInformation, quoted = true): void {
@@ -1121,12 +1121,7 @@ function expectNumber(line: LineInformation, quoted = true): void {
   const min = rangeLimits.min;
   const max = rangeLimits.max;
 
-  let numberResult: TokenParseResult<string> | TokenParseResult<number> | undefined;
-  if (quoted) {
-    numberResult = line.parser.nextString();
-  } else {
-    numberResult = line.parser.nextNumber();
-  }
+  const numberResult = quoted ? line.parser.nextString() : line.parser.nextNumber();
 
   if (numberResult) {
     validateNumber(line, numberResult, min, max);
@@ -1141,8 +1136,6 @@ function expectNumber(line: LineInformation, quoted = true): void {
       severity: types.DiagnosticSeverity.Error
     });
   }
-
-  return undefined;
 }
 
 function reportUnknownKeyword(line: LineInformation): void {
@@ -1246,7 +1239,7 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
       range: parse.range
     });
     return;
-  } else if (extension !== ".mp3" && extension != ".wav") {
+  } else if (extension !== ".mp3" && extension !== ".wav") {
     line.result.diagnostics.push({
       message: `Invalid value for a ${line.result.keyword} rule.` +
         " Expected the file to end with either '.mp3' or '.wav'.",
@@ -1307,8 +1300,8 @@ function verifyFilesExistence(line: LineInformation, parse: TokenParseResult<str
 function validateNumber(line: LineInformation, parse: TokenParseResult<string> |
   TokenParseResult<number>, min: number, max: number): void {
 
-  let message = `Invalid value for a ${line.result.keyword} rule. Valid values ` +
-    `are between ${min} and ${max}.`
+  const message = `Invalid value for a ${line.result.keyword} rule. Valid values ` +
+    `are between ${min} and ${max}.`;
 
   let parsedValue: number;
   if (typeof parse.value === "string") {
@@ -1326,7 +1319,7 @@ function validateNumber(line: LineInformation, parse: TokenParseResult<string> |
       }
     }
 
-    parsedValue = parseInt(parse.value);
+    parsedValue = parseInt(parse.value, 10);
   } else {
     parsedValue = parse.value;
   }
