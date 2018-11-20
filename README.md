@@ -34,6 +34,10 @@ This will install `mpg123` into a location that will be within your `PATH` varia
 
 Issues filed on the [Github tracker](https://github.com/GlenCFL/item-filter-code/issues) will be resolved in a quick and timely manner. If you have a feature request, those are welcome on the tracker as well.
 
-### Contributions
+### Developer References
 
-The [Milestones](https://github.com/GlenCFL/item-filter-code/milestones) page is a good place to find ways to contribute.
+Several references are maintained by this project, which provide information on the implementation of item filters within the Path of Exile client.
+
+- [Notes](https://github.com/GlenCFL/item-filter-code/blob/master/docs/notes.md) - any tidbit of information deemed to be important to understanding item filters and the rules governing the display of item drops within the client.
+- [Syntax](https://github.com/GlenCFL/item-filter-code/blob/master/docs/syntax.md) - extensive, organized information on the syntax of item filters.
+- [Whitespace](https://github.com/GlenCFL/item-filter-code/blob/master/docs/whitespace.md) - details how the game interprets various unicode whitespace characters.
