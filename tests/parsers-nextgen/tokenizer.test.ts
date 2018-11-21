@@ -4,6 +4,7 @@
  * license information.
  * ===========================================================================*/
 
+import { Position } from "../../src/types";
 import * as Parser from "../../src/parsers-nextgen/tokens";
 
 describe("isTokenSeparatingWhitespace", () => {
@@ -199,74 +200,74 @@ describe("isValidWordCharacter", () => {
 });
 
 describe("getCharacterIndexForPosition", () => {
-  // test("correctly handles positions with a one-line string", () => {
-  //   const idx = Parser.getCharacterIndexForPosition(" abc ", { line: 0, character: 1 });
-  //   assert.strictEqual(idx, 1);
-  // });
+  test("correctly handles positions with a one-line string", () => {
+    const idx = Parser.getCharacterIndexForPosition(" abc ", { line: 0, character: 1 });
+    expect(idx).toStrictEqual(1);
+  });
 
-  // test("correctly handles positions with a two-line string", () => {
-  //   const str = "1234\n5678";
-  //   const p1: Position = { line: 0, character: 2 };
-  //   const p2: Position = { line: 1, character: 2 };
+  test("correctly handles positions with a two-line string", () => {
+    const str = "1234\n5678";
+    const p1: Position = { line: 0, character: 2 };
+    const p2: Position = { line: 1, character: 2 };
 
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p1), 2);
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p2), 7);
-  // });
+    expect(Parser.getCharacterIndexForPosition(str, p1)).toStrictEqual(2);
+    expect(Parser.getCharacterIndexForPosition(str, p2)).toStrictEqual(7);
+  });
 
-  // test("correctly handles positions with a multi-line string", () => {
-  //   const str = "12\n34\n567\n789";
-  //   const p1: Position = { line: 0, character: 1 };
-  //   const p2: Position = { line: 1, character: 1 };
-  //   const p3: Position = { line: 2, character: 2 };
+  test("correctly handles positions with a multi-line string", () => {
+    const str = "12\n34\n567\n789";
+    const p1: Position = { line: 0, character: 1 };
+    const p2: Position = { line: 1, character: 1 };
+    const p3: Position = { line: 2, character: 2 };
 
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p1), 1);
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p2), 4);
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p3), 8);
-  // });
+    expect(Parser.getCharacterIndexForPosition(str, p1)).toStrictEqual(1);
+    expect(Parser.getCharacterIndexForPosition(str, p2)).toStrictEqual(4);
+    expect(Parser.getCharacterIndexForPosition(str, p3)).toStrictEqual(8);
+  });
 
-  // test("correctly handles CRLF line endings", () => {
-  //   const str = "12\r\n34\r\n567";
-  //   const p1: Position = { line: 0, character: 1 };
-  //   const p2: Position = { line: 1, character: 1 };
-  //   const p3: Position = { line: 2, character: 2 };
+  test("correctly handles CRLF line endings", () => {
+    const str = "12\r\n34\r\n567";
+    const p1: Position = { line: 0, character: 1 };
+    const p2: Position = { line: 1, character: 1 };
+    const p3: Position = { line: 2, character: 2 };
 
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p1), 1);
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p2), 5);
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p3), 10);
-  // });
+    expect(Parser.getCharacterIndexForPosition(str, p1)).toStrictEqual(1);
+    expect(Parser.getCharacterIndexForPosition(str, p2)).toStrictEqual(5);
+    expect(Parser.getCharacterIndexForPosition(str, p3)).toStrictEqual(10);
+  });
 
-  // test("correctly handles EOL positions", () => {
-  //   const str = "1234\r\n";
-  //   const p1: Position = { line: 0, character: 4 };
-  //   const p2: Position = { line: 0, character: 5 };
+  test("correctly handles EOL positions", () => {
+    const str = "1234\r\n";
+    const p1: Position = { line: 0, character: 4 };
+    const p2: Position = { line: 0, character: 5 };
 
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p1), 4);
-  //   assert.strictEqual(Parser.getCharacterIndexForPosition(str, p2), 5);
-  // });
+    expect(Parser.getCharacterIndexForPosition(str, p1)).toStrictEqual(4);
+    expect(Parser.getCharacterIndexForPosition(str, p2)).toStrictEqual(5);
+  });
 
-  // test("throws when given a character index falling on another line", () => {
-  //   assert.throws(() => {
-  //     const str = "12\n34";
-  //     const pos: Position = { line: 0, character: 3};
+  test("throws when given a character index falling on another line", () => {
+    expect(() => {
+      const str = "12\n34";
+      const pos: Position = { line: 0, character: 3 };
 
-  //     Parser.getCharacterIndexForPosition(str, pos);
-  //   }, "character index of '3' does not fall on line '0'");
-  // });
+      Parser.getCharacterIndexForPosition(str, pos);
+    }).toThrow("character index of '3' does not fall on line '0'");
+  });
 
-  // test("throws when given an off-the-end character position", () => {
-  //   assert.throws(() => {
-  //     const str = "12";
-  //     const pos: Position = { line: 0, character: 2 };
+  test("throws when given an off-the-end character position", () => {
+    expect(() => {
+      const str = "12";
+      const pos: Position = { line: 0, character: 2 };
 
-  //     Parser.getCharacterIndexForPosition(str, pos);
-  //   }, "character index of '2' exceeds the line's max index of '1'");
-  // });
+      Parser.getCharacterIndexForPosition(str, pos);
+    }).toThrow("character index of '2' exceeds the line's max index of '1'");
+  });
 
-  // test("throws when given an off-the-end line position", () => {
-  //   assert.throws(() => {
-  //     Parser.getCharacterIndexForPosition("", { line: 1, character: 0 });
-  //   }, "line '1' exceeds text's maximum of '0'");
-  // });
+  test("throws when given an off-the-end line position", () => {
+    expect(() => {
+      Parser.getCharacterIndexForPosition("", { line: 1, character: 0 });
+    }).toThrow("line '1' exceeds text's maximum of '0'");
+  });
 });
 
 describe("ItemFilterTokenizer", () => {
