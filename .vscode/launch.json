@@ -2,8 +2,8 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Extension",
       "type": "extensionHost",
+      "name": "Debug Extension",
       "request": "launch",
       "runtimeExecutable": "${execPath}",
       "args": [
@@ -16,19 +16,15 @@
       ]
     },
     {
-      "name": "Launch Tests",
-      "type": "extensionHost",
+      "type": "node",
+      "name": "Debug Tests",
       "request": "launch",
-      "runtimeExecutable": "${execPath}",
+      "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+      "cwd": "${workspaceFolder}",
       "args": [
-        "${workspaceFolder}/src/test",
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/test"
-      ],
-      "stopOnEntry": false,
-      "sourceMaps": true,
-      "outFiles": [
-        "${workspaceFolder}/out/**/*.js"
+        "--i",
+        "--config",
+        "jest.json"
       ]
     }
   ]

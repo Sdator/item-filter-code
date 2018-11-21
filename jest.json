@@ -1,0 +1,7 @@
+{
+  "moduleFileExtensions": ["ts", "js", "json"],
+  "transform": {
+    "^.+\\.ts$": "<rootDir>/tasks/preprocess.js"
+  },
+  "testRegex": "tests/.*\\.ts$"
+}
