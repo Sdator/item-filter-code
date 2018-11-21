@@ -4,18 +4,22 @@
  * license information.
  * ===========================================================================*/
 
-import { NewSoundInformation, DefaultSoundInformation } from "../types";
+import { SoundInformation, DefaultSoundInformation } from "../types";
+import { IDisposable } from "../kits/events";
 
 /** Determines whether the given entity is an Error. */
-// tslint:disable-next-line:no-any
-export function isError(entity: any): entity is Error {
-  if (entity != null && entity instanceof Error) return true;
-  else return false;
+export function isError(entity: unknown): entity is Error {
+  return entity instanceof Error;
 }
 
 /** Determines whether the given sound information details a default sound. */
-export function isDefaultSoundInformation(info: NewSoundInformation):
+export function isDefaultSoundInformation(info: SoundInformation):
   info is DefaultSoundInformation {
 
   return "identifier" in info;
+}
+
+/** Determines whether the given entity is a disposable object. */
+export function isDisposable(entity: unknown): entity is IDisposable {
+  return typeof entity === "object" && entity != null && "dispose" in entity;
 }

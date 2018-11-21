@@ -15,7 +15,7 @@ const filterData = <types.FilterData>require(path.join(dataOutputRoot, "filter.j
 
 export interface FilterParseResult {
   colorInformation: types.ColorInformation[];
-  soundInformation: types.NewSoundInformation[];
+  soundInformation: types.SoundInformation[];
   diagnostics: types.Diagnostic[];
 }
 

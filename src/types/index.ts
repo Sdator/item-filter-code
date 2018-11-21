@@ -34,7 +34,7 @@ export interface CustomSoundInformation {
   range: Range;
 }
 
-export type NewSoundInformation = DefaultSoundInformation | CustomSoundInformation;
+export type SoundInformation = DefaultSoundInformation | CustomSoundInformation;
 
 export type Result<T> = T | Promise<T>;
 

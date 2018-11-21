@@ -35,7 +35,7 @@ export interface BaseParseLineResult {
   color?: types.ColorInformation;
 
   /** Sound information parsed from the line. */
-  sound?: types.NewSoundInformation;
+  sound?: types.SoundInformation;
 }
 
 /** The result of parsing an item filter line containing a keyword. */

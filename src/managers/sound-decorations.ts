@@ -112,7 +112,7 @@ export class SoundDecorationManager implements IDisposable {
   }
 
   /** Creates VSCode editor decorations from each of the given sounds. */
-  private _createDecorations(sounds: types.NewSoundInformation[]): vscode.DecorationOptions[] {
+  private _createDecorations(sounds: types.SoundInformation[]): vscode.DecorationOptions[] {
     const result: vscode.DecorationOptions[] = [];
 
     for (const sound of sounds) {
