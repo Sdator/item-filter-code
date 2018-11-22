@@ -30,3 +30,8 @@ export interface Event<T1, T2 = any> {
   // tslint:disable-next-line:no-any
   (listener: (e: T1) => T2, thisArgs?: any, disposables?: IDisposable[]): IDisposable;
 }
+
+/** Determines whether the given entity is a disposable object. */
+export function isDisposable(entity: unknown): entity is IDisposable {
+  return typeof entity === "object" && entity != null && "dispose" in entity;
+}

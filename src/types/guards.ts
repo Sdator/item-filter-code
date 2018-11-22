@@ -4,7 +4,7 @@
  * license information.
  * ===========================================================================*/
 
-import { SoundInformation, DefaultSoundInformation } from "../types";
+import { SoundInformation, DefaultSoundInformation } from "./index";
 import { IDisposable } from "../kits/events";
 
 /** Determines whether the given entity is an Error. */
@@ -17,9 +17,4 @@ export function isDefaultSoundInformation(info: SoundInformation):
   info is DefaultSoundInformation {
 
   return "identifier" in info;
-}
-
-/** Determines whether the given entity is a disposable object. */
-export function isDisposable(entity: unknown): entity is IDisposable {
-  return typeof entity === "object" && entity != null && "dispose" in entity;
 }

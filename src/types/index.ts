@@ -5,6 +5,7 @@
  * ===========================================================================*/
 
 export * from "./data";
+export * from "./guards";
 
 export interface PlayDefaultSoundOptions {
   id: string;

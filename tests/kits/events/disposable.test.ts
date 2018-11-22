@@ -4,8 +4,7 @@
  * license information.
  * ===========================================================================*/
 
-import { Disposable } from "../../../src/kits/events";
-import { isDisposable } from "../../../src/type-guards";
+import { isDisposable, Disposable } from "../../../src/kits/events";
 
 describe("Disposable", () => {
   describe("constructor", () => {
@@ -24,8 +23,8 @@ describe("Disposable", () => {
 
     test("throws if that action isn't a function", () => {
       expect(() => {
-        // @ts-ignore
-        new Disposable(42);
+        // tslint:disable-next-line:no-any
+        (<any>new Disposable)(42);
       }).toThrow();
     });
 
@@ -43,6 +42,29 @@ describe("Disposable", () => {
       expect(action).toBeCalledTimes(1);
       d.dispose();
       expect(action).toBeCalledTimes(1);
+    });
+  });
+
+  describe("disposed property", () => {
+    let disposable: Disposable;
+
+    beforeAll(() => {
+      disposable = new Disposable;
+    });
+
+    test("exists on the Disposable class", () => {
+      expect(disposable.disposed).toBeDefined();
+    });
+
+    test("is a boolean", () => {
+      expect(typeof disposable.disposed === "boolean").toStrictEqual(true);
+    });
+
+    test("throws when set", () => {
+      expect(() => {
+        // tslint:disable-next-line:no-any
+        (<any>disposable).disposed = true;
+      }).toThrow();
     });
   });
 

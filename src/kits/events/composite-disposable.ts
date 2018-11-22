@@ -4,7 +4,7 @@
  * license information.
  * ===========================================================================*/
 
-import { IDisposable } from "./index";
+import { isDisposable, IDisposable } from "./index";
 
 /**
  * Aggregates multiple disposable objects together into a single disposable,
@@ -16,14 +16,14 @@ export class CompositeDisposable implements IDisposable {
   private _disposed: boolean;
   private _disposables: IDisposable[];
 
-  /** The number of disposables within the composite. */
-  get size(): number {
-    return this._disposables.length;
-  }
-
   /** Returns whether the composite has been disposed of previously. */
   get disposed(): boolean {
     return this._disposed;
+  }
+
+  /** The number of disposables within the composite. */
+  get size(): number {
+    return this._disposables.length;
   }
 
   /**
@@ -44,9 +44,14 @@ export class CompositeDisposable implements IDisposable {
 
     this._disposed = true;
     while (this._disposables.length) {
-      const s = this._disposables.pop();
-      if (s) s.dispose();
+      // The above condition makes this impossible to be undefined.
+      (<IDisposable>this._disposables.pop()).dispose();
     }
+  }
+
+  /** Returns whether this disposable has been disposed of previously. */
+  isDisposed(): boolean {
+    return this._disposed;
   }
 
   /**
@@ -59,7 +64,11 @@ export class CompositeDisposable implements IDisposable {
     if (this._disposed) throw new Error("add attempted on a disposed CompositeDisposable");
 
     for (const disposable of disposables) {
-      this._disposables.push(disposable);
+      if (isDisposable(disposable)) {
+        this._disposables.push(disposable);
+      } else {
+        throw new Error("attempted to add a non-disposable object");
+      }
     }
   }
 

@@ -8,7 +8,6 @@ import * as vscode from "vscode";
 
 import * as types from "../types";
 import { CompositeDisposable, IDisposable } from "../kits/events";
-import { isDefaultSoundInformation } from "../type-guards";
 import { VisibleEditorRegistry } from "../registries/visible-editors";
 import { range2CodeRange } from "../converters";
 import { ItemFilterManager, FilterChangedEvent } from "./item-filters";
@@ -117,7 +116,7 @@ export class SoundDecorationManager implements IDisposable {
 
     for (const sound of sounds) {
       let commandText: string;
-      if (isDefaultSoundInformation(sound)) {
+      if (types.isDefaultSoundInformation(sound)) {
         if (!sound.knownIdentifier) continue;
 
         const fields: types.PlayDefaultSoundOptions = {
