@@ -48,9 +48,4 @@ export class Disposable implements IDisposable {
       this.action = undefined;
     }
   }
-
-  /** Returns whether this disposable has been disposed of previously. */
-  isDisposed(): boolean {
-    return this._disposed;
-  }
 }

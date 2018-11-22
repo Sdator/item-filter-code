@@ -87,7 +87,7 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
     }
 
     const cleanup = new Disposable(() => {
-      this._subscriptions.remove(cleanup);
+      this._subscriptions.delete(cleanup);
       this._off(event as string, handler);
     });
 

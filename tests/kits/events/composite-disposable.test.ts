@@ -31,13 +31,13 @@ describe("CompositeDisposable", () => {
 
     test("optionally takes multiple disposables as parameters", () => {
       const c = new CompositeDisposable(d1, d2);
-      expect(c.isDisposed()).toStrictEqual(false);
-      expect(d1.isDisposed()).toStrictEqual(false);
-      expect(d2.isDisposed()).toStrictEqual(false);
+      expect(c.disposed).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
+      expect(d2.disposed).toStrictEqual(false);
       c.dispose();
-      expect(c.isDisposed()).toStrictEqual(true);
-      expect(d1.isDisposed()).toStrictEqual(true);
-      expect(d2.isDisposed()).toStrictEqual(true);
+      expect(c.disposed).toStrictEqual(true);
+      expect(d1.disposed).toStrictEqual(true);
+      expect(d2.disposed).toStrictEqual(true);
     });
   });
 
@@ -61,7 +61,6 @@ describe("CompositeDisposable", () => {
   describe("size computed property", () => {
     test("exists on the CompositeDisposable class", () => {
       expect(composite.size).toBeDefined();
-      composite.dispose();
     });
 
     test("returns 0 on an empty CompositeDisposable", () => {
@@ -72,7 +71,7 @@ describe("CompositeDisposable", () => {
       expect(composite.size).toStrictEqual(0);
       composite.add(d1, d2);
       expect(composite.size).toStrictEqual(2);
-      composite.remove(d2);
+      composite.delete(d2);
       expect(composite.size).toStrictEqual(1);
       composite.clear();
       expect(composite.size).toStrictEqual(0);
@@ -83,41 +82,20 @@ describe("CompositeDisposable", () => {
     test("exists on the CompositeDisposable class", () => {
       expect(composite.dispose).toBeDefined();
       expect(typeof composite.dispose === "function").toStrictEqual(true);
-      composite.dispose();
     });
 
     test("disposes of the CompositeDisposable when called", () => {
-      expect(composite.isDisposed()).toStrictEqual(false);
+      expect(composite.disposed).toStrictEqual(false);
       composite.dispose();
-      expect(composite.isDisposed()).toStrictEqual(true);
+      expect(composite.disposed).toStrictEqual(true);
     });
 
     test("does not throw when called multiple times", () => {
       expect(() => {
         composite.dispose();
-        expect(composite.isDisposed()).toStrictEqual(true);
+        expect(composite.disposed).toStrictEqual(true);
         composite.dispose();
       }).not.toThrow();
-    });
-  });
-
-  describe("isDisposed method", () => {
-    test("exists on the CompositeDisposable class", () => {
-      expect(composite.isDisposed).toBeDefined();
-      expect(typeof composite.isDisposed === "function").toStrictEqual(true);
-      composite.dispose();
-    });
-
-    test("returns true when the given a newly created CompositeDisposable", () => {
-      expect(composite.isDisposed()).toStrictEqual(false);
-      composite.dispose();
-    });
-
-    test("returns false when given a disposed CompositeDisposable", () => {
-      composite.dispose();
-      expect(composite.isDisposed()).toStrictEqual(true);
-      composite.dispose();
-      expect(composite.isDisposed()).toStrictEqual(true);
     });
   });
 
@@ -125,23 +103,22 @@ describe("CompositeDisposable", () => {
     test("exists on the CompositeDisposable class", () => {
       expect(composite.add).toBeDefined();
       expect(typeof composite.add === "function").toStrictEqual(true);
-      composite.dispose();
     });
 
     test("supports adding a single Disposable", () => {
       composite.add(d1);
-      expect(d1.isDisposed()).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
       composite.dispose();
-      expect(d1.isDisposed()).toStrictEqual(true);
+      expect(d1.disposed).toStrictEqual(true);
     });
 
     test("supports adding multiple Disposables", () => {
       composite.add(d1, d2);
-      expect(d1.isDisposed()).toStrictEqual(false);
-      expect(d2.isDisposed()).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
+      expect(d2.disposed).toStrictEqual(false);
       composite.dispose();
-      expect(d1.isDisposed()).toStrictEqual(true);
-      expect(d2.isDisposed()).toStrictEqual(true);
+      expect(d1.disposed).toStrictEqual(true);
+      expect(d2.disposed).toStrictEqual(true);
     });
 
     test("supports objects implementing IDisposable", () => {
@@ -185,65 +162,38 @@ describe("CompositeDisposable", () => {
     });
   });
 
-  describe("remove method", () => {
-    test("exists on the CompositeDisposable class", () => {
-      expect(composite.remove).toBeDefined();
-      expect(typeof composite.remove === "function").toStrictEqual(true);
-      composite.dispose();
-    });
-
-    test("removes a previously added disposable from a composite", () => {
-      composite.add(d1, d2);
-      expect(d1.isDisposed()).toStrictEqual(false);
-      expect(d2.isDisposed()).toStrictEqual(false);
-      composite.remove(d1);
-      expect(composite.size).toStrictEqual(1);
-      composite.dispose();
-      expect(d1.isDisposed()).toStrictEqual(false);
-      expect(d2.isDisposed()).toStrictEqual(true);
-    });
-
-    test("throws if invoked on a disposed instance", () => {
-      expect(() => {
-        composite.dispose();
-        composite.remove(d1);
-      }).toThrow();
-    });
-  });
-
   describe("clear method", () => {
     test("exists on the CompositeDisposable class", () => {
       expect(composite.clear).toBeDefined();
       expect(typeof composite.clear === "function").toStrictEqual(true);
-      composite.dispose();
     });
 
     test("clears any previously added disposables", () => {
       composite.add(d1, d2);
-      expect(d1.isDisposed()).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
       expect(composite.size).toStrictEqual(2);
       composite.clear();
       expect(composite.size).toStrictEqual(0);
       composite.dispose();
-      expect(d1.isDisposed()).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
     });
 
     test("does not dispose of any cleared disposables", () => {
       composite.add(d1, d2);
-      expect(d1.isDisposed()).toStrictEqual(false);
-      expect(d2.isDisposed()).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
+      expect(d2.disposed).toStrictEqual(false);
       composite.clear();
-      expect(d1.isDisposed()).toStrictEqual(false);
-      expect(d2.isDisposed()).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
+      expect(d2.disposed).toStrictEqual(false);
       composite.dispose();
-      expect(d1.isDisposed()).toStrictEqual(false);
-      expect(d2.isDisposed()).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
+      expect(d2.disposed).toStrictEqual(false);
     });
 
     test("does not dispose of the CompositeDisposable instance", () => {
       composite.add(d1);
       composite.clear();
-      expect(composite.isDisposed()).toStrictEqual(false);
+      expect(composite.disposed).toStrictEqual(false);
       composite.dispose();
     });
 
@@ -251,6 +201,69 @@ describe("CompositeDisposable", () => {
       expect(() => {
         composite.dispose();
         composite.clear();
+      }).toThrow();
+    });
+  });
+
+  describe("delete method", () => {
+    test("exists on the CompositeDisposable class", () => {
+      expect(composite.delete).toBeDefined();
+      expect(typeof composite.delete === "function").toStrictEqual(true);
+    });
+
+    test("removes a previously added disposable from a composite", () => {
+      composite.add(d1, d2);
+      expect(d1.disposed).toStrictEqual(false);
+      expect(d2.disposed).toStrictEqual(false);
+      composite.delete(d1);
+      expect(composite.size).toStrictEqual(1);
+      composite.dispose();
+      expect(d1.disposed).toStrictEqual(false);
+      expect(d2.disposed).toStrictEqual(true);
+    });
+
+    test("throws if invoked on a disposed instance", () => {
+      expect(() => {
+        composite.dispose();
+        composite.delete(d1);
+      }).toThrow();
+    });
+  });
+
+  describe("has method", () => {
+    test("exists on the CompositeDisposable class", () => {
+      expect(composite.has).toBeDefined();
+      expect(typeof composite.has === "function").toStrictEqual(true);
+    });
+
+    test("returns true if the disposable has been added", () => {
+      composite.add(d1);
+      expect(composite.has(d1)).toStrictEqual(true);
+    });
+
+    test("returns false if the disposable hasn't been added", () => {
+      expect(composite.has(d1)).toStrictEqual(false);
+    });
+
+    test("works correctly on composites containing multiple disposables", () => {
+      const d3 = new Disposable;
+      composite.add(d1, d2);
+      expect(composite.has(d1)).toStrictEqual(true);
+      expect(composite.has(d2)).toStrictEqual(true);
+      expect(composite.has(d3)).toStrictEqual(false);
+      d3.dispose();
+    });
+
+    test("returns true even if the disposable has been disposed", () => {
+      composite.add(d1);
+      d1.dispose();
+      expect(composite.has(d1)).toStrictEqual(true);
+    });
+
+    test("throws if invoked on a disposed instance", () => {
+      expect(() => {
+        composite.dispose();
+        composite.has(d1);
       }).toThrow();
     });
   });

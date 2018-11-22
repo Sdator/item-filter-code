@@ -4,7 +4,8 @@
  * license information.
  * ===========================================================================*/
 
-import { isDisposable, IDisposable } from "./index";
+import { IDisposable } from "./index";
+import { isDisposable } from "./guards";
 
 /**
  * Aggregates multiple disposable objects together into a single disposable,
@@ -49,11 +50,6 @@ export class CompositeDisposable implements IDisposable {
     }
   }
 
-  /** Returns whether this disposable has been disposed of previously. */
-  isDisposed(): boolean {
-    return this._disposed;
-  }
-
   /**
    * Add one or more disposables to the composite, later to be disposed of as
    * an aggregate.
@@ -72,15 +68,21 @@ export class CompositeDisposable implements IDisposable {
     }
   }
 
-  /** Remove a previously added disposable from the composite. */
-  remove(disposable: IDisposable): void {
-    if (this._disposed) throw new Error("delete attempted on a disposed CompositeDisposable");
-    this._disposables = this._disposables.filter(d => d === disposable ? false : true);
-  }
-
   /** Clear all disposables within the composite. */
   clear(): void {
     if (this._disposed) throw new Error("clear attempted on a disposed CompositeDisposable");
     this._disposables.length = 0;
+  }
+
+  /** Remove a previously added disposable from the composite. */
+  delete(disposable: IDisposable): void {
+    if (this._disposed) throw new Error("delete attempted on a disposed CompositeDisposable");
+    this._disposables = this._disposables.filter(d => d === disposable ? false : true);
+  }
+
+  /** Returns a boolean indicating whether the given entity exists within the composite. */
+  has(disposable: IDisposable): boolean {
+    if (this._disposed) throw new Error("get attempted on a disposed CompositeDisposable");
+    return this._disposables.includes(disposable);
   }
 }

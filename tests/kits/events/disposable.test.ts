@@ -82,43 +82,17 @@ describe("Disposable", () => {
     });
 
     test("disposes of the Disposable when called", () => {
-      expect(disposable.isDisposed()).toStrictEqual(false);
+      expect(disposable.disposed).toStrictEqual(false);
       disposable.dispose();
-      expect(disposable.isDisposed()).toStrictEqual(true);
+      expect(disposable.disposed).toStrictEqual(true);
     });
 
     test("does not throw when called multiple times", () => {
       expect(() => {
         disposable.dispose();
-        expect(disposable.isDisposed()).toStrictEqual(true);
+        expect(disposable.disposed).toStrictEqual(true);
         disposable.dispose();
       }).not.toThrow();
-    });
-  });
-
-  describe("isDisposed method", () => {
-    let disposable: Disposable;
-
-    beforeEach(() => {
-      disposable = new Disposable;
-    });
-
-    test("exists on the Disposable class", () => {
-      expect(disposable.isDisposed).toBeDefined();
-      expect(typeof disposable.isDisposed === "function").toStrictEqual(true);
-      disposable.dispose();
-    });
-
-    test("returns true when the given a newly created Disposable", () => {
-      expect(disposable.isDisposed()).toStrictEqual(false);
-      disposable.dispose();
-    });
-
-    test("returns false when given a disposed Disposable", () => {
-      disposable.dispose();
-      expect(disposable.isDisposed()).toStrictEqual(true);
-      disposable.dispose();
-      expect(disposable.isDisposed()).toStrictEqual(true);
     });
   });
 });
