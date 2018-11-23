@@ -6,6 +6,7 @@
 
 export * from "./composite-disposable";
 export * from "./disposable";
+export * from "./mapped-disposable";
 export * from "./emitter";
 export * from "./guards";
 

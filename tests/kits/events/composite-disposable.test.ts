@@ -41,13 +41,22 @@ describe("CompositeDisposable", () => {
     });
   });
 
-  describe("disposed computed property", () => {
+  describe("disposed property", () => {
     test("exists on the Disposable class", () => {
       expect(composite.disposed).toBeDefined();
     });
 
     test("is a boolean", () => {
       expect(typeof composite.disposed === "boolean").toStrictEqual(true);
+    });
+
+    test("is initially set to false", () => {
+      expect(composite.disposed).toStrictEqual(false);
+    });
+
+    test("is set to true whenever dispose() is called", () => {
+      composite.dispose();
+      expect(composite.disposed).toStrictEqual(true);
     });
 
     test("throws when set", () => {
@@ -58,7 +67,7 @@ describe("CompositeDisposable", () => {
     });
   });
 
-  describe("size computed property", () => {
+  describe("size property", () => {
     test("exists on the CompositeDisposable class", () => {
       expect(composite.size).toBeDefined();
     });

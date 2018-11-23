@@ -404,7 +404,7 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
     return result;
   } else if (contextParser.isNextValue(firstValueRange, pos)) {
     firstValueRange.end.character++;
-    const text = stylizedArrayJoin(filterData.minimapIcons.sizes, ", or ");
+    const text = stylizedArrayJoin(filterData.minimapIcons.sizes, true);
 
     let contents = `The size of the icon on the minimap, which can be ${text}. The ` +
       "smallest value correlates to the largest icon size.";
@@ -423,7 +423,7 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
     return result;
   } else if (secondValueRange != null && contextParser.isNextValue(secondValueRange, pos)) {
     secondValueRange.end.character++;
-    const text = stylizedArrayJoin(filterData.minimapIcons.colors, ", or ");
+    const text = stylizedArrayJoin(filterData.minimapIcons.colors, true);
 
     let contents = `The color of the icon on the minimap, which can be ${text}.`;
     if (previewText) {
@@ -439,7 +439,7 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
 
   if (thirdValueRange != null && contextParser.isNextValue(thirdValueRange, pos)) {
     thirdValueRange.end.character++;
-    const validValuesText = stylizedArrayJoin(filterData.minimapIcons.shapes, ", or ");
+    const validValuesText = stylizedArrayJoin(filterData.minimapIcons.shapes, true);
 
     let contents = `The shape of the icon on the minimap, which can be ${validValuesText}.`;
     if (previewText) {
@@ -469,7 +469,7 @@ function getPlayEffectHover(pos: vscode.Position, text: string, index: number):
     return result;
   } else if (contextParser.isNextValue(firstValueRange, pos)) {
     firstValueRange.end.character++;
-    const text = stylizedArrayJoin(filterData.dropEffects.colors, ", or ");
+    const text = stylizedArrayJoin(filterData.dropEffects.colors, true);
     result = new vscode.Hover(
       `The color of the beam of light overtop of the item, which can be ${text}.`,
       range2CodeRange(firstValueRange)

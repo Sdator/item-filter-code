@@ -48,8 +48,12 @@ describe("Disposable", () => {
   describe("disposed property", () => {
     let disposable: Disposable;
 
-    beforeAll(() => {
+    beforeEach(() => {
       disposable = new Disposable;
+    });
+
+    afterEach(() => {
+      disposable.dispose();
     });
 
     test("exists on the Disposable class", () => {
@@ -58,6 +62,15 @@ describe("Disposable", () => {
 
     test("is a boolean", () => {
       expect(typeof disposable.disposed === "boolean").toStrictEqual(true);
+    });
+
+    test("is initially set to false", () => {
+      expect(disposable.disposed).toStrictEqual(false);
+    });
+
+    test("is set to true whenever dispose() is called", () => {
+      disposable.dispose();
+      expect(disposable.disposed).toStrictEqual(true);
     });
 
     test("throws when set", () => {
