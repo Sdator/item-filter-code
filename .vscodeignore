@@ -11,6 +11,8 @@ tests/**
 .travis.yml
 jest.json
 package-lock.json
+tasks/**
+typings/**
 tsconfig.json
 tslint.json
 yarn-error.log

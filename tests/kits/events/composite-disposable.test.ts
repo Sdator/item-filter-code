@@ -29,8 +29,17 @@ describe("CompositeDisposable", () => {
       composite.dispose();
     });
 
+    test("optionally takes a single disposable as a parameter", () => {
+      const c = new CompositeDisposable(d1);
+      expect(c.disposed).toStrictEqual(false);
+      expect(d1.disposed).toStrictEqual(false);
+      c.dispose();
+      expect(c.disposed).toStrictEqual(true);
+      expect(d1.disposed).toStrictEqual(true);
+    });
+
     test("optionally takes multiple disposables as parameters", () => {
-      const c = new CompositeDisposable(d1, d2);
+      const c = new CompositeDisposable([d1, d2]);
       expect(c.disposed).toStrictEqual(false);
       expect(d1.disposed).toStrictEqual(false);
       expect(d2.disposed).toStrictEqual(false);
@@ -78,7 +87,7 @@ describe("CompositeDisposable", () => {
 
     test("correctly returns the length as the CompositeDisposable changes", () => {
       expect(composite.size).toStrictEqual(0);
-      composite.add(d1, d2);
+      composite.add([d1, d2]);
       expect(composite.size).toStrictEqual(2);
       composite.delete(d2);
       expect(composite.size).toStrictEqual(1);
@@ -122,7 +131,7 @@ describe("CompositeDisposable", () => {
     });
 
     test("supports adding multiple Disposables", () => {
-      composite.add(d1, d2);
+      composite.add([d1, d2]);
       expect(d1.disposed).toStrictEqual(false);
       expect(d2.disposed).toStrictEqual(false);
       composite.dispose();
@@ -139,13 +148,6 @@ describe("CompositeDisposable", () => {
       expect(disposable.dispose).not.toBeCalled();
       composite.dispose();
       expect(disposable.dispose).toBeCalledTimes(1);
-    });
-
-    test("does not throw if given no Disposables", () => {
-      expect(() => {
-        composite.add();
-        composite.dispose();
-      }).not.toThrow();
     });
 
     test("throws if invoked on a disposed instance", () => {
@@ -178,7 +180,7 @@ describe("CompositeDisposable", () => {
     });
 
     test("clears any previously added disposables", () => {
-      composite.add(d1, d2);
+      composite.add([d1, d2]);
       expect(d1.disposed).toStrictEqual(false);
       expect(composite.size).toStrictEqual(2);
       composite.clear();
@@ -188,7 +190,7 @@ describe("CompositeDisposable", () => {
     });
 
     test("does not dispose of any cleared disposables", () => {
-      composite.add(d1, d2);
+      composite.add([d1, d2]);
       expect(d1.disposed).toStrictEqual(false);
       expect(d2.disposed).toStrictEqual(false);
       composite.clear();
@@ -221,7 +223,7 @@ describe("CompositeDisposable", () => {
     });
 
     test("removes a previously added disposable from a composite", () => {
-      composite.add(d1, d2);
+      composite.add([d1, d2]);
       expect(d1.disposed).toStrictEqual(false);
       expect(d2.disposed).toStrictEqual(false);
       composite.delete(d1);
@@ -256,7 +258,7 @@ describe("CompositeDisposable", () => {
 
     test("works correctly on composites containing multiple disposables", () => {
       const d3 = new Disposable;
-      composite.add(d1, d2);
+      composite.add([d1, d2]);
       expect(composite.has(d1)).toStrictEqual(true);
       expect(composite.has(d2)).toStrictEqual(true);
       expect(composite.has(d3)).toStrictEqual(false);

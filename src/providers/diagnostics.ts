@@ -19,11 +19,11 @@ export class FilterDiagnosticsProvider implements IDisposable {
     this._diagnostics = vscode.languages.createDiagnosticCollection("item-filter");
     this._filterManager = filterManager;
 
-    this._subscriptions = new CompositeDisposable(
+    this._subscriptions = new CompositeDisposable([
       this._filterManager.observeFilters(this._add, this),
       this._filterManager.onDidCloseFilter(this._remove, this),
       this._filterManager.onDidChangeFilter(this._update, this)
-    );
+    ]);
   }
 
   dispose(): void {

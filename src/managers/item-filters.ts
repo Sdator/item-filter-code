@@ -55,12 +55,12 @@ export class ItemFilterManager implements IDisposable {
     this._activeFilters = new Map();
     this._emitter = new Emitter();
 
-    this._subscriptions = new CompositeDisposable(
+    this._subscriptions = new CompositeDisposable([
       this._documentRegistry.observeFilters(this._openDocument, this),
       this._documentRegistry.onDidCloseFilter(this._closeDocument, this),
       this._documentRegistry.onDidChangeFilter(this._updateDocument, this),
       this._configManager.onDidChange(this._updateConfig, this)
-    );
+    ]);
   }
 
   /** Disposes of this registry and all of its subscriptions. */

@@ -38,6 +38,10 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
 
   /** Clear out any existing subscribers. */
   clear(): void {
+    if (this._disposed) {
+      throw new Error("clear attempted on a disposed Emitter");
+    }
+
     this._subscriptions.dispose();
     this._subscriptions = new CompositeDisposable();
 
@@ -51,33 +55,33 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
     this._disposed = true;
   }
 
-  /** Returns whether this emitter has been disposed of previously. */
-  isDisposed(): boolean {
-    return this._disposed;
-  }
-
   /**
    * Registers a handler to be invoked whenever the given event is emitted.
    *
    * @param event The event name that will trigger the handler on emission.
    * @param handler The function to invoke when `::emit` is called with the given
    * event name.
+   * @param preempt Whether to place this handler ahead of any existing ones.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   on<T extends keyof Emissions>(event: T, handler: (value: Emissions[T]) => void,
-    unshift = false): Disposable {
+    preempt = false): Disposable {
 
     if (this._disposed) {
       throw new Error("listen attempted on a disposed Emitter");
     }
 
+    if (typeof event !== "string") {
+      throw new TypeError("event name passed to Emitter wasn't a string");
+    }
+
     if (typeof handler !== "function") {
-      throw new Error("handler passed to Emitter wasn't a function");
+      throw new TypeError("handler passed to Emitter wasn't a function");
     }
 
     const currentHandlers = this._eventHandlers.get(event as string);
     if (currentHandlers) {
-      if (unshift) {
+      if (preempt) {
         currentHandlers.unshift(handler);
       } else {
         currentHandlers.push(handler);
@@ -87,7 +91,10 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
     }
 
     const cleanup = new Disposable(() => {
-      this._subscriptions.delete(cleanup);
+      if (!this._subscriptions.disposed) {
+        this._subscriptions.delete(cleanup);
+      }
+
       this._off(event as string, handler);
     });
 
@@ -102,19 +109,24 @@ export class Emitter<Emissions = { [key: string]: any }> implements IDisposable 
    * @param event The event name that will trigger the handler on emission.
    * @param handler The function to invoke when `::emit` is called with the given
    * event name.
+   * @param preempt Whether to place this handler ahead of any existing ones.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   once<T extends keyof Emissions>(event: T, handler: (value: Emissions[T]) => void,
-    unshift = false): Disposable {
+    preempt = false): Disposable {
 
     let disposable: Disposable;
 
+    if (typeof handler !== "function") {
+      throw new TypeError("handler passed to Emitter wasn't a function");
+    }
+
     const wrapper = (value: Emissions[T]) => {
-      if (disposable) disposable.dispose();
+      disposable.dispose();
       handler(value);
     };
 
-    disposable = this.on(event, wrapper, unshift);
+    disposable = this.on(event, wrapper, preempt);
     return disposable;
   }
 

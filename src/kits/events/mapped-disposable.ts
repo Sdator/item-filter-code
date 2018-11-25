@@ -28,6 +28,7 @@ export class MappedDisposable implements IDisposable {
 
   /**
    * Create a new collection, optionally with one or more `key:disposables` pairings.
+   *
    * @param disposables An object mapping keys to disposables.
    */
   constructor(disposables?: { [key: string]: IDisposable | IDisposable[] }) {
@@ -50,13 +51,14 @@ export class MappedDisposable implements IDisposable {
    * Dispose of the set of disposables associated with the given keys, removing
    * them from the collection. If no arguments are passed, disposes of the entire
    * collection and renders this instance inert.
+   *
    * @param keys One or more keys for the objects to dispose of. If not provided,
    * the entire collection will be disposed of.
    */
-  dispose(...keys: string[]): void {
+  dispose(keys?: string | string[]): void {
     if (this._disposed) return;
 
-    if (keys.length === 0) {
+    if (keys == null) {
       for (const [_, disposables] of this._disposableSets) {
         // Same as within CompositeDisposable, remove entires in reverse order.
         // It isn't as common with this data type to add to these sets, though
@@ -67,10 +69,12 @@ export class MappedDisposable implements IDisposable {
       }
       this._disposed = true;
       this._disposableSets.clear();
-    } else {
+    } else if (keys instanceof Array) {
       for (const k of keys) {
         this._disposeIfMapped(k);
       }
+    } else {
+      this._disposeIfMapped(keys);
     }
   }
 
@@ -83,6 +87,7 @@ export class MappedDisposable implements IDisposable {
    * instead, then use `set()`.
    * - If the value of a given key is `undefined`, then that key will be removed
    * from the collection without any of its values being disposed of.
+   *
    * @param disposables An object mapping keys to disposables.
    */
   add(disposables: { [key: string]: IDisposable | IDisposable[] | undefined }): void {
@@ -103,6 +108,7 @@ export class MappedDisposable implements IDisposable {
    * be disposed of. If you wish to merge both sets of disposables instead, then use `add()`.
    * - If the value of a given key is `undefined`, then that key will be removed
    * from the collection without any of its values being disposed of.
+   *
    * @param disposables An object mapping keys to disposables.
    */
   set(disposables: { [key: string]: IDisposable | IDisposable[] | undefined }): void {
@@ -121,10 +127,11 @@ export class MappedDisposable implements IDisposable {
    * entirely.
    *
    * Removed disposables are *not* disposed of upon removal.
+   *
    * @param key The key of the mapping.
    * @param disposables The disposables to be removed from the composite.
    */
-  delete(key: string, ...disposables: IDisposable[]): void {
+  delete(key: string, disposables?: IDisposable | IDisposable[]): void {
     if (this._disposed) {
       throw new Error("delete attempted on a disposed instance");
     }
@@ -136,13 +143,14 @@ export class MappedDisposable implements IDisposable {
       throw new Error("attempted to delete disposables for an unknown key");
     }
 
-    if (disposables.length === 0) {
+    if (disposables == null) {
       this._disposableSets.delete(key);
-      return;
+    } else if (disposables instanceof Array) {
+      const result = values.filter(value => !disposables.includes(value));
+      this._disposableSets.set(key, result);
+    } else {
+      this._disposableSets.set(key, [disposables]);
     }
-
-    const result = values.filter(value => !disposables.includes(value));
-    this._disposableSets.set(key, result);
   }
 
   /** Clear the collection's contents without disposing of any contained disposables. */

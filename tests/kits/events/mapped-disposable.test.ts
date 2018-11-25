@@ -174,7 +174,7 @@ describe("MappedDisposable", () => {
       expect(d2.disposed).toStrictEqual(false);
       expect(composite.disposed).toStrictEqual(false);
 
-      collection.dispose("d1", "d2");
+      collection.dispose(["d1", "d2"]);
 
       expect(collection.disposed).toStrictEqual(false);
       expect(d1.disposed).toStrictEqual(true);
@@ -412,7 +412,7 @@ describe("MappedDisposable", () => {
     test("removes only the supplied disposables", () => {
       collection.add({ "test": [d1, d2, composite] });
       expect(collection.size).toStrictEqual(1);
-      collection.delete("test", d1, d2);
+      collection.delete("test", [d1, d2]);
       expect(collection.size).toStrictEqual(1);
       collection.dispose();
       expect(d1.disposed).toStrictEqual(false);

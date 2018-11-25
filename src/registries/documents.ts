@@ -63,11 +63,11 @@ export class DocumentRegistry implements IDisposable {
   constructor() {
     this._emitter = new Emitter();
 
-    this._subscriptions = new CompositeDisposable(
+    this._subscriptions = new CompositeDisposable([
       vscode.workspace.onDidOpenTextDocument(this._open, this),
       vscode.workspace.onDidCloseTextDocument(this._close, this),
       vscode.workspace.onDidChangeTextDocument(this._change, this)
-    );
+    ]);
 
     for (const document of this.documents) {
       this._open(document);

@@ -34,11 +34,11 @@ export class SoundDecorationManager implements IDisposable {
       borderColor: "MediumSeaGreen"
     });
 
-    this._subscriptions = new CompositeDisposable(
+    this._subscriptions = new CompositeDisposable([
       editorRegistry.observeFilterEditors(this._open, this),
       editorRegistry.onDidCloseFilterEditor(this._close, this),
       filterManager.onDidChangeFilter(this._update, this)
-    );
+    ]);
   }
 
   /** Disposes of this manager and all of its subscriptions. */

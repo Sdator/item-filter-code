@@ -79,7 +79,7 @@ export class VisibleEditorRegistry implements IDisposable {
 
     const updateFilters = debounce(updateEditors, 10);
 
-    this._subscriptions = new CompositeDisposable(
+    this._subscriptions = new CompositeDisposable([
       vscode.window.onDidChangeVisibleTextEditors(editors => {
         updateEditors(editorUpdater, this._editors, editors);
       }),
@@ -99,7 +99,7 @@ export class VisibleEditorRegistry implements IDisposable {
       this._documentRegistry.onDidCloseFilter(_ => {
         updateFilters(filterUpdater, this._filterEditors, this.editors);
       })
-    );
+    ]);
 
     for (const editor of vscode.window.visibleTextEditors) {
       this._openEditor(editor);

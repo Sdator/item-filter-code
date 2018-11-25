@@ -196,6 +196,7 @@ describe("uniqueArrayMerge", () => {
     // tslint:disable-next-line:no-any
     const a2: any = [];
     expect(() => {
+      // tslint:disable-next-line:no-unsafe-any
       helpers.uniqueArrayMerge(a1, a2);
     }).not.toThrow();
   });
