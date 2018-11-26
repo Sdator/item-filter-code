@@ -4,6 +4,7 @@
  * license information.
  * ===========================================================================*/
 
+import "jest-extended";
 import { isDisposable, Disposable } from "../../../src/kits/events";
 
 describe("Disposable", () => {

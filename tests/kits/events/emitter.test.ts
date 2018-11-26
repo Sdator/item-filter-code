@@ -4,6 +4,7 @@
  * license information.
  * ===========================================================================*/
 
+import "jest-extended";
 import * as events from "../../../src/kits/events";
 
 describe("Emitter", () => {
