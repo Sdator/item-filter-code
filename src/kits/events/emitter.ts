@@ -4,6 +4,8 @@
  * license information.
  * ===========================================================================*/
 
+import * as assert from "assert";
+
 import { IDisposable } from "./index";
 import { CompositeDisposable } from "./composite-disposable";
 import { Disposable } from "./disposable";
@@ -68,7 +70,13 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     this._checkIfDisposed();
 
     const fn = this._bindIfPossible(handler, thisArg);
-    return this._on(event, fn, preempt);
+    // This is necessary in order to allow duplicate handlers to be registered
+    // for any single event.
+    const wrapper: typeof handler = (value) => {
+      fn(value);
+    };
+
+    return this._on(event, wrapper, preempt);
   }
 
   /**
@@ -116,12 +124,15 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     this._checkIfDisposed();
 
     const fn = this._bindIfPossible(handler, thisArg);
+    const wrapper: typeof handler = (value) => {
+      fn(value);
+    };
 
     for (const item of collection) {
       fn(item);
     }
 
-    return this._on(event, fn, preempt);
+    return this._on(event, wrapper, preempt);
   }
 
   /**
@@ -211,10 +222,12 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   private _on<T extends keyof Emissions>(event: T, handler: (value: Emissions[T]) => void,
-    preempt = false): Disposable {
+    preempt: boolean): Disposable {
 
     const currentHandlers = this._eventHandlers.get(event as string);
     if (currentHandlers) {
+      assert(!currentHandlers.includes(handler));
+
       if (preempt) {
         currentHandlers.unshift(handler);
       } else {
@@ -244,21 +257,15 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
   private _off<T = unknown>(event: string, handler: (value: T) => void):
     void {
 
-    if (this._disposed) return;
+    assert(!this.disposed, "expected this action to not fire if disposed");
+    const previousHandlers = this._eventHandlers.get(event) as Function[];
+    assert(previousHandlers != null, "expected this handler to be registered");
+    const newHandlers = previousHandlers.filter((h) => h !== handler);
 
-    const previousHandlers = this._eventHandlers.get(event);
-    if (previousHandlers) {
-      // tslint:disable-next-line:ban-types
-      const newHandlers: Function[] = [];
-      for (const h of previousHandlers) {
-        if (h !== handler) newHandlers.push(h);
-      }
-
-      if (newHandlers.length > 0) {
-        this._eventHandlers.set(event, newHandlers);
-      } else {
-        this._eventHandlers.delete(event);
-      }
+    if (newHandlers.length > 0) {
+      this._eventHandlers.set(event, newHandlers);
+    } else {
+      this._eventHandlers.delete(event);
     }
   }
 

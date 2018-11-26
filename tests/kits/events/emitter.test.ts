@@ -132,6 +132,23 @@ describe("Emitter", () => {
       expect(spy).toBeCalledTimes(2);
     });
 
+    test("allows an event to have duplicate handlers", () => {
+      const fn = () => {};
+      emitter.on("test", fn);
+      expect(() => {
+        emitter.on("test", fn);
+      }).not.toThrow();
+    });
+
+    test("invokes each duplicate handler on emission", () => {
+      const spy = jest.fn();
+      emitter.on("test", spy);
+      emitter.on("test", spy);
+      expect(spy).not.toBeCalled();
+      emitter.emit("test", undefined);
+      expect(spy).toBeCalledTimes(2);
+    });
+
     test("returns a disposable that removes the handler on disposal", () => {
       const spy = jest.fn();
       const d = emitter.on("test", spy);
@@ -243,6 +260,23 @@ describe("Emitter", () => {
       emitter.once("test", () => { });
       emitter.emit("test", undefined);
       expect(spy).toBeCalledTimes(1);
+      emitter.emit("test", undefined);
+      expect(spy).toBeCalledTimes(2);
+    });
+
+    test("allows an event to have duplicate handlers", () => {
+      const fn = () => {};
+      emitter.once("test", fn);
+      expect(() => {
+        emitter.once("test", fn);
+      }).not.toThrow();
+    });
+
+    test("invokes each duplicate handler on emission", () => {
+      const spy = jest.fn();
+      emitter.once("test", spy);
+      emitter.once("test", spy);
+      expect(spy).not.toBeCalled();
       emitter.emit("test", undefined);
       expect(spy).toBeCalledTimes(2);
     });
