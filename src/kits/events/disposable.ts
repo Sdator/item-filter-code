@@ -24,9 +24,6 @@ export class Disposable implements IDisposable {
    * @param action An action to be taken on disposal.
    */
   constructor(private action?: () => void) {
-    if (action != null && typeof(action) !== "function") {
-      throw new Error("Disposal action passed to a Disposable wasn't a function.");
-    }
     this._disposed = false;
   }
 

@@ -65,14 +65,6 @@ describe("MappedDisposable", () => {
   });
 
   describe("size property", () => {
-    test("exists on the MappedDisposable class", () => {
-      expect(collection.size).toBeDefined();
-    });
-
-    test("is a number", () => {
-      expect(typeof collection.size === "number").toStrictEqual(true);
-    });
-
     test("returns 0 on an empty MappedDisposable", () => {
       expect(collection.size).toStrictEqual(0);
     });
@@ -113,14 +105,6 @@ describe("MappedDisposable", () => {
   });
 
   describe("disposed property", () => {
-    test("exists on the Disposable class", () => {
-      expect(collection.disposed).toBeDefined();
-    });
-
-    test("is a boolean", () => {
-      expect(typeof collection.disposed === "boolean").toStrictEqual(true);
-    });
-
     test("is initially set to false", () => {
       expect(collection.disposed).toStrictEqual(false);
     });
@@ -139,14 +123,6 @@ describe("MappedDisposable", () => {
   });
 
   describe("dispose method", () => {
-    test("exists on the MappedDisposable class", () => {
-      expect(collection.dispose).toBeDefined();
-    });
-
-    test("is a function", () => {
-      expect(typeof collection.dispose === "function").toStrictEqual(true);
-    });
-
     test("disposes of the MappedDisposable when called with no arguments", () => {
       expect(collection.disposed).toStrictEqual(false);
       collection.dispose();
@@ -197,14 +173,6 @@ describe("MappedDisposable", () => {
   });
 
   describe("add method", () => {
-    test("exists on the MappedDisposable class", () => {
-      expect(collection.add).toBeDefined();
-    });
-
-    test("is a function", () => {
-      expect(typeof collection.add === "function").toStrictEqual(true);
-    });
-
     test("takes a key:disposable pairing as a parameter", () => {
       expect(collection.size).toStrictEqual(0);
       collection.add({ "test": d1 });
@@ -270,13 +238,6 @@ describe("MappedDisposable", () => {
       }).not.toThrow();
     });
 
-    test("throws when given a non-disposable object", () => {
-      expect(() => {
-        // tslint:disable-next-line:no-any
-        collection.add({ "test": {} as any });
-      }).toThrow();
-    });
-
     test("correctly handles IDisposable objects", () => {
       const d: events.IDisposable = {
         dispose: jest.fn()
@@ -294,24 +255,9 @@ describe("MappedDisposable", () => {
         collection.add({ "test": composite });
       }).toThrow();
     });
-
-    test("throws if given an invalid array for a key:disposables pairing", () => {
-      expect(() => {
-        // tslint:disable-next-line:no-any
-        collection.add({ "test": [d1, {} as any, d2] });
-      }).toThrow();
-    });
   });
 
   describe("set method", () => {
-    test("exists on the MappedDisposable class", () => {
-      expect(collection.set).toBeDefined();
-    });
-
-    test("is a function", () => {
-      expect(typeof collection.set === "function").toStrictEqual(true);
-    });
-
     test("takes a key:disposable pairing as a parameter", () => {
       expect(collection.size).toStrictEqual(0);
       collection.set({ "test": d1 });
@@ -360,13 +306,6 @@ describe("MappedDisposable", () => {
       }).not.toThrow();
     });
 
-    test("throws when given a non-disposable object", () => {
-      expect(() => {
-        // tslint:disable-next-line:no-any
-        collection.set({ "test": {} as any });
-      }).toThrow();
-    });
-
     test("correctly handles IDisposable objects", () => {
       const d: events.IDisposable = {
         dispose: jest.fn()
@@ -384,24 +323,9 @@ describe("MappedDisposable", () => {
         collection.set({ "test": composite });
       }).toThrow();
     });
-
-    test("throws if given an invalid array for a key:disposables pairing", () => {
-      expect(() => {
-        // tslint:disable-next-line:no-any
-        collection.set({ "test": [d1, {} as any, d2] });
-      }).toThrow();
-    });
   });
 
   describe("delete method", () => {
-    test("exists on the MappedDisposable class", () => {
-      expect(collection.delete).toBeDefined();
-    });
-
-    test("is a function", () => {
-      expect(typeof collection.delete === "function").toStrictEqual(true);
-    });
-
     test("removes a key when given only a string parameter", () => {
       collection.add({ d1 });
       expect(collection.size).toStrictEqual(1);
@@ -449,14 +373,6 @@ describe("MappedDisposable", () => {
   });
 
   describe("clear method", () => {
-    test("exists on the MappedDisposable class", () => {
-      expect(collection.clear).toBeDefined();
-    });
-
-    test("is a function", () => {
-      expect(typeof collection.clear === "function").toStrictEqual(true);
-    });
-
     test("removes all entries from the collection when called", () => {
       collection.add({ d1, d2 });
       expect(collection.size).toStrictEqual(2);
@@ -484,14 +400,6 @@ describe("MappedDisposable", () => {
   });
 
   describe("has method", () => {
-    test("exists on the MappedDisposable class", () => {
-      expect(collection.has).toBeDefined();
-    });
-
-    test("is a function", () => {
-      expect(typeof collection.has === "function").toStrictEqual(true);
-    });
-
     test("returns true for a previously added key", () => {
       collection.add({ "test": d1 });
       expect(collection.has("test")).toStrictEqual(true);
@@ -501,23 +409,15 @@ describe("MappedDisposable", () => {
       expect(collection.has("test")).toStrictEqual(false);
     });
 
-    test("throws if invoked on a disposed instance", () => {
+    test("does not throw if invoked on a disposed instance", () => {
       expect(() => {
         collection.dispose();
         collection.has("test");
-      }).toThrow();
+      }).not.toThrow();
     });
   });
 
   describe("get method", () => {
-    test("exists on the MappedDisposable class", () => {
-      expect(collection.get).toBeDefined();
-    });
-
-    test("is a function", () => {
-      expect(typeof collection.get === "function").toStrictEqual(true);
-    });
-
     test("returns a previously added disposable for a key", () => {
       collection.add({ d1 });
       const result = collection.get("d1") as events.IDisposable[];

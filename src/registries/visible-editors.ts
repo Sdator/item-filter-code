@@ -48,7 +48,7 @@ export class VisibleEditorRegistry implements IDisposable {
     return result;
   }
 
-  /** A list of visble text editors containing item filters within the window. */
+  /** A list of visible text editors containing item filters within the window. */
   get filterEditors(): vscode.TextEditor[] {
     const result: vscode.TextEditor[] = [];
 
@@ -122,8 +122,8 @@ export class VisibleEditorRegistry implements IDisposable {
    * Invoke the given callback whenever a text editor is opened within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidOpenEditor: Event<Emissions["editor-opened"]> = (e, thisArg, disposables) => {
-    return this._emitter.registerEvent("editor-opened", e, thisArg, disposables);
+  onDidOpenEditor: Event<Emissions["editor-opened"]> = (e, thisArg) => {
+    return this._emitter.on("editor-opened", e, thisArg);
   }
 
   /**
@@ -131,16 +131,16 @@ export class VisibleEditorRegistry implements IDisposable {
    * is opened within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidOpenFilterEditor: Event<Emissions["filter-opened"]> = (e, thisArg, disposables) => {
-    return this._emitter.registerEvent("filter-opened", e, thisArg, disposables);
+  onDidOpenFilterEditor: Event<Emissions["filter-opened"]> = (e, thisArg) => {
+    return this._emitter.on("filter-opened", e, thisArg);
   }
 
   /**
    * Invoke the given callback whenever a text editor is closed within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidCloseEditor: Event<Emissions["editor-closed"]> = (e, thisArg, disposables) => {
-    return this._emitter.registerEvent("editor-closed", e, thisArg, disposables);
+  onDidCloseEditor: Event<Emissions["editor-closed"]> = (e, thisArg) => {
+    return this._emitter.on("editor-closed", e, thisArg);
   }
 
   /**
@@ -148,8 +148,8 @@ export class VisibleEditorRegistry implements IDisposable {
    * is closed within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidCloseFilterEditor: Event<Emissions["filter-closed"]> = (e, thisArg, disposables) => {
-    return this._emitter.registerEvent("filter-closed", e, thisArg, disposables);
+  onDidCloseFilterEditor: Event<Emissions["filter-closed"]> = (e, thisArg) => {
+    return this._emitter.on("filter-closed", e, thisArg);
   }
 
   /**
@@ -157,8 +157,8 @@ export class VisibleEditorRegistry implements IDisposable {
    * within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  observeEditors: Event<Emissions["editor-opened"]> = (e, thisArg, disposables) => {
-    return this._emitter.observeEvent("editor-opened", this._editors, e, thisArg, disposables);
+  observeEditors: Event<Emissions["editor-opened"]> = (e, thisArg) => {
+    return this._emitter.observe("editor-opened", this._editors, e, thisArg);
   }
 
   /**
@@ -166,9 +166,8 @@ export class VisibleEditorRegistry implements IDisposable {
    * opened within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  observeFilterEditors: Event<Emissions["filter-opened"]> = (e, thisArg, disposables) => {
-    return this._emitter.observeEvent("filter-opened", this._filterEditors, e,
-      thisArg, disposables);
+  observeFilterEditors: Event<Emissions["filter-opened"]> = (e, thisArg) => {
+    return this._emitter.observe("filter-opened", this._filterEditors, e, thisArg);
   }
 
   /** Registers a text editor as having been opened. */
@@ -183,13 +182,13 @@ export class VisibleEditorRegistry implements IDisposable {
     this._emitter.emit("filter-opened", editor);
   }
 
-  /** Unregisters a previously opened text editor. */
+  /** Unregister a previously opened text editor. */
   private _closeEditor(editor: vscode.TextEditor): void {
     this._editors.delete(editor);
     this._emitter.emit("editor-closed", editor);
   }
 
-  /** Unregisters a previously opened filter text editor. */
+  /** Unregister a previously opened filter text editor. */
   private _closeFilter(editor: vscode.TextEditor): void {
     this._filterEditors.delete(editor);
     this._emitter.emit("filter-closed", editor);
@@ -240,7 +239,7 @@ function updateEditors(updater: IUpdater, currentEditors: Set<vscode.TextEditor>
     }
   }
 
-  // Repopulate the visibile editors set with the new editor list.
+  // Repopulate the visible editors set with the new editor list.
   currentEditors.clear();
   for (const editor of matchedFilters) {
     currentEditors.add(editor);

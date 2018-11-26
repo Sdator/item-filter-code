@@ -9,23 +9,16 @@ import { isDisposable, Disposable } from "../../../src/kits/events";
 describe("Disposable", () => {
   describe("constructor", () => {
     test("it returns a disposable", () => {
-      const d = new Disposable(() => {});
+      const d = new Disposable(() => { });
       expect(isDisposable(d)).toStrictEqual(true);
       d.dispose();
     });
 
     test("it optionally takes an action", () => {
       expect(() => {
-        const d = new Disposable(() => {});
+        const d = new Disposable(() => { });
         d.dispose();
       }).not.toThrow();
-    });
-
-    test("throws if that action isn't a function", () => {
-      expect(() => {
-        // tslint:disable-next-line:no-any
-        (<any>new Disposable)(42);
-      }).toThrow();
     });
 
     test("invokes the action when ::dispose() is called", () => {
@@ -56,14 +49,6 @@ describe("Disposable", () => {
       disposable.dispose();
     });
 
-    test("exists on the Disposable class", () => {
-      expect(disposable.disposed).toBeDefined();
-    });
-
-    test("is a boolean", () => {
-      expect(typeof disposable.disposed === "boolean").toStrictEqual(true);
-    });
-
     test("is initially set to false", () => {
       expect(disposable.disposed).toStrictEqual(false);
     });
@@ -86,12 +71,6 @@ describe("Disposable", () => {
 
     beforeEach(() => {
       disposable = new Disposable;
-    });
-
-    test("exists on the Disposable class", () => {
-      expect(disposable.dispose).toBeDefined();
-      expect(typeof disposable.dispose === "function").toStrictEqual(true);
-      disposable.dispose();
     });
 
     test("disposes of the Disposable when called", () => {

@@ -79,16 +79,16 @@ export class ItemFilterManager implements IDisposable {
    * Invoke the given callback whenever an item filter is opened within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidOpenFilter: Event<Emissions["opened"]> = (e, thisArg, disposables) => {
-    return this._emitter.registerEvent("opened", e, thisArg, disposables);
+  onDidOpenFilter: Event<Emissions["opened"]> = (e, thisArg) => {
+    return this._emitter.on("opened", e, thisArg);
   }
 
   /**
    * Invoke the given callback whenever an item filter is closed within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidCloseFilter: Event<Emissions["closed"]> = (e, thisArg, disposables) => {
-    return this._emitter.registerEvent("closed", e, thisArg, disposables);
+  onDidCloseFilter: Event<Emissions["closed"]> = (e, thisArg) => {
+    return this._emitter.on("closed", e, thisArg);
   }
 
   /**
@@ -96,22 +96,22 @@ export class ItemFilterManager implements IDisposable {
    * within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  observeFilters: Event<Emissions["opened"]> = (e, thisArg, disposables) => {
+  observeFilters: Event<Emissions["opened"]> = (e, thisArg) => {
     const collection: Set<FilterOpenedEvent> = new Set();
 
     for (const [uri, filter] of this._activeFilters) {
       collection.add({ uri, filter });
     }
 
-    return this._emitter.observeEvent("opened", collection, e, thisArg, disposables);
+    return this._emitter.observe("opened", collection, e, thisArg);
   }
 
   /**
    * Invoke the given callback whenever an item filter has changed within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidChangeFilter: Event<Emissions["changed"]> = (e, thisArg, disposables) => {
-    return this._emitter.registerEvent("changed", e, thisArg, disposables);
+  onDidChangeFilter: Event<Emissions["changed"]> = (e, thisArg) => {
+    return this._emitter.on("changed", e, thisArg);
   }
 
   /** Opens an item filter with the contents of the given document. */

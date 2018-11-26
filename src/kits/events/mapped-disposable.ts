@@ -5,7 +5,6 @@
  * ===========================================================================*/
 
 import { IDisposable } from "./index";
-import { isDisposable } from "./guards";
 import { uniqueArrayMerge } from "../../helpers";
 
 /**
@@ -35,15 +34,13 @@ export class MappedDisposable implements IDisposable {
     this._disposed = false;
     this._disposableSets = new Map;
 
-    if (disposables == null) {
-      return;
-    }
-
-    // It's not possible to have duplicate keys given that this is a constructor
-    // with a single object input.
-    for (const key of Object.keys(disposables)) {
-      const value = disposables[key];
-      this._set(key, value);
+    if (disposables != null) {
+      // It's not possible to have duplicate keys given that this is a constructor
+      // with a single object input.
+      for (const key of Object.keys(disposables)) {
+        const value = disposables[key];
+        this._set(key, value);
+      }
     }
   }
 
@@ -91,9 +88,7 @@ export class MappedDisposable implements IDisposable {
    * @param disposables An object mapping keys to disposables.
    */
   add(disposables: { [key: string]: IDisposable | IDisposable[] | undefined }): void {
-    if (this._disposed) {
-      throw new Error("add attempted on a disposed instance");
-    }
+    this._checkIfDisposed();
 
     for (const key of Object.keys(disposables)) {
       this._add(key, disposables[key]);
@@ -112,9 +107,7 @@ export class MappedDisposable implements IDisposable {
    * @param disposables An object mapping keys to disposables.
    */
   set(disposables: { [key: string]: IDisposable | IDisposable[] | undefined }): void {
-    if (this._disposed) {
-      throw new Error("set attempted on a disposed instance");
-    }
+    this._checkIfDisposed();
 
     for (const key of Object.keys(disposables)) {
       this._set(key, disposables[key]);
@@ -132,9 +125,7 @@ export class MappedDisposable implements IDisposable {
    * @param disposables The disposables to be removed from the composite.
    */
   delete(key: string, disposables?: IDisposable | IDisposable[]): void {
-    if (this._disposed) {
-      throw new Error("delete attempted on a disposed instance");
-    }
+    this._checkIfDisposed();
 
     // Check to see if this key existed regardless of the value of the second
     // parameter, as this is a programmer error.
@@ -155,27 +146,19 @@ export class MappedDisposable implements IDisposable {
 
   /** Clear the collection's contents without disposing of any contained disposables. */
   clear(): void {
-    if (this._disposed) {
-      throw new Error("clear attempted on a disposed instance");
-    }
+    this._checkIfDisposed();
 
     this._disposableSets.clear();
   }
 
   /** Returns whether this collection contains disposables for the given key. */
   has(key: string): boolean {
-    if (this._disposed) {
-      throw new Error("has attempted on a disposed instance");
-    }
-
     return this._disposableSets.has(key);
   }
 
   /** Returns the disposables associated with the given key. */
   get(key: string): IDisposable[] | undefined {
-    if (this._disposed) {
-      throw new Error("get attempted on a disposed instance");
-    }
+    this._checkIfDisposed();
 
     const disposables = this._disposableSets.get(key);
     return disposables == null ? undefined : disposables.slice();
@@ -187,13 +170,10 @@ export class MappedDisposable implements IDisposable {
     if (value == null) {
       this._disposableSets.delete(key);
     } else if (value instanceof Array) {
-      this._verifyDisposableArray(value);
       this._disposableSets.set(key, uniqueArrayMerge(existingValues, value));
-    } else if (isDisposable(value)) {
+    } else {
       existingValues.push(value);
       this._disposableSets.set(key, existingValues);
-    } else {
-      throw new Error("attempted to add a non-disposable to a MappedDisposable");
     }
   }
 
@@ -201,20 +181,11 @@ export class MappedDisposable implements IDisposable {
     if (value == null) {
       this._disposableSets.delete(key);
     } else if (value instanceof Array) {
-      this._verifyDisposableArray(value);
       // We want to clone the array itself, retaining the references to the
       // disposables. This is thus intentionally a shallow copy.
       this._disposableSets.set(key, value.slice());
-    } else if (isDisposable(value)) {
-      this._disposableSets.set(key, [value]);
     } else {
-      throw new Error("attempted to add a non-disposable to a MappedDisposable");
-    }
-  }
-
-  private _verifyDisposableArray(values: IDisposable[]): void {
-    if (values.some(value => !isDisposable(value))) {
-      throw new Error("attempted to add a non-disposable within an array to a MappedDisposable");
+      this._disposableSets.set(key, [value]);
     }
   }
 
@@ -227,6 +198,12 @@ export class MappedDisposable implements IDisposable {
       this._disposableSets.delete(key);
     } else {
       throw new Error(`attempted to dispose of unknown key "${key}"`);
+    }
+  }
+
+  private _checkIfDisposed(): void {
+    if (this._disposed) {
+      throw new Error("modification or access attempted on a disposed instance");
     }
   }
 }

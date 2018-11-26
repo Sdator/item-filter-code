@@ -5,7 +5,6 @@
  * ===========================================================================*/
 
 import { IDisposable } from "./index";
-import { isDisposable } from "./guards";
 
 /**
  * Aggregates multiple disposable objects together into a single disposable,
@@ -46,9 +45,7 @@ export class CompositeDisposable implements IDisposable {
 
   /** Dispose of each disposable previously added to this composite. */
   dispose(): void {
-    if (this._disposed) {
-      return;
-    }
+    if (this._disposed) return;
 
     this._disposed = true;
     while (this._disposables.length) {
@@ -64,51 +61,39 @@ export class CompositeDisposable implements IDisposable {
    * @param disposables Disposable objects to add to the composite.
    */
   add(disposables: IDisposable | IDisposable[]): void {
-    if (this._disposed) {
-      throw new Error("add attempted on a disposed CompositeDisposable");
-    }
+    this._checkIfDisposed();
 
     if (disposables instanceof Array) {
       for (const disposable of disposables) {
-        this._addIfDisposable(disposable);
+        this._disposables.push(disposable);
       }
     } else {
-      this._addIfDisposable(disposables);
+      this._disposables.push(disposables);
     }
   }
 
   /** Clear all disposables within the composite. */
   clear(): void {
-    if (this._disposed) {
-      throw new Error("clear attempted on a disposed CompositeDisposable");
-    }
+    this._checkIfDisposed();
 
     this._disposables.length = 0;
   }
 
   /** Remove a previously added disposable from the composite. */
   delete(disposable: IDisposable): void {
-    if (this._disposed) {
-      throw new Error("delete attempted on a disposed CompositeDisposable");
-    }
+    this._checkIfDisposed();
 
     this._disposables = this._disposables.filter(d => d === disposable ? false : true);
   }
 
   /** Returns a boolean indicating whether the given entity exists within the composite. */
   has(disposable: IDisposable): boolean {
-    if (this._disposed) {
-      throw new Error("get attempted on a disposed CompositeDisposable");
-    }
-
     return this._disposables.includes(disposable);
   }
 
-  private _addIfDisposable(disposable: IDisposable): void {
-    if (isDisposable(disposable)) {
-      this._disposables.push(disposable);
-    } else {
-      throw new Error("attempted to add a non-disposable object");
+  private _checkIfDisposed(): void {
+    if (this._disposed) {
+      throw new Error("modification or access attempted on a disposed instance");
     }
   }
 }

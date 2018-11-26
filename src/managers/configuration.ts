@@ -6,7 +6,7 @@
 
 import * as vscode from "vscode";
 
-import { Emitter, Event, IDisposable } from "../kits/events";
+import { Disposable, Emitter, Event, IDisposable } from "../kits/events";
 import { ConfigurationValues } from "../types";
 
 /** Type information for the ConfigurationManager's Emitter. */
@@ -44,8 +44,8 @@ export class ConfigurationManager implements IDisposable {
    * Visual Studio Code.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidChange: Event<Emissions["change"]> = (e, thisArg, disposables) => {
-    return this._emitter.registerEvent("change", e, thisArg, disposables);
+  onDidChange: Event<Emissions["change"]> = (e, thisArg) => {
+    return this._emitter.on("change", e, thisArg);
   }
 
   /** Queries Visual Studio Code in order to retrieve a fully up-to-date configuration. */
