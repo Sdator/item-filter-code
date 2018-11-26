@@ -28,7 +28,7 @@ describe("MappedDisposable", () => {
 
   describe("constructor", () => {
     test("returns a disposable", () => {
-      expect(events.isDisposable(collection)).toStrictEqual(true);
+      expect(events.isDisposable(collection)).toBeTrue();
     });
 
     test("does not require any parameters", () => {
@@ -106,12 +106,12 @@ describe("MappedDisposable", () => {
 
   describe("disposed property", () => {
     test("is initially set to false", () => {
-      expect(collection.disposed).toStrictEqual(false);
+      expect(collection.disposed).toBeFalse();
     });
 
     test("is set to true whenever dispose() is called", () => {
       collection.dispose();
-      expect(collection.disposed).toStrictEqual(true);
+      expect(collection.disposed).toBeTrue();
     });
 
     test("throws when set", () => {
@@ -124,18 +124,18 @@ describe("MappedDisposable", () => {
 
   describe("dispose method", () => {
     test("disposes of the MappedDisposable when called with no arguments", () => {
-      expect(collection.disposed).toStrictEqual(false);
+      expect(collection.disposed).toBeFalse();
       collection.dispose();
-      expect(collection.disposed).toStrictEqual(true);
+      expect(collection.disposed).toBeTrue();
     });
 
     test("disposes of a specific key:disposable pairing when called with a string", () => {
       collection.add({ "test": composite });
-      expect(composite.disposed).toStrictEqual(false);
-      expect(collection.disposed).toStrictEqual(false);
+      expect(composite.disposed).toBeFalse();
+      expect(collection.disposed).toBeFalse();
       collection.dispose("test");
-      expect(composite.disposed).toStrictEqual(true);
-      expect(collection.disposed).toStrictEqual(false);
+      expect(composite.disposed).toBeTrue();
+      expect(collection.disposed).toBeFalse();
     });
 
     test("disposes of each key's value when called with multiple strings", () => {
@@ -145,17 +145,17 @@ describe("MappedDisposable", () => {
         composite
       });
 
-      expect(collection.disposed).toStrictEqual(false);
-      expect(d1.disposed).toStrictEqual(false);
-      expect(d2.disposed).toStrictEqual(false);
-      expect(composite.disposed).toStrictEqual(false);
+      expect(collection.disposed).toBeFalse();
+      expect(d1.disposed).toBeFalse();
+      expect(d2.disposed).toBeFalse();
+      expect(composite.disposed).toBeFalse();
 
       collection.dispose(["d1", "d2"]);
 
-      expect(collection.disposed).toStrictEqual(false);
-      expect(d1.disposed).toStrictEqual(true);
-      expect(d2.disposed).toStrictEqual(true);
-      expect(composite.disposed).toStrictEqual(false);
+      expect(collection.disposed).toBeFalse();
+      expect(d1.disposed).toBeTrue();
+      expect(d2.disposed).toBeTrue();
+      expect(composite.disposed).toBeFalse();
     });
 
     test("does not throw when called multiple times", () => {
@@ -178,14 +178,14 @@ describe("MappedDisposable", () => {
       collection.add({ "test": d1 });
       expect(collection.size).toStrictEqual(1);
       collection.dispose();
-      expect(d1.disposed).toStrictEqual(true);
+      expect(d1.disposed).toBeTrue();
     });
 
     test("takes a key:disposables pairing as a parameter", () => {
       collection.add({ "test": [d1, d2] });
       expect(collection.size).toStrictEqual(1);
       collection.dispose();
-      expect(d1.disposed && d2.disposed).toStrictEqual(true);
+      expect(d1.disposed && d2.disposed).toBeTrue();
     });
 
     test("takes multiple key:disposable pairings as a parameter", () => {
@@ -195,7 +195,7 @@ describe("MappedDisposable", () => {
       });
       expect(collection.size).toStrictEqual(2);
       collection.dispose();
-      expect(d1.disposed && d2.disposed && composite.disposed).toStrictEqual(true);
+      expect(d1.disposed && d2.disposed && composite.disposed).toBeTrue();
     });
 
     test("does not overwrite existing key:disposable pairings", () => {
@@ -203,7 +203,7 @@ describe("MappedDisposable", () => {
       collection.add({ "test": d2 });
       expect(collection.size).toStrictEqual(1);
       collection.dispose();
-      expect(d1.disposed && d2.disposed).toStrictEqual(true);
+      expect(d1.disposed && d2.disposed).toBeTrue();
     });
 
     test("orders combined pairings old to new", () => {
@@ -263,14 +263,14 @@ describe("MappedDisposable", () => {
       collection.set({ "test": d1 });
       expect(collection.size).toStrictEqual(1);
       collection.dispose();
-      expect(d1.disposed).toStrictEqual(true);
+      expect(d1.disposed).toBeTrue();
     });
 
     test("takes a key:disposables pairing as a parameter", () => {
       collection.set({ "test": [d1, d2] });
       expect(collection.size).toStrictEqual(1);
       collection.dispose();
-      expect(d1.disposed && d2.disposed).toStrictEqual(true);
+      expect(d1.disposed && d2.disposed).toBeTrue();
     });
 
     test("takes multiple key:disposable pairings as a parameter", () => {
@@ -280,7 +280,7 @@ describe("MappedDisposable", () => {
       });
       expect(collection.size).toStrictEqual(2);
       collection.dispose();
-      expect(d1.disposed && d2.disposed && composite.disposed).toStrictEqual(true);
+      expect(d1.disposed && d2.disposed && composite.disposed).toBeTrue();
     });
 
     test("overwrites existing key:disposable pairings", () => {
@@ -288,8 +288,8 @@ describe("MappedDisposable", () => {
       collection.set({ "test": d2 });
       expect(collection.size).toStrictEqual(1);
       collection.dispose();
-      expect(d1.disposed).toStrictEqual(false);
-      expect(d2.disposed).toStrictEqual(true);
+      expect(d1.disposed).toBeFalse();
+      expect(d2.disposed).toBeTrue();
     });
 
     test("removes the pairing if given key:undefined", () => {
@@ -339,22 +339,22 @@ describe("MappedDisposable", () => {
       collection.delete("test", [d1, d2]);
       expect(collection.size).toStrictEqual(1);
       collection.dispose();
-      expect(d1.disposed).toStrictEqual(false);
-      expect(d2.disposed).toStrictEqual(false);
-      expect(composite.disposed).toStrictEqual(true);
+      expect(d1.disposed).toBeFalse();
+      expect(d2.disposed).toBeFalse();
+      expect(composite.disposed).toBeTrue();
     });
 
     test("does not dispose to deleted disposables", () => {
       collection.add({ "test": d1 });
       collection.delete("test");
-      expect(d1.disposed).toStrictEqual(false);
+      expect(d1.disposed).toBeFalse();
     });
 
     test("does not dispose to specifically deleted disposables", () => {
       collection.add({ "test": d1 });
       expect(collection.size).toStrictEqual(1);
       collection.delete("test", d1);
-      expect(d1.disposed).toStrictEqual(false);
+      expect(d1.disposed).toBeFalse();
     });
 
     test("throws when given an invalid key", () => {
@@ -383,12 +383,12 @@ describe("MappedDisposable", () => {
     test("does not dispose of any removed entries", () => {
       collection.add({ d1, d2 });
       collection.clear();
-      expect(d1.disposed || d2.disposed).toStrictEqual(false);
+      expect(d1.disposed || d2.disposed).toBeFalse();
     });
 
     test("does not dispose to the instance", () => {
       collection.clear();
-      expect(collection.disposed).toStrictEqual(false);
+      expect(collection.disposed).toBeFalse();
     });
 
     test("throws if invoked on a disposed instance", () => {
@@ -402,11 +402,11 @@ describe("MappedDisposable", () => {
   describe("has method", () => {
     test("returns true for a previously added key", () => {
       collection.add({ "test": d1 });
-      expect(collection.has("test")).toStrictEqual(true);
+      expect(collection.has("test")).toBeTrue();
     });
 
     test("returns false for an unknown key", () => {
-      expect(collection.has("test")).toStrictEqual(false);
+      expect(collection.has("test")).toBeFalse();
     });
 
     test("does not throw if invoked on a disposed instance", () => {

@@ -3,5 +3,6 @@
   "testEnvironment": "node",
   "moduleFileExtensions": ["ts", "js", "json"],
   "testMatch": null,
-  "testRegex": "tests/.*\\.ts$"
+  "testRegex": "tests/.*\\.ts$",
+  "setupTestFrameworkScriptFile": "jest-extended"
 }

@@ -9,38 +9,38 @@ import * as events from "../../../src/kits/events";
 describe("isDisposable()", () => {
   test("returns true when given a Disposable", () => {
     const disposable = new events.Disposable;
-    expect(events.isDisposable(disposable)).toStrictEqual(true);
+    expect(events.isDisposable(disposable)).toBeTrue();
   });
 
   test("returns true when given a CompositeDisposable", () => {
     const composite = new events.CompositeDisposable;
-    expect(events.isDisposable(composite)).toStrictEqual(true);
+    expect(events.isDisposable(composite)).toBeTrue();
   });
 
   test("returns true when given a MappedDisposable", () => {
     const collection = new events.MappedDisposable;
-    expect(events.isDisposable(collection)).toStrictEqual(true);
+    expect(events.isDisposable(collection)).toBeTrue();
   });
 
   test("returns true when given any object with a dispose method", () => {
     const disposable = {
       dispose: () => { }
     };
-    expect(events.isDisposable(disposable)).toStrictEqual(true);
+    expect(events.isDisposable(disposable)).toBeTrue();
   });
 
   test("returns false when given a primitive type", () => {
-    expect(events.isDisposable(42)).toStrictEqual(false);
-    expect(events.isDisposable(null)).toStrictEqual(false);
-    expect(events.isDisposable(undefined)).toStrictEqual(false);
-    expect(events.isDisposable(false)).toStrictEqual(false);
-    expect(events.isDisposable("test")).toStrictEqual(false);
-    expect(events.isDisposable(Symbol("test"))).toStrictEqual(false);
+    expect(events.isDisposable(42)).toBeFalse();
+    expect(events.isDisposable(null)).toBeFalse();
+    expect(events.isDisposable(undefined)).toBeFalse();
+    expect(events.isDisposable(false)).toBeFalse();
+    expect(events.isDisposable("test")).toBeFalse();
+    expect(events.isDisposable(Symbol("test"))).toBeFalse();
   });
 
   test("returns false when given any other object", () => {
-    expect(events.isDisposable({})).toStrictEqual(false);
-    expect(events.isDisposable(() => { })).toStrictEqual(false);
-    expect(events.isDisposable([])).toStrictEqual(false);
+    expect(events.isDisposable({})).toBeFalse();
+    expect(events.isDisposable(() => { })).toBeFalse();
+    expect(events.isDisposable([])).toBeFalse();
   });
 });

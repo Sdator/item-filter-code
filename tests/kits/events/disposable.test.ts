@@ -10,7 +10,7 @@ describe("Disposable", () => {
   describe("constructor", () => {
     test("it returns a disposable", () => {
       const d = new Disposable(() => { });
-      expect(isDisposable(d)).toStrictEqual(true);
+      expect(isDisposable(d)).toBeTrue();
       d.dispose();
     });
 
@@ -50,12 +50,12 @@ describe("Disposable", () => {
     });
 
     test("is initially set to false", () => {
-      expect(disposable.disposed).toStrictEqual(false);
+      expect(disposable.disposed).toBeFalse();
     });
 
     test("is set to true whenever dispose() is called", () => {
       disposable.dispose();
-      expect(disposable.disposed).toStrictEqual(true);
+      expect(disposable.disposed).toBeTrue();
     });
 
     test("throws when set", () => {
@@ -74,15 +74,15 @@ describe("Disposable", () => {
     });
 
     test("disposes of the Disposable when called", () => {
-      expect(disposable.disposed).toStrictEqual(false);
+      expect(disposable.disposed).toBeFalse();
       disposable.dispose();
-      expect(disposable.disposed).toStrictEqual(true);
+      expect(disposable.disposed).toBeTrue();
     });
 
     test("does not throw when called multiple times", () => {
       expect(() => {
         disposable.dispose();
-        expect(disposable.disposed).toStrictEqual(true);
+        expect(disposable.disposed).toBeTrue();
         disposable.dispose();
       }).not.toThrow();
     });

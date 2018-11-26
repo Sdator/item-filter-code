@@ -35,9 +35,9 @@ export class SoundDecorationManager implements IDisposable {
     });
 
     this._subscriptions = new CompositeDisposable([
-      editorRegistry.observeFilterEditors(this._open, this),
-      editorRegistry.onDidCloseFilterEditor(this._close, this),
-      filterManager.onDidChangeFilter(this._update, this)
+      editorRegistry.observeFilterEditors(this._open, false, this),
+      editorRegistry.onDidCloseFilterEditor(this._close, false, this),
+      filterManager.onDidChangeFilter(this._update, false, this)
     ]);
   }
 

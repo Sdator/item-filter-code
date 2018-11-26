@@ -24,8 +24,9 @@ export interface Event<T1, T2 = unknown> {
    * a listener function as argument.
    *
    * @param listener The listener function will be called when the event happens.
+   * @param preempt Whether to place this handler ahead of any existing ones.
    * @param thisArgs The `this`-argument which will be used when calling the event listener.
    * @return A disposable which unsubscribes the event listener.
    */
-  (listener: (e: T1) => T2, thisArgs?: unknown): IDisposable;
+  (listener: (e: T1) => T2, preempt?: boolean, thisArgs?: unknown): IDisposable;
 }

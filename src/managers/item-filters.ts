@@ -56,10 +56,10 @@ export class ItemFilterManager implements IDisposable {
     this._emitter = new Emitter();
 
     this._subscriptions = new CompositeDisposable([
-      this._documentRegistry.observeFilters(this._openDocument, this),
-      this._documentRegistry.onDidCloseFilter(this._closeDocument, this),
-      this._documentRegistry.onDidChangeFilter(this._updateDocument, this),
-      this._configManager.onDidChange(this._updateConfig, this)
+      this._documentRegistry.observeFilters(this._openDocument, false, this),
+      this._documentRegistry.onDidCloseFilter(this._closeDocument, false, this),
+      this._documentRegistry.onDidChangeFilter(this._updateDocument, false, this),
+      this._configManager.onDidChange(this._updateConfig, false, this)
     ]);
   }
 
@@ -79,16 +79,16 @@ export class ItemFilterManager implements IDisposable {
    * Invoke the given callback whenever an item filter is opened within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidOpenFilter: Event<Emissions["opened"]> = (e, thisArg) => {
-    return this._emitter.on("opened", e, thisArg);
+  onDidOpenFilter: Event<Emissions["opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("opened", e, preempt, thisArg);
   }
 
   /**
    * Invoke the given callback whenever an item filter is closed within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidCloseFilter: Event<Emissions["closed"]> = (e, thisArg) => {
-    return this._emitter.on("closed", e, thisArg);
+  onDidCloseFilter: Event<Emissions["closed"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("closed", e, preempt, thisArg);
   }
 
   /**
@@ -96,22 +96,22 @@ export class ItemFilterManager implements IDisposable {
    * within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  observeFilters: Event<Emissions["opened"]> = (e, thisArg) => {
+  observeFilters: Event<Emissions["opened"]> = (e, preempt, thisArg) => {
     const collection: Set<FilterOpenedEvent> = new Set();
 
     for (const [uri, filter] of this._activeFilters) {
       collection.add({ uri, filter });
     }
 
-    return this._emitter.observe("opened", collection, e, thisArg);
+    return this._emitter.observe("opened", collection, e, preempt, thisArg);
   }
 
   /**
    * Invoke the given callback whenever an item filter has changed within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidChangeFilter: Event<Emissions["changed"]> = (e, thisArg) => {
-    return this._emitter.on("changed", e, thisArg);
+  onDidChangeFilter: Event<Emissions["changed"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("changed", e, preempt, thisArg);
   }
 
   /** Opens an item filter with the contents of the given document. */

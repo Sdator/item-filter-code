@@ -58,16 +58,17 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
    * @param event The event name that will trigger the handler on emission.
    * @param handler The function to invoke when `::emit` is called with the given
    * event name.
+   * @param preempt Whether to place this handler ahead of any existing ones.
    * @param thisArg The context in which the callback should be invoked.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   on<T1 extends keyof Emissions, T2 = unknown>(event: T1, handler: (value: Emissions[T1]) => void,
-    thisArg?: T2): Disposable {
+    preempt = false, thisArg?: T2): Disposable {
 
     this._checkIfDisposed();
 
     const fn = this._bindIfPossible(handler, thisArg);
-    return this._on(event, fn);
+    return this._on(event, fn, preempt);
   }
 
   /**
@@ -77,11 +78,12 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
    * @param event The event name that will trigger the handler on emission.
    * @param handler The function to invoke when `::emit` is called with the given
    * event name.
+   * @param preempt Whether to place this handler ahead of any existing ones.
    * @param thisArg The context in which the callback should be invoked.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   once<T1 extends keyof Emissions, T2 = unknown>(event: T1, handler:
-    (value: Emissions[T1]) => void, thisArg?: T2): Disposable {
+    (value: Emissions[T1]) => void, preempt = false, thisArg?: T2): Disposable {
 
     this._checkIfDisposed();
 
@@ -90,25 +92,26 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
 
     const wrapper: typeof handler = (value) => {
       disposable.dispose();
-      // TODO(glen): ensure that this will have the right `this` context.
       fn(value);
     };
 
-    disposable = this._on(event, wrapper);
+    disposable = this._on(event, wrapper, preempt);
     return disposable;
   }
 
   /**
-   * Simplifies the creation of observation functions within code utilizing Emitters.
+   * Invokes each emission from the given collection on the given handler, then
+   * registers that handler to be invoked whenever the given event is emitted.
    *
    * @param event The name of the event.
    * @param collection An iterable collection containing all previous emissions.
    * @param handler The callback to be invoked whenever the event is fired.
+   * @param preempt Whether to place this handler ahead of any existing ones.
    * @param thisArg The context in which the callback should be invoked.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   observe<T1 extends keyof Emissions, T2 = unknown>(event: T1, collection: Iterable<Emissions[T1]>,
-    handler: (param: Emissions[T1]) => void, thisArg?: T2): IDisposable {
+    handler: (param: Emissions[T1]) => void, preempt = false, thisArg?: T2): IDisposable {
 
     this._checkIfDisposed();
 
@@ -118,56 +121,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
       fn(item);
     }
 
-    return this._on(event, fn, false);
-  }
-
-  /**
-   * Register the given handler function to be invoked before all other
-   * handlers existing at the time of subscription whenever events by the
-   * given name are emitted via `::emit`.
-   *
-   * @param event The event name that will trigger the handler on emission.
-   * @param handler The function to invoke when `::emit` is called with the given
-   * event name.
-   * @param thisArg The context in which the callback should be invoked.
-   * @return A disposable on which `.dispose()` can be called to unsubscribe.
-   */
-  preempt<T1 extends keyof Emissions, T2 = unknown>(event: T1, handler: (value:
-    Emissions[T1]) => void, thisArg?: T2): Disposable {
-
-    this._checkIfDisposed();
-
-    const fn = this._bindIfPossible(handler, thisArg);
-    return this._on(event, fn, true);
-  }
-
-  /**
-   * Register the given handler function to be invoked before all other handlers
-   * existing at the time of subscription only once the next time events by the
-   * given name are emitted via `::emit`. After being invoked, it will automatically
-   * be unsubscribed.
-   *
-   * @param event The event name that will trigger the handler on emission.
-   * @param handler The function to invoke when `::emit` is called with the given
-   * event name.
-   * @param thisArg The context in which the callback should be invoked.
-   * @return A disposable on which `.dispose()` can be called to unsubscribe.
-   */
-  preemptOnce<T1 extends keyof Emissions, T2 = unknown>(event: T1, handler: (value:
-    Emissions[T1]) => void, thisArg?: T2): Disposable {
-
-    this._checkIfDisposed();
-
-    const fn = this._bindIfPossible(handler, thisArg);
-    let disposable: Disposable;
-
-    const wrapper: typeof handler = (value) => {
-      disposable.dispose();
-      fn(value);
-    };
-
-    disposable = this._on(event, wrapper, true);
-    return disposable;
+    return this._on(event, fn, preempt);
   }
 
   /**

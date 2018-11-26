@@ -19,12 +19,12 @@ describe("Emitter", () => {
 
   describe("disposed property", () => {
     test("is false on instance construction", () => {
-      expect(emitter.disposed).toStrictEqual(false);
+      expect(emitter.disposed).toBeFalse();
     });
 
     test("is true following an invocation of dispose()", () => {
       emitter.dispose();
-      expect(emitter.disposed).toStrictEqual(true);
+      expect(emitter.disposed).toBeTrue();
     });
 
     test("throws when set", () => {
@@ -46,7 +46,7 @@ describe("Emitter", () => {
 
     test("does not dispose of the Emitter", () => {
       emitter.clear();
-      expect(emitter.disposed).toStrictEqual(false);
+      expect(emitter.disposed).toBeFalse();
     });
 
     test("throws when invoked on a disposed instance", () => {
@@ -67,9 +67,9 @@ describe("Emitter", () => {
     });
 
     test("disposes of the Emitter instance", () => {
-      expect(emitter.disposed).toStrictEqual(false);
+      expect(emitter.disposed).toBeFalse();
       emitter.dispose();
-      expect(emitter.disposed).toStrictEqual(true);
+      expect(emitter.disposed).toBeTrue();
     });
 
     test("does not throw when invoked on a disposed instance", () => {
@@ -104,16 +104,22 @@ describe("Emitter", () => {
       expect(s1).toBeCalledTimes(1);
     });
 
-    test("invokes handlers in the order in which they were added", () => {
-      let n = 0;
-      const fn = () => ++n;
-      const s1 = jest.fn(fn);
-      const s2 = jest.fn(fn);
+    test("appends its handler by default", () => {
+      const s1 = jest.fn();
+      const s2 = jest.fn();
       emitter.on("test", s1);
       emitter.on("test", s2);
       emitter.emit("test", undefined);
-      expect(s1).toHaveLastReturnedWith(1);
-      expect(s2).toHaveLastReturnedWith(2);
+      expect(s1).toHaveBeenCalledBefore(s2);
+    });
+
+    test("prepends its handler if the third parameter is true", () => {
+      const s1 = jest.fn();
+      const s2 = jest.fn();
+      emitter.on("test", s1);
+      emitter.on("test", s2, true);
+      emitter.emit("test", undefined);
+      expect(s2).toHaveBeenCalledBefore(s1);
     });
 
     test("does not remove handlers following an emission", () => {
@@ -142,6 +148,20 @@ describe("Emitter", () => {
       expect(spy).not.toBeCalled();
       emitter.emit("e1", undefined);
       expect(spy).not.toBeCalled();
+    });
+
+    test("allows you to set the 'this' context of the handler", () => {
+      const context = { a: 42, b: 101 };
+      const spy = jest.fn();
+
+      emitter.on("test", function (this: typeof context): void {
+        spy(this.a);
+        spy(this.b);
+      }, false, context);
+      emitter.emit("test", undefined);
+
+      expect(spy).toHaveBeenNthCalledWith(1, 42);
+      expect(spy).toHaveBeenNthCalledWith(2, 101);
     });
 
     test("throws when invoked on a disposed instance", () => {
@@ -176,16 +196,22 @@ describe("Emitter", () => {
       expect(s1).toBeCalledTimes(1);
     });
 
-    test("invokes handlers in the order in which they were added", () => {
-      let n = 0;
-      const fn = () => ++n;
-      const s1 = jest.fn(fn);
-      const s2 = jest.fn(fn);
+    test("appends its handler by default", () => {
+      const s1 = jest.fn();
+      const s2 = jest.fn();
       emitter.once("test", s1);
       emitter.once("test", s2);
       emitter.emit("test", undefined);
-      expect(s1).toHaveLastReturnedWith(1);
-      expect(s2).toHaveLastReturnedWith(2);
+      expect(s1).toHaveBeenCalledBefore(s2);
+    });
+
+    test("prepends its handler if the third parameter is true", () => {
+      const s1 = jest.fn();
+      const s2 = jest.fn();
+      emitter.once("test", s1);
+      emitter.once("test", s2, true);
+      emitter.emit("test", undefined);
+      expect(s2).toHaveBeenCalledBefore(s1);
     });
 
     test("removes the handler following an emission", () => {
@@ -239,6 +265,20 @@ describe("Emitter", () => {
       expect(spy).not.toBeCalled();
     });
 
+    test("allows you to set the 'this' context of the handler", () => {
+      const context = { a: 42, b: 101 };
+      const spy = jest.fn();
+
+      emitter.once("test", function (this: typeof context): void {
+        spy(this.a);
+        spy(this.b);
+      }, false, context);
+      emitter.emit("test", undefined);
+
+      expect(spy).toHaveBeenNthCalledWith(1, 42);
+      expect(spy).toHaveBeenNthCalledWith(2, 101);
+    });
+
     test("throws when invoked on a disposed instance", () => {
       emitter.dispose();
       expect(() => {
@@ -247,13 +287,8 @@ describe("Emitter", () => {
     });
   });
 
-  describe("preempt method", () => {
-    // TODO(glen): write preempt tests.
-    pending("TODO");
-  });
-
-  describe("preemptOnce method", () => {
-    // TODO(glen): write preemptOnce tests.
+  describe("observe method", () => {
+    // TODO(glen): write tests for `observe`.
     pending("TODO");
   });
 
@@ -322,7 +357,7 @@ describe("Emitter", () => {
       expect(s2).not.toBeCalled();
       const promise = emitter.emitAsync("test", undefined);
       const result = await promise;
-      expect(result).toStrictEqual(true);
+      expect(result).toBeTrue();
       expect(s1).toBeCalledTimes(1);
       expect(s2).toBeCalledTimes(1);
     });
@@ -330,7 +365,7 @@ describe("Emitter", () => {
     test("resolves to false when no handlers are registered", async () => {
       const promise = emitter.emitAsync("test", undefined);
       const result = await promise;
-      expect(result).toStrictEqual(false);
+      expect(result).toBeFalse();
     });
 
     test("only invokes handlers for the given event when called", async () => {

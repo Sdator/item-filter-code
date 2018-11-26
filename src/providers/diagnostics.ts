@@ -20,9 +20,9 @@ export class FilterDiagnosticsProvider implements IDisposable {
     this._filterManager = filterManager;
 
     this._subscriptions = new CompositeDisposable([
-      this._filterManager.observeFilters(this._add, this),
-      this._filterManager.onDidCloseFilter(this._remove, this),
-      this._filterManager.onDidChangeFilter(this._update, this)
+      this._filterManager.observeFilters(this._add, false, this),
+      this._filterManager.onDidCloseFilter(this._remove, false, this),
+      this._filterManager.onDidChangeFilter(this._update, false, this)
     ]);
   }
 
