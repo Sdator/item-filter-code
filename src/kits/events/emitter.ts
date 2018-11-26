@@ -4,8 +4,6 @@
  * license information.
  * ===========================================================================*/
 
-// TODO(glen): does implementing observeOnce make any sense?
-
 import { IDisposable } from "./index";
 import { CompositeDisposable } from "./composite-disposable";
 import { Disposable } from "./disposable";
@@ -60,7 +58,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
    * @param event The event name that will trigger the handler on emission.
    * @param handler The function to invoke when `::emit` is called with the given
    * event name.
-   * @param preempt Whether to place this handler ahead of any existing ones.
+   * @param thisArg The context in which the callback should be invoked.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   on<T1 extends keyof Emissions, T2 = unknown>(event: T1, handler: (value: Emissions[T1]) => void,
@@ -79,7 +77,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
    * @param event The event name that will trigger the handler on emission.
    * @param handler The function to invoke when `::emit` is called with the given
    * event name.
-   * @param preempt Whether to place this handler ahead of any existing ones.
+   * @param thisArg The context in which the callback should be invoked.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   once<T1 extends keyof Emissions, T2 = unknown>(event: T1, handler:
@@ -107,7 +105,6 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
    * @param collection An iterable collection containing all previous emissions.
    * @param handler The callback to be invoked whenever the event is fired.
    * @param thisArg The context in which the callback should be invoked.
-   * @param disposables An array to automatically place the created disposable into.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   observe<T1 extends keyof Emissions, T2 = unknown>(event: T1, collection: Iterable<Emissions[T1]>,
@@ -132,6 +129,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
    * @param event The event name that will trigger the handler on emission.
    * @param handler The function to invoke when `::emit` is called with the given
    * event name.
+   * @param thisArg The context in which the callback should be invoked.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   preempt<T1 extends keyof Emissions, T2 = unknown>(event: T1, handler: (value:
@@ -152,6 +150,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
    * @param event The event name that will trigger the handler on emission.
    * @param handler The function to invoke when `::emit` is called with the given
    * event name.
+   * @param thisArg The context in which the callback should be invoked.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
   preemptOnce<T1 extends keyof Emissions, T2 = unknown>(event: T1, handler: (value:
@@ -248,6 +247,15 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     return result;
   }
 
+  /**
+   * Registers a handler to be invoked whenever the given event is emitted.
+   *
+   * @param event The event name that will trigger the handler on emission.
+   * @param handler The function to invoke when `::emit` is called with the given
+   * event name.
+   * @param preempt Whether to place this handler ahead of any existing ones.
+   * @return A disposable on which `.dispose()` can be called to unsubscribe.
+   */
   private _on<T extends keyof Emissions>(event: T, handler: (value: Emissions[T]) => void,
     preempt = false): Disposable {
 
@@ -274,7 +282,11 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     return cleanup;
   }
 
-  /** Removes a registered handler whenever its disposable is disposed of. */
+  /**
+   * Unsubscribe a previously registered handler from an event.
+   * @param event The event name to unsubscribe the handler from.
+   * @param handler The handler being unsubscribed.
+   */
   private _off<T = unknown>(event: string, handler: (value: T) => void):
     void {
 
@@ -303,6 +315,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     return thisArg != null && typeof thisArg === "object" ? fn.bind(thisArg) : fn;
   }
 
+  /** Throws an exception if this instance has been disposed of. */
   private _checkIfDisposed(): void {
     if (this._disposed) {
       throw new Error("modification or access attempted on a disposed instance");
