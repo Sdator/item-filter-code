@@ -122,8 +122,8 @@ export class VisibleEditorRegistry implements IDisposable {
    * Invoke the given callback whenever a text editor is opened within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidOpenEditor: Event<Emissions["editor-opened"]> = (e, thisArg) => {
-    return this._emitter.on("editor-opened", e, thisArg);
+  onDidOpenEditor: Event<Emissions["editor-opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("editor-opened", e, preempt, thisArg);
   }
 
   /**
@@ -131,16 +131,16 @@ export class VisibleEditorRegistry implements IDisposable {
    * is opened within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidOpenFilterEditor: Event<Emissions["filter-opened"]> = (e, thisArg) => {
-    return this._emitter.on("filter-opened", e, thisArg);
+  onDidOpenFilterEditor: Event<Emissions["filter-opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("filter-opened", e, preempt, thisArg);
   }
 
   /**
    * Invoke the given callback whenever a text editor is closed within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidCloseEditor: Event<Emissions["editor-closed"]> = (e, thisArg) => {
-    return this._emitter.on("editor-closed", e, thisArg);
+  onDidCloseEditor: Event<Emissions["editor-closed"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("editor-closed", e, preempt, thisArg);
   }
 
   /**
@@ -148,8 +148,8 @@ export class VisibleEditorRegistry implements IDisposable {
    * is closed within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidCloseFilterEditor: Event<Emissions["filter-closed"]> = (e, thisArg) => {
-    return this._emitter.on("filter-closed", e, thisArg);
+  onDidCloseFilterEditor: Event<Emissions["filter-closed"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("filter-closed", e, preempt, thisArg);
   }
 
   /**
@@ -157,8 +157,8 @@ export class VisibleEditorRegistry implements IDisposable {
    * within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  observeEditors: Event<Emissions["editor-opened"]> = (e, thisArg) => {
-    return this._emitter.observe("editor-opened", this._editors, e, thisArg);
+  observeEditors: Event<Emissions["editor-opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.observe("editor-opened", this._editors, e, preempt, thisArg);
   }
 
   /**
@@ -166,8 +166,8 @@ export class VisibleEditorRegistry implements IDisposable {
    * opened within the window.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  observeFilterEditors: Event<Emissions["filter-opened"]> = (e, thisArg) => {
-    return this._emitter.observe("filter-opened", this._filterEditors, e, thisArg);
+  observeFilterEditors: Event<Emissions["filter-opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.observe("filter-opened", this._filterEditors, e, preempt, thisArg);
   }
 
   /** Registers a text editor as having been opened. */

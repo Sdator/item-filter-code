@@ -14,11 +14,8 @@ export interface IDisposable {
   dispose(): void;
 }
 
-/**
- * The standard event interface used across all of our APIs.
- * Essentially identical to the `vscode.Event` type.
- */
-export interface Event<T1, T2 = unknown> {
+/** The standard event interface used across all of our APIs. */
+export interface Event<T1, T2 = void> {
   /**
    * A function that represents an event to which you subscribe by calling it with
    * a listener function as argument.
@@ -28,5 +25,5 @@ export interface Event<T1, T2 = unknown> {
    * @param thisArgs The `this`-argument which will be used when calling the event listener.
    * @return A disposable which unsubscribes the event listener.
    */
-  (listener: (e: T1) => T2, preempt?: boolean, thisArgs?: unknown): IDisposable;
+  (listener: (e: T1) => T2, preempt?: boolean, thisArgs?: object): IDisposable;
 }

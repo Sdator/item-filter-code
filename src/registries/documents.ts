@@ -106,48 +106,48 @@ export class DocumentRegistry implements IDisposable {
    * Invoke the given callback whenever a document is opened within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidOpenDocument: Event<Emissions["document-opened"]> = (e, thisArg) => {
-    return this._emitter.on("document-opened", e, thisArg);
+  onDidOpenDocument: Event<Emissions["document-opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("document-opened", e, preempt, thisArg);
   }
 
   /**
    * Invoke the given callback whenever a filter document is opened within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidOpenFilter: Event<Emissions["filter-opened"]> = (e, thisArg) => {
-    return this._emitter.on("filter-opened", e, thisArg);
+  onDidOpenFilter: Event<Emissions["filter-opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("filter-opened", e, preempt, thisArg);
   }
 
   /**
    * Invoke the given callback whenever a document is closed within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidCloseDocument: Event<Emissions["document-closed"]> = (e, thisArg) => {
-    return this._emitter.on("document-closed", e, thisArg);
+  onDidCloseDocument: Event<Emissions["document-closed"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("document-closed", e, preempt, thisArg);
   }
 
   /**
    * Invoke the given callback whenever a filter document is closed within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidCloseFilter: Event<Emissions["filter-closed"]> = (e, thisArg) => {
-    return this._emitter.on("filter-closed", e, thisArg);
+  onDidCloseFilter: Event<Emissions["filter-closed"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("filter-closed", e, preempt, thisArg);
   }
 
   /**
    * Invoke the given callback whenever a document has changed within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidChangeDocument: Event<Emissions["document-changed"]> = (e, thisArg) => {
-    return this._emitter.on("document-changed", e, thisArg);
+  onDidChangeDocument: Event<Emissions["document-changed"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("document-changed", e, preempt, thisArg);
   }
 
   /**
    * Invoke the given callback whenever a filter document has changed within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidChangeFilter: Event<Emissions["filter-changed"]> = (e, thisArg) => {
-    return this._emitter.on("filter-changed", e, thisArg);
+  onDidChangeFilter: Event<Emissions["filter-changed"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("filter-changed", e, preempt, thisArg);
   }
 
   /**
@@ -155,8 +155,8 @@ export class DocumentRegistry implements IDisposable {
    * within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  observeDocuments: Event<Emissions["document-opened"]> = (e, thisArg) => {
-    return this._emitter.observe("document-opened", this.documents, e, thisArg);
+  observeDocuments: Event<Emissions["document-opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.observe("document-opened", this.documents, e, preempt, thisArg);
   }
 
   /**
@@ -164,8 +164,8 @@ export class DocumentRegistry implements IDisposable {
    * within the workspace.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  observeFilters: Event<Emissions["filter-opened"]> = (e, thisArg) => {
-    return this._emitter.observe("filter-opened", this.filters, e, thisArg);
+  observeFilters: Event<Emissions["filter-opened"]> = (e, preempt, thisArg) => {
+    return this._emitter.observe("filter-opened", this.filters, e, preempt, thisArg);
   }
 
   /** Registers a document as having been opened. */

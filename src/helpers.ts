@@ -7,7 +7,7 @@
 import * as path from "path";
 
 /** The root path of the project. */
-export const projectRoot = path.join(__dirname, "..", "..", "..");
+export const projectRoot = path.join(__dirname, "..", "..");
 
 /** The root path of the output directory. */
 export const outputRoot = path.join(projectRoot, "out");

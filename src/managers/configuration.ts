@@ -44,8 +44,8 @@ export class ConfigurationManager implements IDisposable {
    * Visual Studio Code.
    * @return A disposable on which `.dispose()` can be called to unsubscribe.
    */
-  onDidChange: Event<Emissions["change"]> = (e, thisArg) => {
-    return this._emitter.on("change", e, false, thisArg);
+  onDidChange: Event<Emissions["change"]> = (e, preempt, thisArg) => {
+    return this._emitter.on("change", e, preempt, thisArg);
   }
 
   /** Queries Visual Studio Code in order to retrieve a fully up-to-date configuration. */
