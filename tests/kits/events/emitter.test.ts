@@ -323,8 +323,131 @@ describe("Emitter", () => {
   });
 
   describe("observe method", () => {
-    // TODO(glen): write tests for `observe`.
-    pending("TODO");
+    test("takes an event name as the first parameter", () => {
+      expect(emitter.getListenerCountForEvent("test")).toStrictEqual(0);
+      emitter.observe("test", [], () => { });
+      expect(emitter.getListenerCountForEvent("test")).toStrictEqual(1);
+    });
+
+    test("takes an event handler as the second parameter", () => {
+      const spy = jest.fn();
+      emitter.observe("test", [], spy);
+      emitter.emit("test", undefined);
+      expect(spy).toBeCalledTimes(1);
+    });
+
+    test("allows multiple handlers to be registered for a given event", () => {
+      const s1 = jest.fn();
+      const s2 = jest.fn();
+      emitter.observe("test", [], s1);
+      emitter.observe("test", [], s2);
+      emitter.emit("test", undefined);
+      expect(s1).toBeCalledTimes(1);
+      expect(s1).toBeCalledTimes(1);
+    });
+
+    test("appends its handler by default", () => {
+      const s1 = jest.fn();
+      const s2 = jest.fn();
+      emitter.observe("test", [], s1);
+      emitter.observe("test", [], s2);
+      emitter.emit("test", undefined);
+      expect(s1).toHaveBeenCalledBefore(s2);
+    });
+
+    test("prepends its handler if the third parameter is true", () => {
+      const s1 = jest.fn();
+      const s2 = jest.fn();
+      emitter.observe("test", [], s1);
+      emitter.observe("test", [], s2, true);
+      emitter.emit("test", undefined);
+      expect(s2).toHaveBeenCalledBefore(s1);
+    });
+
+    test("does not remove handlers following an emission", () => {
+      const spy = jest.fn();
+      emitter.observe("test", [], spy);
+      expect(spy).not.toBeCalled();
+      emitter.emit("test", undefined);
+      expect(spy).toBeCalledTimes(1);
+      emitter.emit("test", undefined);
+      expect(spy).toBeCalledTimes(2);
+    });
+
+    test("allows an event to have duplicate handlers", () => {
+      const fn = () => {};
+      emitter.observe("test", [], fn);
+      expect(() => {
+        emitter.observe("test", [], fn);
+      }).not.toThrow();
+    });
+
+    test("invokes each duplicate handler on emission", () => {
+      const spy = jest.fn();
+      emitter.observe("test", [], spy);
+      emitter.observe("test", [], spy);
+      expect(spy).not.toBeCalled();
+      emitter.emit("test", undefined);
+      expect(spy).toBeCalledTimes(2);
+    });
+
+    test("returns a disposable that removes the handler on disposal", () => {
+      const spy = jest.fn();
+      const d = emitter.observe("test", [], spy);
+      d.dispose();
+      expect(spy).not.toBeCalled();
+      emitter.emit("test", undefined);
+      expect(spy).not.toBeCalled();
+    });
+
+    test("only registers a handler for the given event name", () => {
+      const spy = jest.fn();
+      emitter.observe("e1", [], () => { });
+      emitter.observe("e2", [], spy);
+      expect(spy).not.toBeCalled();
+      emitter.emit("e1", undefined);
+      expect(spy).not.toBeCalled();
+    });
+
+    test("allows you to set the 'this' context of the handler", () => {
+      const context = { a: 42, b: 101 };
+      const spy = jest.fn();
+
+      emitter.observe("test", [], function (this: typeof context): void {
+        spy(this.a);
+        spy(this.b);
+      }, false, context);
+      emitter.emit("test", undefined);
+
+      expect(spy).toHaveBeenNthCalledWith(1, 42);
+      expect(spy).toHaveBeenNthCalledWith(2, 101);
+    });
+
+    test("invokes the handler for each element of the collection", () => {
+      const spy = jest.fn();
+
+      expect(spy).not.toBeCalled();
+      emitter.observe("test", [1, 2, 3], spy);
+      expect(spy).toBeCalledTimes(3);
+    });
+
+    test("invokes the handler with each element of the collection", () => {
+      const emissions = ["this", "is", "a", "test"];
+      const spy = jest.fn();
+
+      emitter.observe("test", emissions, spy);
+      expect(spy).toHaveBeenNthCalledWith(1, "this");
+      expect(spy).toHaveBeenNthCalledWith(2, "is");
+      expect(spy).toHaveBeenNthCalledWith(3, "a");
+      expect(spy).toHaveBeenNthCalledWith(4, "test");
+    });
+
+    test("throws when invoked on a disposed instance", () => {
+      emitter.dispose();
+      expect(() => {
+        emitter.observe("test", [], () => { });
+      }).toThrow();
+    });
   });
 
   describe("emit method", () => {
