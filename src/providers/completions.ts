@@ -4,9 +4,9 @@
  * license information.
  * ===========================================================================*/
 
-// The most accurate way to actually provide autocompletions for an item filter
-// is to simply parse the entire line in order to figure out the context. We
-// don't have to worry about other lines at all with item filters, which makes
+// The most accurate way to actually provide autocompletion results for an item
+// filter is to simply parse the entire line in order to figure out the context.
+// We don't have to worry about other lines at all with item filters, which makes
 // this fast and easy. This also means that we don't have to wait for data from
 // the item filter parser, as we can parse independently.
 //
@@ -329,14 +329,11 @@ function getModCompletions(config: types.ConfigurationValues, pos: vscode.Positi
   let valueIndex = contextParser.bypassEqOperator(text, index);
 
   const pushCompletions = (range: vscode.Range) => {
-    const prefixes = config.limitedModPool ? modData.limited.prefixes : modData.full.prefixes;
-    const suffixes = config.limitedModPool ? modData.limited.suffixes : modData.full.suffixes;
-
-    for (const mod of prefixes) {
+    for (const mod of modData.prefixes) {
       result.push(completionForStringRange(mod, range, eol, config.modQuotes));
     }
 
-    for (const mod of suffixes) {
+    for (const mod of modData.suffixes) {
       result.push(completionForStringRange(mod, range, eol, config.modQuotes));
     }
 

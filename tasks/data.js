@@ -11,6 +11,7 @@ const mkdirp = require('mkdirp');
 const projectRoot = path.join(__dirname, '..');
 const dataOutputRoot = path.join(projectRoot, 'out', 'data');
 const dataSourceRoot = path.join(projectRoot, 'build', 'data');
+const imageSourceRoot = path.join(projectRoot, 'build', 'images');
 
 const filterDataPath = path.join(dataSourceRoot, 'filter.json');
 const filterData = JSON.parse(fs.readFileSync(filterDataPath, 'utf8'));
@@ -122,3 +123,36 @@ const itemDataOutputFile = path.join(dataOutputRoot, 'items.json');
 fs.writeFile(itemDataOutputFile, itemDataContent, err => {
   if (err) throw err;
 });
+
+// Converts each image used by the extension into the base64 encoding, placing
+// that encoding into an outputted JSON file for later use by the extension.
+
+function encodeFile(path) {
+  const file = fs.readFileSync(path);
+  return new Buffer(file).toString('base64');
+}
+
+function walkDirectory(dir, rootDir, fileList) {
+  const files = fs.readdirSync(dir);
+  if (rootDir == null || fileList == null) {
+    rootDir = path.join(dir, path.sep);
+    fileList = {};
+  }
+
+  files.forEach((file) => {
+    const filePath = path.join(dir, file);
+    if (fs.statSync(filePath).isDirectory()) {
+      fileList = walkDirectory(path.join(filePath, path.sep), rootDir, fileList);
+    } else {
+      const key = filePath.replace(rootDir, '').replace(/\\/g, '/');
+      const value = encodeFile(filePath);
+      fileList[key] = value;
+    }
+  });
+
+  return fileList;
+}
+
+const imageData = walkDirectory(imageSourceRoot);
+const imageOutputFile = path.join(dataOutputRoot, "images.json");
+fs.writeFileSync(imageOutputFile, JSON.stringify(imageData));

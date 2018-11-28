@@ -13,6 +13,7 @@ import * as contextParser from "../parsers/context";
 import { range2CodeRange } from "../converters";
 
 const itemData = <types.ItemData>require(path.join(dataOutputRoot, "items.json"));
+const imageData = <types.ImageData>require(path.join(dataOutputRoot, "images.json"));
 const filterData = <types.FilterData>require(path.join(dataOutputRoot, "filter.json"));
 const uniqueData = <types.UniqueData>require(path.join(dataOutputRoot, "uniques.json"));
 const separatorText = "\n\n---\n\n";
@@ -392,11 +393,13 @@ function getMinimapIconHover(pos: vscode.Position, text: string, index: number):
       filterData.minimapIcons.colors.includes(color) &&
       filterData.minimapIcons.shapes.includes(shape)) {
 
-      const previewUri = vscode.Uri.file(path.join(assetRoot, "minimap-icons",
-        `${shape.toLowerCase()}_${color.toLowerCase()}_${size}.png`));
+      const key = `minimap-icons/${shape.toLowerCase()}_${color.toLowerCase()}_${size}.png`;
+      const image = imageData[key];
 
-      previewText = "\n\nA preview of the shape at this size and color:" +
-        `\n\n![Minimap Icon Preview](${previewUri})`;
+      if (image) {
+        previewText = "\n\nA preview of the shape at this size and color:" +
+          `\n\n![Minimap Icon Preview](data:image/png;base64,${image})`;
+      }
     }
   }
 

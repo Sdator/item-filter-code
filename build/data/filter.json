@@ -115,7 +115,7 @@
     },
     "Quality": {
       "min": 0,
-      "max": 30
+      "max": 100
     },
     "StackSize": {
       "min": 1,

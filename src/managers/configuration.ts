@@ -75,7 +75,6 @@ export class ConfigurationManager implements IDisposable {
       soundWhitelist: soundWhitelist ? soundWhitelist : [],
       modWhitelist: modWhitelist ? modWhitelist : [],
       performanceHints: performanceHints == null ? true : performanceHints,
-      limitedModPool: limitedModPool == null ? false : limitedModPool,
       itemValueQuotes: itemValueQuotes == null ? true : itemValueQuotes,
       booleanQuotes: booleanQuotes == null ? false : booleanQuotes,
       rarityQuotes: rarityQuotes == null ? false : rarityQuotes,

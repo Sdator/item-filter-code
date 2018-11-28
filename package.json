@@ -38,7 +38,7 @@
     "test": "tsc && jest --config jest.json"
   },
   "dependencies": {
-    "lodash.debounce": "^4.0.8"
+    "lodash.debounce": "4.0.8"
   },
   "devDependencies": {
     "@glencfl/tslint-config": "^1.6.0",
@@ -48,9 +48,9 @@
     "jest": "^23.6.0",
     "jest-extended": "^0.11.0",
     "mkdirp": "^0.5.1",
-    "npm-run-all": "^4.1.3",
+    "npm-run-all": "^4.1.5",
     "rimraf": "^2.6.2",
-    "ts-jest": "^23.10.4",
+    "ts-jest": "^23.10.5",
     "typescript": "^3.1.6"
   },
   "engines": {
@@ -135,37 +135,30 @@
             "default": true,
             "scope": "window"
           },
-          "item-filter.limitedModPool": {
-            "title": "Limited Mod Pool",
-            "description": "For the HasExplicitMod rule, only allow mods from either Warbands or Incursion within item filters.",
-            "type": "boolean",
-            "default": false,
-            "scope": "window"
-          },
           "item-filter.itemValueQuotes": {
             "title": "Item Value Quotes",
-            "description": "When autocompleting string values for the Class and BaseType rules, always surround the value with quotation marks.",
+            "description": "When selecting suggested string values for the Class and BaseType rules, always surround the value with quotation marks.",
             "type": "boolean",
             "default": true,
             "scope": "window"
           },
           "item-filter.booleanQuotes": {
             "title": "Boolean Value Quotes",
-            "description": "When autocompleting the value for boolean rules, such as Corrupted, always surround the value with quotation marks.",
+            "description": "When selecting a suggested value for boolean rules, such as Corrupted, always surround the value with quotation marks.",
             "type": "boolean",
             "default": false,
             "scope": "window"
           },
           "item-filter.rarityQuotes": {
             "title": "Rarity Value Quotes",
-            "description": "When autocompleting the value for the Rarity rule, always surround the value with quotation marks.",
+            "description": "When selecting a suggested value for the Rarity rule, always surround the value with quotation marks.",
             "type": "boolean",
             "default": false,
             "scope": "window"
           },
           "item-filter.modQuotes": {
             "title": "Mod Value Quotes",
-            "description": "When autocompleting the value for the HasExplicitMod rule, always surround the value with quotation marks.",
+            "description": "When selecting a suggested value for the HasExplicitMod rule, always surround the value with quotation marks.",
             "type": "boolean",
             "default": true,
             "scope": "window"

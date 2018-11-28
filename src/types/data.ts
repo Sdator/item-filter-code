@@ -68,13 +68,10 @@ export interface SuggestionData {
 }
 
 export interface ModData {
-  full: {
-    prefixes: string[];
-    suffixes: string[];
-  };
+  prefixes: string[];
+  suffixes: string[];
+}
 
-  limited: {
-    prefixes: string[];
-    suffixes: string[];
-  };
+export interface ImageData {
+  [key: string]: string | undefined;
 }

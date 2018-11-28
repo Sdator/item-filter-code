@@ -142,7 +142,6 @@ export interface ConfigurationValues {
   soundWhitelist: string[];
   modWhitelist: string[];
   performanceHints: boolean;
-  limitedModPool: boolean;
   itemValueQuotes: boolean;
   booleanQuotes: boolean;
   rarityQuotes: boolean;

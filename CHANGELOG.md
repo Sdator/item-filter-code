@@ -2,8 +2,19 @@
 
 The history of changes to the extension.
 
+---
+
+### Version 1.15.0 (TBD)
+- The editor can now correctly size the tooltip for `MinimapIcon` values, whereas previously it could obstruct the view of the value as the preview image was loaded in.
+- The `item-filter.limitedModPool` configuration variable has been removed due to its limited usefulness.
+- Increased the maximum value for the `Quality` rule to `100`.
+
+---
+
 ### Version 1.14.4 (September 27th, 2018)
 - Added the following missing item classes: `Small Relic`, `Medium Relics`, and `Large Relics`.
+
+---
 
 ### Version 1.14.3 (September 27th, 2018)
 This release adds every new unique added alongside the Delve league, while also providing several minor bug fixes.
@@ -14,6 +25,8 @@ This release adds every new unique added alongside the Delve league, while also 
 - Sound decorations will now only be displayed for MP3 files, as MPG123 does not support other file types.
 - When using the color picker, the alpha value will now always be shown. We had previously assumed that the default value was 255, which was incorrect.
   + Due to this, the `item-filter.alwaysShowAlpha` configuration variable has been removed.
+
+---
 
 ### Version 1.14.2 (August 31st, 2018)
 This release applies some final polish to our support for the Delve league, as we also ensure that all popular community filters are fully supported.
@@ -26,6 +39,8 @@ This release applies some final polish to our support for the Delve league, as w
 - Trailing text for the `DisableDropSound` rule is now reported as a hint, rather than a warning.
 - Added the missing `of Conflagrating` affix for the `HasExplicitMod` rule.
 - Duplicate values for the `Class` and `BaseType` rule are now reported as hints, rather than warnings.
+
+---
 
 ### Version 1.14.1 (August 30th, 2018)
 This release focuses on fixing errors within our data, further increasing support for the popular community item filters.
@@ -40,6 +55,8 @@ This release focuses on fixing errors within our data, further increasing suppor
 - The `Diamond Flask` base type now has the correct item class of `Critical Utility Flasks`.
 - Added the missing `Harbinger Map` item base.
 - Removed the following invalid item bases: `Event Coin` and `Event Shard`.
+
+---
 
 ### Version 1.14.0 (August 30th, 2018)
 This release finalizes our support for the new rule types being added in Path of Exile version 3.4, as we also improve our support for the popular community item filters.
@@ -56,6 +73,8 @@ This release finalizes our support for the new rule types being added in Path of
 - On Windows, there is now autocompletion for the file name or file path value of the `CustomAlertSound` rule.
   + As previously mentioned, the `item-filter.windowsDocumentFolder` configuration variable can be used to set your documents folder in the event that the educated guess doesn't work on your system.
 
+---
+
 ### Version 1.13.0 (August 30th, 2018)
 This release improves our support for the new rule types being added in Path of Exile version 3.4, as we also fix issues stemming from incorrect information in GGG's item filter information post.
 
@@ -65,6 +84,8 @@ This release improves our support for the new rule types being added in Path of 
   + Note that this takes an educated guess as to the location of your documents folder, which can sometimes fail. The `item-filter.windowsDocumentFolder` configuration variable allows you to set it manually.
 - Renamed the `Delve Stackable Currency` class to its correct name of `Delve Socketable Currency`.
 
+---
+
 ### Version 1.12.0 (August 29th, 2018)
 - Added the initial support for Path of Exile version 3.4 and the Delve league.
 - Added basic support for the four new rules: `CustomAlertSound`, `MinimapIcon`, `PlayEffect`, and `MapTier`.
@@ -72,15 +93,23 @@ This release improves our support for the new rule types being added in Path of 
 - Added the missing `Avian Slippers` item base.
 - The value for the `SetFontSize` rule can now fall in the range of `[16,50]`, rather than `[18,45]`.
 
+---
+
 ### Version 1.11.0 (July 5th, 2018)
 - Added all new uniques from Path of Exile version 3.3.
 - Added approximately 50 missing affixes for the `HasExplicitMod` rule.
 
+---
+
 ### Version 1.10.2 (June 1st, 2018)
 - The `DisableDropSound` rule no longer requires a value.
 
+---
+
 ### Version 1.10.1 (May 30th, 2018)
 - Cleared up minor confusion regarding the `StackSize` rule.
+
+---
 
 ### Version 1.10.0 (May 30th, 2018)
 - The `HasExplicitMod` rule now takes multiple string values.
@@ -90,6 +119,8 @@ This release improves our support for the new rule types being added in Path of 
 - Improved the consistency for hover results, with there now being a separator for hovers providing additional information.
 - Fixed a bug where issues regarding the rule limitations on each block were not being reported.
 
+---
+
 ### Version 1.9.0 (May 30th, 2018)
 - Renamed the `HasMod` rule to the *hopefully* correct name of `HasExplicitMod`.
 - Added validation for the value of the `HasExplicitMod` rule.
@@ -98,6 +129,8 @@ This release improves our support for the new rule types being added in Path of 
 - Added a new configuration variable: `item-filter.modQuotes`. This variable allows you to set whether all values for the `HasExplicitMod` will be surrounded by quotation marks on autocompletion.
 
 If you find any mods that are missing from the extension, then an issue report would be helpful.
+
+---
 
 ### Version 1.8.0 (May 30th, 2018)
 - Added the initial support for Path of Exile version 3.3 and the Incursion league.
@@ -123,28 +156,42 @@ If you find any mods that are missing from the extension, then an issue report w
   + Visual Studio Code 1.20.0 (released in January of 2018) or newer is now required by the extension.
 - Both the `Quality` rule and the `Rarity` rule can now be used twice within a block.
 
+---
+
 ### Version 1.7.0 (March 15th, 2018)
 - Added support for the new DisableDropSound rule.
 - Fixed a performance oversight, resulting in a 5x speedup when parsing large item filters.
+
+---
 
 ### Version 1.6.0 (March 7th, 2018)
 - Added support for the new `Necromancy Net` base type.
 - Modified the extra suggestion for `Net` to include the new net.
 - Added all but one of the new unique items from patch 3.2 and the Bestiary league.
 
+---
+
 ### Version 1.5.0 (March 4th, 2018)
 - Added support for the unannounced `ElderMap` rule.
+
+---
 
 ### Version 1.4.2 (February 28th, 2018)
 - Fixed a typo for the "Bestiary Orb" base type.
 - Added extra suggestions for Bestiary nets to the completion provider, with "Bestiary Nets" being an alias for all 10 nets.
 
+---
+
 ### Version 1.4.1 (February 28th, 2018)
 - Renamed "Elder Orb" to "Elder's Orb".
+
+---
 
 ### Version 1.4.0 (February 28th, 2018)
 - Added support for both patch 3.2 and the Bestiary challenge league.
   + New unique items will be added soon after launch once all are discovered.
+
+---
 
 ### Version 1.3.0 (February 21st, 2018)
 - Added a brief description to each keyword on hover.
@@ -154,10 +201,14 @@ If you find any mods that are missing from the extension, then an issue report w
   + Some completion entries will insert multiple values, such as the `Mortal Set` for the BaseType rule.
 - Breachstones now have the correct item class, which is `Map Fragments`.
 
+---
+
 ### Version 1.2.0 (February 19th, 2018)
 - Hovering over item bases within the editor will now show both the item class and the unique items specific to that base.
 - Added support for playing sound on MacOS through the system binary `afplay`.
 - Added support for enabling sound on Linux through configuration variables. See the details section for more information.
+
+---
 
 ### Version 1.1.0 (February 18th, 2018)
 - Sound identifiers now have a border decoration within the editor.
@@ -166,12 +217,18 @@ If you find any mods that are missing from the extension, then an issue report w
 - Class rules that proceed a BaseType rule are now always used when determining whether or not each item base is valid.
 - Fixed an unhandled promise rejection relating to invalid or whitelisted keywords.
 
+---
+
 ### Version 1.0.1 (February 15th, 2018)
 - A valid color will now be inserted automatically whenever autocompleting a color rule.
+
+---
 
 ### Version 1.0.0 (February 15th, 2018)
 - Diagnostics added to the language server.
 - Color provider added to the language server.
+
+---
 
 ### Version 0.2.0 (February 13th, 2018)
 
@@ -180,6 +237,8 @@ If you find any mods that are missing from the extension, then an issue report w
 - Autocompletion support added.
 - Whitelist configuration variables added, allowing you to provide additional rule keywords, item classes, item bases, and sound identifiers to the server.
 - Added two other configuration variables, Performance Hints and Always Show Alpha, that will be utilized soon.
+
+---
 
 ### Version 0.1.0 (February 8th, 2018)
 

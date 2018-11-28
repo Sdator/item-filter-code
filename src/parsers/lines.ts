@@ -1043,9 +1043,6 @@ function parseModRule(line: LineInformation): void {
   }
 
   const parsedMods: string[] = [];
-  const prefixes = line.config.limitedModPool ? modData.limited.prefixes : modData.full.prefixes;
-  const suffixes = line.config.limitedModPool ? modData.limited.suffixes :
-    modData.full.suffixes;
 
   while (true) {
     const valueResult = line.parser.nextWordString();
@@ -1059,7 +1056,7 @@ function parseModRule(line: LineInformation): void {
         continue;
       }
 
-      for (const mod of prefixes) {
+      for (const mod of modData.prefixes) {
         if (mod.includes(value)) {
           invalid = false;
           break;
@@ -1067,7 +1064,7 @@ function parseModRule(line: LineInformation): void {
       }
 
       if (invalid) {
-        for (const mod of suffixes) {
+        for (const mod of modData.suffixes) {
           if (mod.includes(value)) {
             invalid = false;
             break;
