@@ -7,7 +7,7 @@
     "Shaper's Seed",
     "The Aylardex",
     {
-      "leagues": [
+      "league": [
         "Anarchy",
         "Onslaught"
       ],
@@ -212,7 +212,7 @@
   "Bronzescale Gauntlets": [
     "Slitherpinch",
     {
-      "leagues": [
+      "league": [
         "Ambush",
         "Invasion"
       ],
@@ -1183,7 +1183,7 @@
     "Timeclasp",
     "Valyrium",
     {
-      "leagues": [
+      "league": [
         "Anarchy",
         "Onslaught"
       ],
@@ -1550,7 +1550,7 @@
   ],
   "Sanctified Life Flask": [
     {
-      "leagues": [
+      "league": [
         "Domination",
         "Nemesis"
       ],
@@ -1559,7 +1559,7 @@
   ],
   "Sanctified Mana Flask": [
     {
-      "leagues": [
+      "league": [
         "Domination",
         "Nemesis"
       ],
@@ -1981,21 +1981,21 @@
       "name": "Rigwald's Crest"
     },
     {
-      "leagues": [
+      "league": [
         "Domination",
         "Nemesis"
       ],
       "name": "Berek's Grip"
     },
     {
-      "leagues": [
+      "league": [
         "Domination",
         "Nemesis"
       ],
       "name": "Berek's Pass"
     },
     {
-      "leagues": [
+      "league": [
         "Domination",
         "Nemesis"
       ],
@@ -2028,7 +2028,7 @@
       "name": "The Pariah"
     },
     {
-      "leagues": [
+      "league": [
         "Ambush",
         "Invasion"
       ],

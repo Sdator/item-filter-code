@@ -199,10 +199,13 @@ function getBaseTypeHover(position: vscode.Position, text: string, index: number
         output += `- ${unique.name}`;
         if (unique.boss) output += ` \`${unique.boss}\``;
         if (unique.location) output += ` \`${unique.location}\``;
-        if (unique.league) output += ` \`${unique.league}\``;
-        if (unique.leagues) {
-          for (const league of unique.leagues) {
-            output += ` \`${league}\``;
+        if (unique.league) {
+          if (unique.league instanceof Array) {
+            for (const league of unique.league) {
+              output += ` \`${league}\``;
+            }
+          } else {
+            output += ` \`${unique.league}\``;
           }
         }
         output += "\n";

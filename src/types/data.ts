@@ -41,15 +41,21 @@ export interface FilterData {
   };
 }
 
+/** A unique item within Path of Exile. */
 export interface UniqueItem {
+  /** The name of the unique item. */
   name: string;
+  /** The boss that drops the unique item. */
   boss?: string;
-  league?: string;
-  leagues?: string[];
+  /** The league that this unique item is tied to. */
+  league?: string | string[];
+  /** The location that this unique item is specific to.  */
   location?: string;
 }
 
+/** Unique item information for Path of Exile. */
 export interface UniqueData {
+  /** An item base and its associated unique items. */
   [itemBase: string]: Array<string | UniqueItem>;
 }
 

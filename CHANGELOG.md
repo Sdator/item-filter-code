@@ -5,7 +5,7 @@ The history of changes to the extension.
 ---
 
 ### Version 1.15.0 (TBD)
-- The editor can now correctly size the tooltip for `MinimapIcon` values, whereas previously it could obstruct the view of the value as the preview image was loaded in.
+- The editor can now correctly size the tooltip for `MinimapIcon` values the first time, whereas previously it would resize the tooltip once the embedded image had loaded in.
 - The `item-filter.limitedModPool` configuration variable has been removed due to its limited usefulness.
 - Increased the maximum value for the `Quality` rule to `100`.
 
@@ -19,7 +19,7 @@ The history of changes to the extension.
 ### Version 1.14.3 (September 27th, 2018)
 This release adds every new unique added alongside the Delve league, while also providing several minor bug fixes.
 
-- Updated the list of uniques to include those added in patch 3.4.
+- Updated the list of unique items to include those added in patch 3.4.
 - Added the missing Bestiary item mods: `of Craiceann`, `of Farrul`, `of Fenumus`, and `of Saqawal`.
 - Removed the invalid `of Adaptation` item mod.
 - Sound decorations will now only be displayed for MP3 files, as MPG123 does not support other file types.
@@ -96,7 +96,7 @@ This release improves our support for the new rule types being added in Path of 
 ---
 
 ### Version 1.11.0 (July 5th, 2018)
-- Added all new uniques from Path of Exile version 3.3.
+- Added all new unique items from Path of Exile version 3.3.
 - Added approximately 50 missing affixes for the `HasExplicitMod` rule.
 
 ---
@@ -140,7 +140,7 @@ If you find any mods that are missing from the extension, then an issue report w
 - Added support for the new `StackSize` rule.
 - Added basic support for the new `HasMod` rule.
   + Autocompletions for explicit mods will be added soon.
-- Added the two uniques from Path of Exile v3.2.2: Gluttony and Chains of Command.
+- Added the two unique items from Path of Exile v3.2.2: Gluttony and Chains of Command.
 - Both the completion provider and hover provider now take into account the previously entered values on the line.
 - The hover provider has been expanded upon, with all values except for colors now having a tooltip.
 - Rules taking a boolean value, such as the Corrupted rule, now properly report trailing text as an error.

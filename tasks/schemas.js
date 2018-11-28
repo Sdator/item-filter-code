@@ -22,6 +22,16 @@ const options = {
 
 const schemas = [
   {
+    sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
+    type: 'ItemData',
+    outputFileName: 'items.json'
+  },
+  {
+    sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
+    type: 'UniqueData',
+    outputFileName: 'uniques.json'
+  },
+  {
     sourceFilePath: path.join(projectRoot, 'src', 'types', 'parser-inputs.ts'),
     type: 'FilterParseData',
     outputFileName: 'parser-inputs.json'

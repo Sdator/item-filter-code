@@ -4,6 +4,7 @@ build/**
 coverage/**
 docs/**
 examples/**
+out/schemas/**
 out/tests/**
 src/**
 tests/**
