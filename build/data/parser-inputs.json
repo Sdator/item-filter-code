@@ -1,0 +1,328 @@
+{
+  "blocks": [
+    {
+      "keyword": "Show",
+      "description": "If all conditions are matched, show the item and do any actions specified.",
+      "trail": {
+        "commented": true,
+        "ignored": true
+      }
+    },
+    {
+      "keyword": "Hide",
+      "description": "If all conditions are matched, hide the item and do any actions specified.",
+      "trail": {
+        "commented": true,
+        "ignored": true
+      }
+    }
+  ],
+  "rules": [
+    {
+      "keyword": "ItemLevel",
+      "description": "The item level at which the item was generated at.",
+      "operator": {
+        "equalsOnly": false,
+        "required": false
+      },
+      "value": {
+        "description": "One or more integers from ${range}.",
+        "required": true,
+        "repeating": true,
+        "quotable": true,
+        "range": {
+          "min": 1,
+          "max": 100
+        }
+      },
+      "trail": {
+        "commented": false,
+        "ignored": false
+      }
+    },
+    {
+      "keyword": "DropLevel",
+      "description": "The level at which the item begins dropping at.",
+      "operator": {
+        "equalsOnly": false,
+        "required": false
+      },
+      "value": {
+        "description": "One or more integers from ${range}.",
+        "required": true,
+        "repeating": true,
+        "quotable": true,
+        "range": {
+          "min": 1,
+          "max": 100
+        }
+      },
+      "trail": {
+        "commented": false,
+        "ignored": false
+      }
+    },
+    {
+      "keyword": "GemLevel",
+      "description": "The level of the dropped gem.",
+      "operator": {
+        "equalsOnly": false,
+        "required": false
+      },
+      "value": {
+        "description": "One or more integers from ${range}.",
+        "required": true,
+        "repeating": true,
+        "quotable": true,
+        "range": {
+          "min": 0,
+          "max": 30
+        }
+      },
+      "trail": {
+        "commented": false,
+        "ignored": false
+      }
+    },
+    {
+      "keyword": "Quality",
+      "description": "The amount of quality on the item.",
+      "operator": {
+        "equalsOnly": false,
+        "required": false
+      },
+      "value": {
+        "description": "One or more integers from ${range}.",
+        "required": true,
+        "repeating": true,
+        "quotable": true,
+        "range": {
+          "min": 0,
+          "max": 100
+        }
+      },
+      "trail": {
+        "commented": false,
+        "ignored": false
+      }
+    },
+    {
+      "keyword": "StackSize",
+      "description": "The current stack size of a stackable currency.",
+      "operator": {
+        "equalsOnly": false,
+        "required": false
+      },
+      "value": {
+        "description": "One or more integers from ${range}.",
+        "required": true,
+        "repeating": true,
+        "quotable": true,
+        "range": {
+          "min": 1,
+          "max": 1000
+        }
+      },
+      "trail": {
+        "commented": false,
+        "ignored": false
+      }
+    },
+    {
+      "keyword": "MapTier",
+      "description": "The tier of the map item.",
+      "operator": {
+        "equalsOnly": false,
+        "required": false
+      },
+      "value": {
+        "description": "One or more integers from ${range}.",
+        "required": true,
+        "repeating": true,
+        "quotable": true,
+        "range": {
+          "min": 1,
+          "max": 17
+        }
+      },
+      "trail": {
+        "commented": false,
+        "ignored": false
+      }
+    },
+    {
+      "keyword": "Rarity",
+      "description": "The rarity of the item.",
+      "operator": {
+        "equalsOnly": false,
+        "required": false
+      },
+      "value": {
+        "description": "One of the following item rarities: ${pick}.",
+        "required": true,
+        "repeating": true,
+        "pick": ["Normal", "Magic", "Rare", "Unique"],
+        "caseSensitive": true,
+        "quotable": true
+      },
+      "trail": {
+        "commented": false,
+        "ignored": false
+      }
+    },
+    {
+      "keyword": "Class",
+      "description": "The item class of the item. Specifying part of a class name is allowed and will match any classes with that text in the name.",
+      "operator": {
+        "equalsOnly": true,
+        "required": false
+      },
+      "value": {
+        "description": "An item class, such as \"Stackable Currency\".",
+        "required": true,
+        "repeating": true,
+        "pick": "${itemClasses}",
+        "caseSensitive": true,
+        "quotable": true
+      }
+    },
+    {
+      "keyword": "Identified",
+      "description": "Whether the item is identified.",
+      "operator": {
+        "required": false,
+        "equalsOnly": true
+      },
+      "value": {
+        "description": "A boolean value being either ${pick}.",
+        "required": true,
+        "repeating": false,
+        "pick": [
+          "True",
+          "False"
+        ],
+        "caseSensitive": false,
+        "quotable": true
+      },
+      "trail": {
+        "ignored": false,
+        "commented": true
+      }
+    },
+    {
+      "keyword": "Corrupted",
+      "description": "Whether the item is corrupted.",
+      "operator": {
+        "required": false,
+        "equalsOnly": true
+      },
+      "value": {
+        "description": "A boolean value being either ${pick}.",
+        "required": true,
+        "repeating": false,
+        "pick": [
+          "True",
+          "False"
+        ],
+        "caseSensitive": false,
+        "quotable": true
+      },
+      "trail": {
+        "ignored": false,
+        "commented": true
+      }
+    },
+    {
+      "keyword": "ElderItem",
+      "description": "Whether the item is an Elder item.",
+      "operator": {
+        "required": false,
+        "equalsOnly": true
+      },
+      "value": {
+        "description": "A boolean value being either ${pick}.",
+        "required": true,
+        "repeating": false,
+        "pick": [
+          "True",
+          "False"
+        ],
+        "caseSensitive": false,
+        "quotable": true
+      },
+      "trail": {
+        "ignored": false,
+        "commented": true
+      }
+    },
+    {
+      "keyword": "ShaperItem",
+      "description": "Whether the item is a Shaper item.",
+      "operator": {
+        "required": false,
+        "equalsOnly": true
+      },
+      "value": {
+        "description": "A boolean value being either ${pick}.",
+        "required": true,
+        "repeating": false,
+        "pick": [
+          "True",
+          "False"
+        ],
+        "caseSensitive": false,
+        "quotable": true
+      },
+      "trail": {
+        "ignored": false,
+        "commented": true
+      }
+    },
+    {
+      "keyword": "ShapedMap",
+      "description": "Whether the item is a shaped map.",
+      "operator": {
+        "required": false,
+        "equalsOnly": true
+      },
+      "value": {
+        "description": "A boolean value being either ${pick}.",
+        "required": true,
+        "repeating": false,
+        "pick": [
+          "True",
+          "False"
+        ],
+        "caseSensitive": false,
+        "quotable": true
+      },
+      "trail": {
+        "ignored": false,
+        "commented": true
+      }
+    },
+    {
+      "keyword": "ElderMap",
+      "description": "Whether the item is an elder map.",
+      "operator": {
+        "required": false,
+        "equalsOnly": true
+      },
+      "value": {
+        "description": "A boolean value being either ${pick}.",
+        "required": true,
+        "repeating": false,
+        "pick": [
+          "True",
+          "False"
+        ],
+        "caseSensitive": false,
+        "quotable": true
+      },
+      "trail": {
+        "ignored": false,
+        "commented": true
+      }
+    }
+  ]
+}

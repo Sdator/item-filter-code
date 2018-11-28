@@ -5,6 +5,12 @@
         "/tslint.json"
       ],
       "url": "./build/schemas/tslint.json"
+    },
+    {
+      "fileMatch": [
+        "/build/data/parser-inputs.json"
+      ],
+      "url": "./out/schemas/parser-inputs.json"
     }
   ]
 }
