@@ -72,7 +72,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     const fn = this._bindIfPossible(handler, thisArg);
     // This is necessary in order to allow duplicate handlers to be registered
     // for any single event.
-    const wrapper: typeof handler = (value) => {
+    const wrapper: typeof handler = value => {
       fn(value);
     };
 
@@ -98,7 +98,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     const fn = this._bindIfPossible(handler, thisArg);
     let disposable: Disposable;
 
-    const wrapper: typeof handler = (value) => {
+    const wrapper: typeof handler = value => {
       disposable.dispose();
       fn(value);
     };
@@ -124,7 +124,7 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     this._checkIfDisposed();
 
     const fn = this._bindIfPossible(handler, thisArg);
-    const wrapper: typeof handler = (value) => {
+    const wrapper: typeof handler = value => {
       fn(value);
     };
 
@@ -258,9 +258,10 @@ export class Emitter<Emissions = { [key: string]: unknown }> implements IDisposa
     void {
 
     assert(!this.disposed, "expected this action to not fire if disposed");
+    // tslint:disable-next-line:ban-types
     const previousHandlers = this._eventHandlers.get(event) as Function[];
     assert(previousHandlers != null, "expected this handler to be registered");
-    const newHandlers = previousHandlers.filter((h) => h !== handler);
+    const newHandlers = previousHandlers.filter(h => h !== handler);
 
     if (newHandlers.length > 0) {
       this._eventHandlers.set(event, newHandlers);

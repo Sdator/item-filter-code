@@ -8,13 +8,49 @@
     },
     {
       "fileMatch": [
+        "/build/data/filter.json"
+      ],
+      "url": "./out/schemas/filter.json"
+    },
+    {
+      "fileMatch": [
+        "/build/data/items.json"
+      ],
+      "url": "./out/schemas/items-source.json"
+    },
+    {
+      "fileMatch": [
+        "/out/data/items.json"
+      ],
+      "url": "./out/schemas/items-generated.json"
+    },
+    {
+      "fileMatch": [
+        "/build/data/mods.json"
+      ],
+      "url": "./out/schemas/mods.json"
+    },
+    {
+      "fileMatch": [
+        "/build/data/sfx.json"
+      ],
+      "url": "./out/schemas/sfx.json"
+    },
+    {
+      "fileMatch": [
+        "/build/data/suggestions.json"
+      ],
+      "url": "./out/schemas/suggestions.json"
+    },
+    {
+      "fileMatch": [
         "/build/data/uniques.json"
       ],
       "url": "./out/schemas/uniques.json"
     },
     {
       "fileMatch": [
-        "/build/data/parser-inputs.json"
+        "/build/data/parsers/*.json"
       ],
       "url": "./out/schemas/parser-inputs.json"
     }
@@ -580,7 +616,10 @@
     "Zerphi's",
     "afplay",
     "autocompleting",
+    "devtool",
+    "gitignore",
     "glencfl",
+    "nextgen",
     "tooltips",
     "whitelisted"
   ],

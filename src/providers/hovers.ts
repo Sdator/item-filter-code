@@ -560,7 +560,7 @@ function getHeightHover(pos: vscode.Position, text: string, index: number): vsco
 
 function getWidthHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
   const ranges = filterData.ruleRanges["Width"];
-  const contents = "The height of the item within the inventory, which can be a " +
+  const contents = "The width of the item within the inventory, which can be a " +
     `number from ${ranges.min} to ${ranges.max}.`;
   return getRepeatingValueHover(pos, text, index, contents, false);
 }

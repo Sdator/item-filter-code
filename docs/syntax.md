@@ -1,64 +1,50 @@
-A cheat sheet providing information on the syntax of an item filter.
+## GGG Item Filter Syntax Cheat Sheet
 
-## Blocks
-Keyword | Trailing Comment
---- | ---
-Show | Yes
-Hide | Yes
+A cheat sheet providing information on the syntax of an item filter. Note that this document only aims to provide a bird's eye view on the syntax. For a complete, fully accurate data representation of the item filter syntax, see the [GGG.json](https://github.com/GlenCFL/item-filter-code/blob/master/build/data/parsers/GGG.json) parser input file.
 
-## Filter Rules
-Keyword | Operator | Values | Case Sensitive
+---
+
+### Blocks
+Keyword | Operator | Parameters | Trailing Text
 --- | --- | --- | ---
-ItemLevel | All | Multiple integers in the [0-100] range. | No
-DropLevel | All | Multiple integers in the [0-100] range. | No
-GemLevel | All | Multiple integers in the [0-30] range. | No
-Quality | All | Multiple integers in the [0-30] range. | No
-StackSize | All | Multiple integers in the [1-1000] range. | No
-MapTier | All | Multiple integers in the [1-17] range. | No
-Rarity | All | Multiple of the following strings: Normal, Magic, Rare, Unique. | Yes
-Class | Equals | Multiple strings from the list of Classes. | Yes
-BaseType | Equals | Multiple strings from the list of Bases. | Yes
-HasExplicitMod | Equals | Multiple strings from list of Mods. | Yes
-Sockets | All | Multiple integers in the [0-6] range. | No
-LinkedSockets | All | Multiple integers in the [2-6] range. | No
-SocketGroup | Equals | Multiple strings consisting only of the *r, g, b, w* characters. | No
-Height | All | Multiple integers in the [1-4] range. | No
-Width | All | Multiple integers in the [1-2] range. | No
-Identified | Equals | True or False. | No
-Corrupted | Equals | True or False. | No
-ElderItem | Equals | True or False. | No
-ShaperItem | Equals | True or False. | No
-ShapedMap | Equals | True or False. | No
-ElderMap | Equals | True or False. | No
+Show | None | None | Ignored
+Hide | None | None | Ignored
 
-## Action Rules
-Keyword | Operator | Values | Trailing Comment | Case Sensitive
---- | --- | --- | --- | --- |
-SetBorderColor | Equals | 3-4 integers in the [0-255] range. | Yes | No
-SetTextColor | Equals | 3-4 integers in the [0-255] range. | Yes | No
-SetBackgroundColor | Equals | 3-4 integers in the [0-255] range. | Yes | No
-PlayAlertSound | Equals | A Word or an integer in the [1-16] range, followed by an optional integer in the [0-300] range. | Yes | Yes
-PlayAlertSoundPositional | Equals | A Word or an integer in the [1-16] range, followed by an optional integer in the [0-300] range. | Yes | Yes
-CustomAlertSound | Equals | A quoted string. | Yes | Yes
-SetFontSize | Equals | An integer in the [16-50] range. | No | No
-DisableDropSound | Equals | Ignored | Yes | No
-MinimapIcon | Equals | An integer followed two words. | No | Yes
-PlayEffect | Equals | A word. | No | Yes
+### Filter Rules
+Keyword | Operator | Parameters | Trailing Text
+--- | --- | --- | ---
+ItemLevel | All | Ranging [0-100] Values | Impossible
+DropLevel | All | Ranging [0-100] Values | Impossible
+GemLevel | All | Ranging [1-30] Values | Impossible
+Quality | All | Ranging [0-100] Values | Impossible
+StackSize | All | Ranging [1-1000] Values | Impossible
+MapTier | All | Ranging [1-17] Values | Impossible
+Rarity | All | Rarity Values | Impossible
+Class | None | Class Values | Impossible
+BaseType | None | Base Values | Impossible
+HasExplicitMod | None | Mod Values | Impossible
+Sockets | All | Ranging [0-6] Values | Impossible
+LinkedSockets | All | Ranging [2-6] Values | Impossible
+SocketGroup | None | Socket Group Values | Impossible
+Height | All | Ranging [1-4] Values | Impossible
+Width | All | Ranging [1-2] Values | Impossible
+Identified | None | Boolean Values | Impossible
+Corrupted | None | Boolean Values | Impossible
+ElderItem | None | Boolean Values | Impossible
+ShaperItem | None | Boolean Values | Impossible
+ShapedMap | None | Boolean Values | Impossible
+ElderMap | None | Boolean Values | Impossible
 
-> Integer: a numerical value that can optionally be surrounded by quotation marks.
-
-> Word: a single word that cannot be surrounded by quotation marks.
-
-> String: a value that can optionally be surrounded by quotation marks, possibly multiple words.
-
-> Quoted String: a string that *must* be surrounded by double quotation marks.
-
-## Notes
-
-- The word value for either `PlayAlertSound` or `PlayAlertSoundPositional` must *not* be surrounded by quotation marks.
-- Rules taking multiple values get weird when combined with most operators, so we simply disallow multiple values when the operator is anything except equals.
-- Rules taking boolean values do in fact take multiple values, but it is misleading.
-- The `LinkedSockets` value can actually be zero, but this is misleading and doesn't work as expected in-game.
-- The `SetFontSize` rule does not take multiple values and has a specialized error when multiple are provided.
-- The value of the `DisableDropSound` rule is completely ignored. The rule being present within a block will always disable the drop sound.
-- The second value for the `PlayEffect` rule can technically be anything, but only `Temp` has an impact within the game.
+### Action Rules
+Keyword | Operator | Parameters | Trailing Text
+--- | --- | --- | ---
+SetBorderColor | None | 3-4 Ranging [0-255] Values | Ignored
+SetTextColor | None | 3-4 Ranging [0-255] Values | Ignored
+SetBackgroundColor | None | 3-4 Ranging [0-255] Values | Ignored
+PlayAlertSound | None | Sound Identifier, Ranging [0-300] Value | Ignored
+PlayAlertSoundPositional | None | Sound Identifier, Ranging [0-300] Value | Ignored
+CustomAlertSound | Ignored | File Path | Ignored
+SetFontSize | None | Font Size | Error
+DisableDropSound | None | None | Ignored
+MinimapIcon | None | Ranging [0-2] Value, Effect Color, Shape | Error
+PlayEffect | None | Effect Color, Effect Modifier | Error

@@ -2,7 +2,7 @@
   "name": "item-filter-code",
   "description": "Support for editing Path of Exile item filters within Visual Studio Code.",
   "displayName": "Item Filter Code",
-  "version": "1.14.4",
+  "version": "1.15.0",
   "author": "Glen Marker",
   "publisher": "GlenCFL",
   "license": "MIT",
@@ -28,22 +28,25 @@
   "icon": "assets/images/icon.png",
   "main": "./out/src/extension",
   "scripts": {
-    "vscode:prepublish": "run-s clean data compile:release",
-    "build": "run-p data compile",
-    "compile": "tsc",
-    "compile:release": "tsc --sourceMap false",
+    "vscode:prepublish": "run-s clean build:schemas build:data build:code:release lint:* test",
+    "build": "run-s build:*",
+    "build:schemas": "node tasks/schemas",
+    "build:data": "node tasks/data",
+    "build:code": "tsc",
+    "build:code:release": "tsc --sourceMap false",
     "clean": "node tasks/clean",
-    "data": "node tasks/data",
-    "schemas": "node tasks/schemas",
-    "lint": "tslint --format stylish --project .",
-    "test": "tsc && jest --config jest.json"
+    "lint": "run-p lint:*",
+    "lint:data": "node tasks/lint-data",
+    "lint:code": "tslint --format stylish --project .",
+    "test": "jest --config jest.json",
+    "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "dependencies": {
     "lodash.debounce": "4.0.8"
   },
   "devDependencies": {
     "@glencfl/tslint-config": "^1.6.0",
-    "@types/jest": "^23.3.9",
+    "@types/jest": "^23.3.10",
     "@types/lodash.debounce": "^4.0.4",
     "@types/node": "^8.10.38",
     "jest": "^23.6.0",
@@ -52,8 +55,9 @@
     "npm-run-all": "^4.1.5",
     "rimraf": "^2.6.2",
     "ts-jest": "^23.10.5",
-    "typescript": "^3.1.6",
-    "typescript-json-schema": "^0.33.0"
+    "typescript": "^3.2.1",
+    "typescript-json-schema": "^0.33.0",
+    "vscode": "^1.1.22"
   },
   "engines": {
     "vscode": "^1.20.0"

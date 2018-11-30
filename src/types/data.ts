@@ -4,8 +4,10 @@
  * license information.
  * ===========================================================================*/
 
+export type ItemSourceData = { [key: string]: string[] };
+
 export interface ItemData {
-  classesToBases: { [key: string]: string[] };
+  classesToBases: ItemSourceData;
   basesToClasses: { [key: string]: string };
   classes: string[];
   sortedBases: string[];

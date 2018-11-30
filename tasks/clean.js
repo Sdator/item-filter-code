@@ -10,9 +10,11 @@ const rimraf = require('rimraf');
 
 const projectRoot = path.join(__dirname, '..');
 const outputRoot = path.join(projectRoot, 'out');
+const coverageRoot = path.join(projectRoot, 'coverage');
 
 const temporaryDirs = [
   outputRoot,
+  coverageRoot
 ];
 
 const temporaryFiles = [

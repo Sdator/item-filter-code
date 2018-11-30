@@ -23,8 +23,33 @@ const options = {
 const schemas = [
   {
     sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
+    type: 'FilterData',
+    outputFileName: 'filter.json'
+  },
+  {
+    sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
+    type: 'ItemSourceData',
+    outputFileName: 'items-source.json'
+  },
+  {
+    sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
     type: 'ItemData',
-    outputFileName: 'items.json'
+    outputFileName: 'items-generated.json'
+  },
+  {
+    sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
+    type: 'ModData',
+    outputFileName: 'mods.json'
+  },
+  {
+    sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
+    type: 'SoundEffectData',
+    outputFileName: 'sfx.json'
+  },
+  {
+    sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
+    type: 'SuggestionData',
+    outputFileName: 'suggestions.json'
   },
   {
     sourceFilePath: path.join(projectRoot, 'src', 'types', 'data.ts'),
@@ -32,13 +57,13 @@ const schemas = [
     outputFileName: 'uniques.json'
   },
   {
-    sourceFilePath: path.join(projectRoot, 'src', 'types', 'parser-inputs.ts'),
+    sourceFilePath: path.join(projectRoot, 'src', 'parsers-nextgen', 'inputs.ts'),
     type: 'FilterParseData',
     outputFileName: 'parser-inputs.json'
   }
 ];
 
-mkdirp(schemaOutputDir);
+mkdirp.sync(schemaOutputDir);
 
 for (const e of schemas) {
   const file = e.sourceFilePath;

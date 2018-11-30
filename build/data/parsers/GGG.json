@@ -1,0 +1,894 @@
+{
+  "blocks": [
+    {
+      "keyword": "Show",
+      "description": "If all conditions are matched, show the item and do any actions specified.",
+      "trailingText": "skip"
+    },
+    {
+      "keyword": "Hide",
+      "description": "If all conditions are matched, hide the item and do any actions specified.",
+      "trailingText": "skip"
+    }
+  ],
+  "rules": [
+    {
+      "keyword": "ItemLevel",
+      "description": "The item level at which the item was generated at.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "One or more integers from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 0,
+              "max": 100
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "DropLevel",
+      "description": "The level at which the item begins dropping at.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "One or more integers from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 0,
+              "max": 100
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "GemLevel",
+      "description": "The level of the dropped gem.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "One or more integers from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 1,
+              "max": 30
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "Quality",
+      "description": "The amount of quality on the item.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "One or more integers from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 0,
+              "max": 100
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "Sockets",
+      "description": "The total number of sockets that the item has.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "The number of sockets on the item, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 0,
+              "max": 6
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "LinkedSockets",
+      "description": "The size of the largest group of linked sockets that the item has.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "The number of linked sockets on the item, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 2,
+              "max": 6
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "Height",
+      "description": "The number of slots that the item takes on the Y-axis.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "The height of the item within the inventory, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 1,
+              "max": 4
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "Width",
+      "description": "The number of slots that the item takes on the X-axis.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "The width of the item within the inventory, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 1,
+              "max": 2
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "StackSize",
+      "description": "The current stack size of a stackable currency.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "One or more integers from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 1,
+              "max": 1000
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "MapTier",
+      "description": "The tier of the map item.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "One or more integers from ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "range": {
+              "min": 1,
+              "max": 17
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "Rarity",
+      "description": "The rarity of the item.",
+      "operator": "any",
+      "parameters": [
+        {
+          "description": "One of the following item rarities: ${value}.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "caseSensitive": true,
+            "partial": false,
+            "quotes": "optional",
+            "pick": [
+              "Normal",
+              "Magic",
+              "Rare",
+              "Unique"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 2
+    },
+    {
+      "keyword": "SocketGroup",
+      "description": "A group of linked sockets that contains the specified combination. Each letter is the short-hand for the color. For example, RRG will match any group that contains two red sockets linked and a green socket.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The colors of the sockets within the item, with each character of the string representing the color of a single socket.\n\nThe most common socket group being `RGB`, which indicates that the item has one red socket, one green socket, and one blue socket. The second most common socket group being `WWWWWW`, which indicates that the item has six white sockets.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "quotes": "optional",
+            "caseSensitive": false,
+            "composition": [
+              "R",
+              "G",
+              "B",
+              "W"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "HasExplicitMod",
+      "description": "Whether the item has one of the given explicit mods.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The name of an explicit item mod, such as `Tyrannical`.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "caseSensitive": true,
+            "partial": false,
+            "quotes": "optional",
+            "pick": "${itemMods}"
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 6
+    },
+    {
+      "keyword": "Class",
+      "description": "The item class of the item. Specifying part of a class name is allowed and will match any classes with that text in the name.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "An item class, such as `\"Stackable Currency\"`.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "caseSensitive": true,
+            "partial": true,
+            "quotes": "optional",
+            "pick": "${itemClasses}"
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "BaseType",
+      "description": "The base type of the item. Specifying a part of a base type name is allowed and will match any of the base types with that text in the name.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "An item base, such as `\"Chaos Orb\"`.",
+          "optional": false,
+          "repeating": true,
+          "value": {
+            "caseSensitive": true,
+            "partial": true,
+            "quotes": "optional",
+            "pick": "${itemClasses}"
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "Identified",
+      "description": "Whether the item is identified.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "A boolean value being either ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": false,
+            "quotes": "optional",
+            "partial": false,
+            "pick": [
+              "True",
+              "False"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "Corrupted",
+      "description": "Whether the item is corrupted.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "A boolean value being either ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": false,
+            "quotes": "optional",
+            "partial": false,
+            "pick": [
+              "True",
+              "False"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "ElderItem",
+      "description": "Whether the item is an Elder item.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "A boolean value being either ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": false,
+            "quotes": "optional",
+            "partial": false,
+            "pick": [
+              "True",
+              "False"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "ShaperItem",
+      "description": "Whether the item is a Shaper item.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "A boolean value being either ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": false,
+            "quotes": "optional",
+            "partial": false,
+            "pick": [
+              "True",
+              "False"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "ShapedMap",
+      "description": "Whether the item is a shaped map.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "A boolean value being either ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": false,
+            "quotes": "optional",
+            "partial": false,
+            "pick": [
+              "True",
+              "False"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "ElderMap",
+      "description": "Whether the item is an elder map.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "A boolean value being either ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": false,
+            "quotes": "optional",
+            "partial": false,
+            "pick": [
+              "True",
+              "False"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "DisableDropSound",
+      "description": "Disables the default drop sound whenever the item is dropped.",
+      "operator": "none",
+      "parameters": [],
+      "trailingText": "skip",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "SetBorderColor",
+      "description": "Sets the border color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The intensity of the red, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The intensity of the green, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The intensity of the blue, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The opacity of the color, which can be any number from ${value}.",
+          "optional": true,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        }
+      ],
+      "trailingText": "skip",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "SetTextColor",
+      "description": "Sets the text color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The intensity of the red, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The intensity of the green, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The intensity of the blue, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The opacity of the color, which can be any number from ${value}.",
+          "optional": true,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        }
+      ],
+      "trailingText": "skip",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "SetBackgroundColor",
+      "description": "Sets the color of the item box. The value is in RGBA with each number being from 0 to 255. Alpha is optional.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The intensity of the red, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The intensity of the green, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The intensity of the blue, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        },
+        {
+          "description": "The opacity of the color, which can be any number from ${value}.",
+          "optional": true,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 255
+            }
+          }
+        }
+      ],
+      "trailingText": "skip",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "PlayAlertSound",
+      "description": "Plays the specified alert sound, with an optional volume level, whenever the item is dropped.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The identifier for the alert sound, which can either a number from 1 to 16 or a string.\n\nThe only current sounds using a string identifier would be those in the Shaper set, which includes identifiers such as `ShVaal` and `ShMirror`.",
+          "optional": false,
+          "repeating": false,
+          "value": [
+            {
+              "quotes": "never",
+              "caseSensitive": true,
+              "partial": false,
+              "pick": [
+                "ShGeneral",
+                "ShBlessed",
+                "ShChaos",
+                "ShDivine",
+                "ShExalted",
+                "ShMirror",
+                "ShAlchemy",
+                "ShFusing",
+                "ShRegal",
+                "ShVaal"
+              ]
+            },
+            {
+              "quotes": "never",
+              "range": {
+                "min": 1,
+                "max": 16
+              }
+            }
+          ]
+        },
+        {
+          "description": "The volume level for the alert sound, which can be a number from ${value}.",
+          "optional": true,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 300
+            }
+          }
+        }
+      ],
+      "trailingText": "skip",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "PlayAlertSoundPositional",
+      "description": "Plays the specified alert sound, with an optional volume level, whenever the item is dropped.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The identifier for the alert sound, which can either a number from 1 to 16 or a string.\n\nThe only current sounds using a string identifier would be those in the Shaper set, which includes identifiers such as `ShVaal` and `ShMirror`.",
+          "optional": false,
+          "repeating": false,
+          "value": [
+            {
+              "quotes": "never",
+              "partial": false,
+              "caseSensitive": true,
+              "pick": [
+                "ShGeneral",
+                "ShBlessed",
+                "ShChaos",
+                "ShDivine",
+                "ShExalted",
+                "ShMirror",
+                "ShAlchemy",
+                "ShFusing",
+                "ShRegal",
+                "ShVaal"
+              ]
+            },
+            {
+              "quotes": "never",
+              "range": {
+                "min": 1,
+                "max": 16
+              }
+            }
+          ]
+        },
+        {
+          "description": "The volume level for the alert sound, which can be a number from ${value}.",
+          "optional": true,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 300
+            }
+          }
+        }
+      ],
+      "trailingText": "skip",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "CustomAlertSound",
+      "description": "Plays a custom sound whenever the item is dropped.",
+      "operator": "ignored",
+      "parameters": [
+        {
+          "description": "The file name or full file path for the custom sound.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "required",
+            "caseSensitive": true,
+            "partial": false,
+            "pick": "${filePaths}"
+          }
+        }
+      ],
+      "trailingText": "skip",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "MinimapIcon",
+      "description": "Displays an icon on the minimap wherever the item was dropped.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The size of the icon on the minimap, which can be ${value}. The smallest value correlates to the largest icon size.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 0,
+              "max": 2
+            }
+          }
+        },
+        {
+          "description": "The color of the icon on the minimap, which can be ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": true,
+            "partial": false,
+            "quotes": "never",
+            "pick": [
+              "Red",
+              "Green",
+              "Blue",
+              "Brown",
+              "White",
+              "Yellow"
+            ]
+          }
+        },
+        {
+          "description": "The shape of the icon on the minimap, which can be ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": true,
+            "partial": false,
+            "quotes": "never",
+            "pick": [
+              "Circle",
+              "Diamond",
+              "Hexagon",
+              "Square",
+              "Star",
+              "Triangle"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "PlayEffect",
+      "description": "Displays a coloured beam of light above the item that was dropped.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The color of the beam of light overtop of the item, which can be ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "caseSensitive": true,
+            "partial": false,
+            "quotes": "never",
+            "pick": [
+              "Red",
+              "Green",
+              "Blue",
+              "Brown",
+              "White",
+              "Yellow"
+            ]
+          }
+        },
+        {
+          "description": "The use of Temp results in the item drop effect only temporarily being visible as the item is dropping to the ground.",
+          "optional": true,
+          "repeating": false,
+          "value": {
+            "caseSensitive": true,
+            "partial": false,
+            "quotes": "never",
+            "pick": [
+              "Temp"
+            ]
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    },
+    {
+      "keyword": "SetFontSize",
+      "description": "Sets the font size of item text.",
+      "operator": "none",
+      "parameters": [
+        {
+          "description": "The size to use for the font, which can be any number from ${value}.",
+          "optional": false,
+          "repeating": false,
+          "value": {
+            "quotes": "never",
+            "range": {
+              "min": 16,
+              "max": 50
+            }
+          }
+        }
+      ],
+      "trailingText": "error",
+      "blockLimit": 1
+    }
+  ]
+}

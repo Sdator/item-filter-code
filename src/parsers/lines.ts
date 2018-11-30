@@ -865,7 +865,7 @@ function parseClassRule(line: LineInformation) {
 
       let invalid = true;
       for (const c of itemData.classes) {
-        if (c.includes(valueResult.value)) {
+        if (c.indexOf(valueResult.value) !== -1) {
           invalid = false;
           break;
         }
@@ -973,7 +973,7 @@ function parseBaseTypeRule(line: LineInformation) {
       let invalid = true;
       if (usingClasses) {
         for (const itemBase of basePool) {
-          if (itemBase.length >= value.length && itemBase.includes(value)) {
+          if (itemBase.length >= value.length && itemBase.indexOf(value) !== -1) {
             invalid = false;
             break;
           }
@@ -982,7 +982,7 @@ function parseBaseTypeRule(line: LineInformation) {
         const startIndex = itemData.sortedBasesIndices[value.length - 1];
         for (let i = startIndex; i < itemData.sortedBases.length; i++) {
           const itemBase = basePool[i];
-          if (itemBase.includes(value)) {
+          if (itemBase.indexOf(value) !== -1) {
             invalid = false;
             break;
           }

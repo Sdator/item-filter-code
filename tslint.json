@@ -1,3 +1,6 @@
 {
-  "extends": "@glencfl/tslint-config"
+  "extends": "@glencfl/tslint-config",
+  "rules": {
+    "no-import-side-effect": false
+  }
 }
