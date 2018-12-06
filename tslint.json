@@ -1,6 +1,7 @@
 {
   "extends": "@glencfl/tslint-config",
   "rules": {
-    "no-import-side-effect": false
+    "no-import-side-effect": false,
+    "interface-over-type-literal": false
   }
 }

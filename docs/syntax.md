@@ -22,6 +22,7 @@ MapTier | All | Ranging [1-17] Values | Impossible
 Rarity | All | Rarity Values | Impossible
 Class | None | Class Values | Impossible
 BaseType | None | Base Values | Impossible
+Prophecy | None | Prophecy Values | Impossible
 HasExplicitMod | None | Mod Values | Impossible
 Sockets | All | Ranging [0-6] Values | Impossible
 LinkedSockets | All | Ranging [2-6] Values | Impossible

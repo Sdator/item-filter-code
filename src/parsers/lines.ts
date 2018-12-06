@@ -177,6 +177,9 @@ export class LineParser {
       case "BaseType":
         parseBaseTypeRule(lineInfo);
         break;
+      case "Prophecy":
+        parseProphecyRule(lineInfo);
+        break;
       case "PlayAlertSound":
       case "PlayAlertSoundPositional":
         parseSoundRule(lineInfo);
@@ -1093,6 +1096,71 @@ function parseModRule(line: LineInformation): void {
       }
     } else {
       if (parsedMods.length === 0 && line.result.diagnostics.length === 0) {
+        line.result.diagnostics.push({
+          message: `Missing value for ${line.result.keyword} rule. A string value was expected.`,
+          range: {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          },
+          severity: types.DiagnosticSeverity.Error
+        });
+      }
+
+      break;
+    }
+  }
+}
+
+function parseProphecyRule(line: LineInformation): void {
+  const operatorResult = line.parser.nextOperator();
+  if (operatorResult) {
+    if (operatorResult.value !== "=") {
+      reportNonEqualsOperator(line, operatorResult);
+    }
+  }
+
+  const parsedProphecies: string[] = [];
+
+  while (true) {
+    const valueResult = line.parser.nextWordString();
+
+    if (valueResult) {
+      const value = valueResult.value;
+      let invalid = true;
+
+      if (parsedProphecies.includes(value)) {
+        reportDuplicateString(line, valueResult);
+        continue;
+      }
+
+      for (const prophecy of itemData.prophecies) {
+        if (prophecy.includes(value)) {
+          invalid = false;
+          break;
+        }
+      }
+
+      if (invalid) {
+        for (const prophecy of line.config.prophecyWhitelist) {
+          if (prophecy.includes(value)) {
+            invalid = false;
+            break;
+          }
+        }
+      }
+
+      if (invalid) {
+        line.result.diagnostics.push({
+          message: `Invalid value for a ${line.result.keyword} rule. Expected a prophecy, ` +
+            "such as \"Twice Enchanted\".",
+          range: valueResult.range,
+          severity: types.DiagnosticSeverity.Error
+        });
+      } else {
+        parsedProphecies.push(value);
+      }
+    } else {
+      if (parsedProphecies.length === 0 && line.result.diagnostics.length === 0) {
         line.result.diagnostics.push({
           message: `Missing value for ${line.result.keyword} rule. A string value was expected.`,
           range: {

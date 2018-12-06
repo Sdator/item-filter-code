@@ -4,7 +4,9 @@ The history of changes to the extension.
 
 ---
 
-### Version 1.15.0 (TBD)
+### Version 1.15.0 (December 12th, 2018)
+- Added support for Path of Exile version 3.5 and the Betrayal league.
+- Added a new configuration variable: `item-filter.prophecyWhitelist`. This variable allows values to be whitelisted for the `Prophecy` rule.
 - The editor can now correctly size the tooltip for `MinimapIcon` values the first time, whereas previously it would resize the tooltip once the embedded image had loaded in.
 - The `item-filter.limitedModPool` configuration variable has been removed due to its limited usefulness.
 - Increased the maximum value for the `Quality` rule to `100`.

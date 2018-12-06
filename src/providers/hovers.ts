@@ -86,6 +86,8 @@ export function getHoverResult(text: string, position: vscode.Position): vscode.
       return getClassHover(position, text, currentIndex);
     case "BaseType":
       return getBaseTypeHover(position, text, currentIndex);
+    case "Prophecy":
+      return getProphecyHover(position, text, currentIndex);
     case "PlayAlertSound":
     case "PlayAlertSoundPositional":
       return getSoundHover(position, text, currentIndex);
@@ -319,6 +321,32 @@ function getModHover(pos: vscode.Position, text: string, index: number): vscode.
 
   return new vscode.Hover(
     "The name of an explicit item mod, such as `Tyrannical`.",
+    range2CodeRange(valueRange)
+  );
+}
+
+function getProphecyHover(pos: vscode.Position, text: string, index: number): vscode.Hover | null {
+  let valueIndex = contextParser.bypassEqOperator(text, index);
+
+  if (valueIndex === undefined || pos.character < valueIndex) {
+    return null;
+  }
+
+  let valueRange: types.Range | undefined;
+  do {
+    valueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+    if (valueRange) {
+      valueIndex = valueRange.end.character + 1;
+    } else {
+      return null;
+    }
+  } while (!contextParser.isNextValue(valueRange, pos));
+
+  valueRange.end.character++;
+
+  return new vscode.Hover(
+    "A prophecy, originally given only by Navali.",
     range2CodeRange(valueRange)
   );
 }

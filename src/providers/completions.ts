@@ -84,6 +84,8 @@ export class FilterCompletionProvider implements vscode.CompletionItemProvider, 
           return getClassCompletions(this._config, position, lineText, currentIndex, eol);
         case "BaseType":
           return getBaseCompletions(this._config, position, lineText, currentIndex, eol);
+        case "Prophecy":
+          return getProphecyCompletions(this._config, position, lineText, currentIndex, eol);
         case "PlayAlertSound":
         case "PlayAlertSoundPositional":
           return getAlertSoundCompletions(this._config, position, lineText, currentIndex, eol);
@@ -339,6 +341,48 @@ function getModCompletions(config: types.ConfigurationValues, pos: vscode.Positi
 
     for (const mod of config.modWhitelist) {
       const suggestion = completionForStringRange(mod, range, eol, config.modQuotes);
+      suggestion.kind = vscode.CompletionItemKind.Reference;
+      result.push(suggestion);
+    }
+  };
+
+  if (valueIndex == null || pos.character < valueIndex) {
+    const range = new vscode.Range(pos.line, pos.character, pos.line, pos.character);
+    pushCompletions(range);
+  } else {
+    let valueRange: types.Range | undefined;
+    do {
+      valueRange = contextParser.getNextValueRange(text, pos.line, valueIndex);
+
+      if (valueRange) {
+        valueIndex = valueRange.end.character + 1;
+      } else {
+        pushCompletions(new vscode.Range(pos.line, pos.character, pos.line, pos.character));
+        return result;
+      }
+    } while (!contextParser.isNextValue(valueRange, pos));
+
+    valueRange.end.character++;
+    pushCompletions(range2CodeRange(valueRange));
+  }
+
+  return result;
+}
+
+function getProphecyCompletions(config: types.ConfigurationValues, pos: vscode.Position,
+  text: string, index: number, eol: vscode.EndOfLine): vscode.CompletionItem[] {
+
+  const result: vscode.CompletionItem[] = [];
+
+  let valueIndex = contextParser.bypassEqOperator(text, index);
+
+  const pushCompletions = (range: vscode.Range) => {
+    for (const prophecy of itemData.prophecies) {
+      result.push(completionForStringRange(prophecy, range, eol, config.modQuotes));
+    }
+
+    for (const prophecy of config.prophecyWhitelist) {
+      const suggestion = completionForStringRange(prophecy, range, eol, config.modQuotes);
       suggestion.kind = vscode.CompletionItemKind.Reference;
       result.push(suggestion);
     }

@@ -31,6 +31,9 @@ const suggestionData = JSON.parse(fs.readFileSync(suggestionDataPath, 'utf8'));
 const itemDataPath = path.join(dataSourceRoot, 'items.json');
 const itemData = JSON.parse(fs.readFileSync(itemDataPath, 'utf8'));
 
+const prophecyDataPath = path.join(dataSourceRoot, 'prophecies.json');
+const prophecyData = JSON.parse(fs.readFileSync(prophecyDataPath, 'utf8'));
+
 mkdirp.sync(dataOutputRoot);
 
 const filterDataContent = JSON.stringify(filterData);
@@ -117,6 +120,8 @@ while (currentLength <= maxLength) {
 
 itemDataObject.sortedBasesIndices = indices;
 itemDataObject.sortedBases = itemBases;
+
+itemDataObject.prophecies = prophecyData;
 
 const itemDataContent = JSON.stringify(itemDataObject);
 const itemDataOutputFile = path.join(dataOutputRoot, 'items.json');

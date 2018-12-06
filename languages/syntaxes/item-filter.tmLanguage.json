@@ -389,7 +389,7 @@
     "string-rules": {
       "patterns": [
         {
-          "begin": "^\\s*(Class|BaseType|HasExplicitMod)(?=\\s)",
+          "begin": "^\\s*(Class|BaseType|Prophecy|HasExplicitMod)(?=\\s)",
           "end": "\\s*$",
           "captures": {
             "1": {

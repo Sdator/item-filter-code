@@ -10,6 +10,7 @@ export interface ItemData {
   classesToBases: ItemSourceData;
   basesToClasses: { [key: string]: string };
   classes: string[];
+  prophecies: string[];
   sortedBases: string[];
   sortedBasesIndices: number[];
 }

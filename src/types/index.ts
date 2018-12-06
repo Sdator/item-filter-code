@@ -140,6 +140,7 @@ export interface ConfigurationValues {
   classWhitelist: string[];
   ruleWhitelist: string[];
   soundWhitelist: string[];
+  prophecyWhitelist: string[];
   modWhitelist: string[];
   performanceHints: boolean;
   itemValueQuotes: boolean;
