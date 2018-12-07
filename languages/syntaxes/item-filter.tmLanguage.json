@@ -205,18 +205,6 @@
         }
       ]
     },
-    "equals-operator": {
-      "patterns": [
-        {
-          "match": "\\s+(=)(?=\\s)",
-          "captures": {
-            "1": {
-              "name": "keyword.operator.filter"
-            }
-          }
-        }
-      ]
-    },
     "blocks": {
       "patterns": [
         {
@@ -398,9 +386,6 @@
           },
           "patterns": [
             {
-              "include": "#equals-operator"
-            },
-            {
               "include": "#word"
             },
             {
@@ -422,9 +407,6 @@
           },
           "patterns": [
             {
-              "include": "#equals-operator"
-            },
-            {
               "include": "#boolean"
             },
             {
@@ -445,9 +427,6 @@
             }
           },
           "patterns": [
-            {
-              "include": "#equals-operator"
-            },
             {
               "include": "#triple-digit-number"
             },
@@ -608,9 +587,6 @@
           },
           "patterns": [
             {
-              "include": "#equals-operator"
-            },
-            {
               "include": "#socket-colors"
             },
             {
@@ -631,9 +607,6 @@
             }
           },
           "patterns": [
-            {
-              "include": "#equals-operator"
-            },
             {
               "include": "#double-digit-number"
             }

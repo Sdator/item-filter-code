@@ -215,15 +215,13 @@ function parseBlock(line: LineInformation): void {
     return;
   }
 
-  reportTrailingText(line, types.DiagnosticSeverity.Warning);
+  reportTrailingText(line, types.DiagnosticSeverity.Information);
 }
 
 function parseBooleanRule(line: LineInformation, optional = false): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   const booleanResult = line.parser.nextBoolean();
@@ -254,7 +252,7 @@ function parseDisableDropSoundRule(line: LineInformation): void {
  * @param equalsOnly True if only the equals operator is valid for this rule.
  * Defaults to false.
  */
-function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): void {
+function parseRepeatingNumberRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
 
   let operatorType: types.FilterOperator;
@@ -268,11 +266,6 @@ function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): vo
       return;
     } else {
       operatorType = operator;
-
-      if (equalsOnly && operatorType !== types.FilterOperator.Equals) {
-        reportNonEqualsOperator(line, operatorResult);
-        return;
-      }
     }
   } else {
     operatorType = types.FilterOperator.Equals;
@@ -287,26 +280,16 @@ function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): vo
 
     if (valueResult) {
       if (!opReported && parsedValues === 1 && operatorType !== types.FilterOperator.Equals) {
-        if (equalsOnly) {
-          reportNonEqualsOperator(line, operatorResult ? operatorResult : {
-            value: "",
-            range: {
-              start: { line: line.result.row, character: line.parser.textStartIndex },
-              end: { line: line.result.row, character: line.parser.originalLength }
-            }
-          });
-        } else {
-          line.result.diagnostics.push({
-            message: `Invalid operator for an ${line.result.keyword} rule providing ` +
-              "multiple values. Only the equals operator is allowed in this context, " +
-              "as other operators are error prone.",
-            range: operatorResult ? operatorResult.range : {
-              start: { line: line.result.row, character: line.parser.textStartIndex },
-              end: { line: line.result.row, character: line.parser.originalLength }
-            },
-            severity: types.DiagnosticSeverity.Error
-          });
-        }
+        line.result.diagnostics.push({
+          message: `Invalid operator for an ${line.result.keyword} rule providing ` +
+            "multiple values. Only the equals operator is allowed in this context, " +
+            "as other operators are error prone.",
+          range: operatorResult ? operatorResult.range : {
+            start: { line: line.result.row, character: line.parser.textStartIndex },
+            end: { line: line.result.row, character: line.parser.originalLength }
+          },
+          severity: types.DiagnosticSeverity.Error
+        });
 
         opReported = true;
       }
@@ -329,6 +312,10 @@ function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): vo
       break;
     }
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 /**
@@ -338,10 +325,8 @@ function parseRepeatingNumberRule(line: LineInformation, equalsOnly = false): vo
  */
 function parseSetFontSizeRule(line: LineInformation, equalsOnly = false): void {
   const operatorResult = line.parser.nextOperator();
-  if (operatorResult && equalsOnly) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+  if (operatorResult) {
+    reportOperator(line, operatorResult);
   }
 
   expectNumber(line, false);
@@ -418,52 +403,26 @@ function parseRarityRule(line: LineInformation): void {
       break;
     }
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 function parseSocketGroupRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
 
-  let operatorType: types.FilterOperator;
   if (operatorResult) {
-    const operator = converters.textOperator2FilterOperator(operatorResult.value);
-    if (operator === undefined) {
-      line.result.diagnostics.push({
-        message: `Unknown operator for a ${line.result.keyword} rule.`,
-        range: operatorResult.range
-      });
-      return;
-    } else {
-      operatorType = operator;
-
-      if (operatorType !== types.FilterOperator.Equals) {
-        reportNonEqualsOperator(line, operatorResult);
-        return;
-      }
-    }
-  } else {
-    operatorType = types.FilterOperator.Equals;
+    reportOperator(line, operatorResult);
   }
 
   const groupRegex = new RegExp("^[rgbw]{1,6}$", "i");
 
   let parsedValues = 0;
-  let opReported = false;
   while (true) {
     const valueResult = line.parser.nextWordString();
 
     if (valueResult) {
-      if (!opReported && parsedValues === 1 && operatorType !== types.FilterOperator.Equals) {
-        reportNonEqualsOperator(line, operatorResult ? operatorResult : {
-          value: "",
-          range: {
-            start: { line: line.result.row, character: line.parser.textStartIndex },
-            end: { line: line.result.row, character: line.parser.originalLength }
-          }
-        });
-
-        opReported = true;
-      }
-
       if (!groupRegex.test(valueResult.value)) {
         line.result.diagnostics.push({
           message: `Invalid value for a ${line.result.keyword} rule.` +
@@ -490,6 +449,10 @@ function parseSocketGroupRule(line: LineInformation): void {
       break;
     }
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 function parseColorRule(line: LineInformation): void {
@@ -500,9 +463,7 @@ function parseColorRule(line: LineInformation): void {
 
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   let red: TokenParseResult<number> | undefined;
@@ -578,16 +539,14 @@ function parseColorRule(line: LineInformation): void {
   }
 
   if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, types.DiagnosticSeverity.Error);
+    reportTrailingText(line, types.DiagnosticSeverity.Warning);
   }
 }
 
 function parseSoundRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   let identifier: string | undefined;
@@ -670,7 +629,7 @@ function parseSoundRule(line: LineInformation) {
   }
 
   if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
-    reportTrailingText(line, types.DiagnosticSeverity.Error);
+    reportTrailingText(line, types.DiagnosticSeverity.Warning);
   }
 
   if (identifier && range) {
@@ -682,9 +641,11 @@ function parseSoundRule(line: LineInformation) {
 function parseCustomSoundRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    line.result.diagnostics.push({
+      message: "This operator is ignored by the client.",
+      range: operatorResult.range,
+      severity: types.DiagnosticSeverity.Hint
+    });
   }
 
   const valueResult = line.parser.nextString();
@@ -702,14 +663,16 @@ function parseCustomSoundRule(line: LineInformation) {
       severity: types.DiagnosticSeverity.Error
     });
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Warning);
+  }
 }
 
 function parseMinimapIconRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   const sizeResult = line.parser.nextNumber();
@@ -794,14 +757,16 @@ function parseMinimapIconRule(line: LineInformation): void {
     });
     return;
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 function parsePlayEffectRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   const colorResult = line.parser.nextWord();
@@ -845,14 +810,16 @@ function parsePlayEffectRule(line: LineInformation) {
       return;
     }
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 function parseClassRule(line: LineInformation) {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   const parsedClasses: string[] = [];
@@ -909,6 +876,10 @@ function parseClassRule(line: LineInformation) {
       break;
     }
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 function parseBaseTypeRule(line: LineInformation) {
@@ -932,9 +903,7 @@ function parseBaseTypeRule(line: LineInformation) {
 
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   const parsedBases: string[] = [];
@@ -1035,14 +1004,16 @@ function parseBaseTypeRule(line: LineInformation) {
       break;
     }
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 function parseModRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   const parsedMods: string[] = [];
@@ -1109,14 +1080,16 @@ function parseModRule(line: LineInformation): void {
       break;
     }
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 function parseProphecyRule(line: LineInformation): void {
   const operatorResult = line.parser.nextOperator();
   if (operatorResult) {
-    if (operatorResult.value !== "=") {
-      reportNonEqualsOperator(line, operatorResult);
-    }
+    reportOperator(line, operatorResult);
   }
 
   const parsedProphecies: string[] = [];
@@ -1174,6 +1147,10 @@ function parseProphecyRule(line: LineInformation): void {
       break;
     }
   }
+
+  if (!line.parser.isIgnored() && line.result.diagnostics.length === 0) {
+    reportTrailingText(line, types.DiagnosticSeverity.Error);
+  }
 }
 
 export function isKeywordParseLineResult(obj: object): obj is KeywordParseLineResult {
@@ -1223,13 +1200,15 @@ function reportTrailingText(line: LineInformation, severity: types.DiagnosticSev
     end: { line: line.result.row, character: line.parser.textEndIndex }
   };
 
-  let message: string;
-
+  let message;
   switch (severity) {
     case types.DiagnosticSeverity.Error:
       message = "This trailing text will be considered an error by Path of Exile.";
       break;
     case types.DiagnosticSeverity.Warning:
+      message = "This trailing text will be ignored by Path of Exile.\n" +
+        "Did you mean to comment it?";
+      break;
     case types.DiagnosticSeverity.Hint:
     case types.DiagnosticSeverity.Information:
       message = "This trailing text will be ignored by Path of Exile.";
@@ -1245,10 +1224,9 @@ function reportTrailingText(line: LineInformation, severity: types.DiagnosticSev
   });
 }
 
-function reportNonEqualsOperator(line: LineInformation, parse: TokenParseResult<string>): void {
+function reportOperator(line: LineInformation, parse: TokenParseResult<string>): void {
   line.result.diagnostics.push({
-    message: `Invalid operator for the ${line.result.keyword} rule. Only the equals` +
-      " operator is supported by this rule.",
+    message: `An operator for a ${line.result.keyword} rule will result in an error in-game.`,
     range: parse.range,
     severity: types.DiagnosticSeverity.Error
   });

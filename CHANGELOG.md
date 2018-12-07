@@ -4,6 +4,14 @@ The history of changes to the extension.
 
 ---
 
+### Version 1.15.1 (December 13th, 2018)
+- Added several new autocompletion helper values, such as `Scarab`.
+- Added the missing `Harbinger Map` item base.
+- `Oba's Cursed Trove` now has its new base type of `Underground Sea Map`.
+- The equals operator is now longer allowed for many rule types, as this is an error in-game.
+- Trailing text is now checked for each rule type, as a few rules were missing the check previously.
+- Trailing text is now categorized correctly for each rule type.
+
 ### Version 1.15.0 (December 12th, 2018)
 - Added support for Path of Exile version 3.5 and the Betrayal league.
 - Added a new configuration variable: `item-filter.prophecyWhitelist`. This variable allows values to be whitelisted for the `Prophecy` rule.

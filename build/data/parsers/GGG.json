@@ -282,7 +282,7 @@
           "repeating": true,
           "value": {
             "caseSensitive": true,
-            "partial": false,
+            "partial": true,
             "quotes": "optional",
             "pick": "${itemMods}"
           }

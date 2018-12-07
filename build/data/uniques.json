@@ -1929,9 +1929,6 @@
       "name": "Shimmeron"
     }
   ],
-  "Torture Chamber Map": [
-    "Oba's Cursed Trove"
-  ],
   "Trapper Boots": [
     {
       "league": "Warbands",
@@ -2004,6 +2001,9 @@
   ],
   "Underground River Map": [
     "Caer Blaidd, Wolfpack's Den"
+  ],
+  "Underground Sea Map": [
+    "Oba's Cursed Trove"
   ],
   "Unset Ring": [
     "Angler's Plait",
