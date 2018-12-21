@@ -28,7 +28,6 @@
   "Amethyst Flask": [
     {
       "boss": "Atziri",
-      "location": "The Apex of Sacrifice",
       "name": "Atziri's Promise"
     }
   ],
@@ -71,7 +70,7 @@
   "Arcanist Slippers": [
     {
       "league": "Prophecy",
-      "location": "The Pale Court",
+      "location": "The Pale Court (Inya)",
       "name": "Inya's Epiphany"
     }
   ],
@@ -102,7 +101,6 @@
     "Snakebite",
     {
       "boss": "The Elder",
-      "location": "Absence of Value and Meaning",
       "name": "Blasphemer's Grasp"
     }
   ],
@@ -161,7 +159,10 @@
     }
   ],
   "Blue Pearl Amulet": [
-    "Gloomfang"
+    {
+      "boss": "Elder Guardian (Tier 6+)",
+      "name": "Gloomfang"
+    }
   ],
   "Blunt Arrow Quiver": [
     "Maloney's Nightfall"
@@ -480,7 +481,6 @@
     "Repentance",
     {
       "boss": "The Shaper",
-      "location": "The Shaper's Realm",
       "name": "Shaper's Touch"
     }
   ],
@@ -538,7 +538,10 @@
     "Heretic's Veil"
   ],
   "Demon Dagger": [
-    "Vulconus"
+    {
+      "boss": "Elder Guardian",
+      "name": "Vulconus"
+    }
   ],
   "Demon's Horn": [
     "Obliteration"
@@ -569,7 +572,8 @@
     "Darkray Vectors"
   ],
   "Dragonscale Gauntlets": [
-    "Surgebinders"
+    "Surgebinders",
+    "Worldcarver"
   ],
   "Dread Maul": [
     "Voidhome"
@@ -626,18 +630,18 @@
   "Eternal Sword": [
     "Dreamfeather",
     {
-      "boss": "The Constrictor",
+      "boss": "Elder Guardian",
       "name": "Beltimber Blade"
     },
     {
-      "boss": "The Constrictor",
+      "boss": "Elder Guardian (Tier 6+)",
       "name": "Grelwood Shank"
     }
   ],
   "Exquisite Leather": [
     {
       "league": "Prophecy",
-      "location": "The Pale Court",
+      "location": "The Pale Court (Yriel)",
       "name": "Yriel's Fostering"
     },
     {
@@ -849,7 +853,6 @@
     "Meginord's Girdle",
     {
       "boss": "Atziri",
-      "location": "The Apex of Sacrifice",
       "name": "Doryani's Invitation"
     },
     {
@@ -878,7 +881,7 @@
     },
     {
       "league": "Prophecy",
-      "location": "The Pale Court",
+      "location": "The Pale Court (Eber)",
       "name": "Eber's Unification"
     },
     {
@@ -938,7 +941,6 @@
     },
     {
       "boss": "The Shaper",
-      "location": "The Shaper's Realm",
       "name": "Starforge"
     }
   ],
@@ -1063,7 +1065,6 @@
     "Wurm's Molt",
     {
       "boss": "The Elder",
-      "location": "Absence of Value and Meaning",
       "name": "Cyclopean Coil"
     },
     {
@@ -1073,6 +1074,11 @@
     {
       "league": "Perandus",
       "name": "Umbilicus Immortalis"
+    },
+    {
+      "league": "Betrayal",
+      "location": "Safehouse",
+      "name": "Hyperboreus"
     }
   ],
   "Leather Cap": [
@@ -1171,7 +1177,7 @@
   ],
   "Mirrored Spiked Shield": [
     {
-      "boss": "The Eradicator",
+      "boss": "Elder Guardian",
       "name": "Leper's Alms"
     }
   ],
@@ -1196,7 +1202,6 @@
   "Murder Boots": [
     {
       "boss": "The Shaper",
-      "location": "The Shaper's Realm",
       "name": "Voidwalker"
     },
     {
@@ -1221,6 +1226,11 @@
       "boss": "Fenumus",
       "league": "Bestiary",
       "name": "Fenumus' Toxins"
+    },
+    {
+      "league": "Betrayal",
+      "boss": "Catarina",
+      "name": "The Devouring Diadem"
     }
   ],
   "Necromancer Silks": [
@@ -1235,8 +1245,7 @@
   ],
   "Nightmare Mace": [
     {
-      "boss": "The Elder",
-      "location": "Absence of Value and Meaning",
+      "boss": "The Elder (Tier 6+)",
       "name": "Nebuloch"
     }
   ],
@@ -1253,8 +1262,14 @@
     "Astramentis",
     "Carnage Heart",
     "Eye of Chayula",
-    "Impresence",
-    "Yoke of Suffering",
+    {
+      "boss": "The Elder (Tier 11+)",
+      "name": "Impresence"
+    },
+    {
+      "boss": "Elder Guardian (Tier 11+)",
+      "name": "Yoke of Suffering"
+    },
     {
       "league": "Prophecy",
       "name": "Hinekora's Sight"
@@ -1263,6 +1278,10 @@
       "boss": "Aul, the Crystal King",
       "league": "Delve",
       "name": "Aul's Uprising"
+    },
+    {
+      "boss": "The Shaper",
+      "name": "Solstice Vigil"
     }
   ],
   "Opal Ring": [
@@ -1352,16 +1371,18 @@
   ],
   "Praetor Crown": [
     "Ahn's Contempt",
-    "Memory Vault",
-    "Voll's Vision"
+    "Voll's Vision",
+    {
+      "boss": "Elder Guardian (Tier 6+)",
+      "name": "Memory Vault"
+    }
   ],
   "Primordial Staff": [
     "Femurs of the Saints"
   ],
   "Prismatic Jewel": [
     {
-      "boss": "The Elder",
-      "location": "Absence of Value and Meaning",
+      "boss": "The Elder (Tier 6+)",
       "name": "Watcher's Eye"
     }
   ],
@@ -1395,8 +1416,7 @@
   ],
   "Ranger Bow": [
     {
-      "boss": "The Elder",
-      "location": "Absence of Value and Meaning",
+      "boss": "The Elder (Tier 6+)",
       "name": "Hopeshredder"
     }
   ],
@@ -1488,7 +1508,6 @@
     "Coruscating Elixir",
     {
       "boss": "The Shaper",
-      "location": "The Shaper's Realm",
       "name": "Dying Sun"
     }
   ],
@@ -1521,8 +1540,7 @@
   ],
   "Sacrificial Garb": [
     {
-      "boss": "Atziri",
-      "location": "The Alluring Abyss",
+      "boss": "Atziri (Uber)",
       "name": "Atziri's Splendour"
     }
   ],
@@ -1676,7 +1694,12 @@
     }
   ],
   "Silver Flask": [
-    "Kiara's Determination"
+    "Kiara's Determination",
+    {
+      "league": "Betrayal",
+      "boss": "Catarina",
+      "name": "Cinderswallow Urn"
+    }
   ],
   "Simple Robe": [
     "Tabula Rasa",
@@ -1702,7 +1725,6 @@
   "Slink Boots": [
     {
       "boss": "Atziri",
-      "location": "The Apex of Sacrifice",
       "name": "Atziri's Step"
     },
     {
@@ -1714,6 +1736,11 @@
       "league": "Bestiary",
       "name": "Farrul's Chase"
     }
+  ],
+  "Solaris Circlet": [
+    "Flamesight",
+    "Galesight",
+    "Thundersight"
   ],
   "Soldier Boots": [
     "Alberon's Warpath"
@@ -1795,6 +1822,13 @@
       "league": "Abyss",
       "location": "Abyssal Depths",
       "name": "Tombfist"
+    }
+  ],
+  "Steelwood Bow": [
+    {
+      "league": "Betrayal",
+      "location": "Safehouse",
+      "name": "The Crimson Storm"
     }
   ],
   "Stibnite Flask": [
@@ -1900,7 +1934,12 @@
     }
   ],
   "Titanium Spirit Shield": [
-    "Rathpith Globe"
+    "Rathpith Globe",
+    {
+      "league": "Betrayal",
+      "boss": "Catarina",
+      "name": "Bitterbind Point"
+    }
   ],
   "Tomahawk": [
     "Moonbender's Wing"
@@ -1908,7 +1947,6 @@
   "Topaz Flask": [
     {
       "boss": "Avatar of Thunder",
-      "location": "The Vinktar Square",
       "name": "Vessel of Vinktar"
     }
   ],
@@ -1924,8 +1962,7 @@
   "Tornado Wand": [
     "Piscator's Vigil",
     {
-      "boss": "The Elder",
-      "location": "Absence of Value and Meaning",
+      "boss": "The Elder (Tier 6+)",
       "name": "Shimmeron"
     }
   ],
@@ -2033,6 +2070,11 @@
         "Invasion"
       ],
       "name": "Voideye"
+    },
+    {
+      "league": "Betrayal",
+      "location": "Safehouse",
+      "name": "Vivinsect"
     }
   ],
   "Ursine Pelt": [
@@ -2041,8 +2083,7 @@
   "Vaal Axe": [
     "Hezmana's Bloodlust",
     {
-      "boss": "Atziri",
-      "location": "The Alluring Abyss",
+      "boss": "Atziri (Uber)",
       "name": "Atziri's Disfavour"
     }
   ],
@@ -2063,8 +2104,7 @@
   "Vaal Gauntlets": [
     "Doryani's Fist",
     {
-      "boss": "Atziri",
-      "location": "The Alluring Abyss",
+      "boss": "Atziri (Uber)",
       "name": "Atziri's Acuity"
     }
   ],
@@ -2073,16 +2113,27 @@
   ],
   "Vaal Mask": [
     {
-      "boss": "Atziri",
-      "location": "The Alluring Abyss",
+      "boss": "Atziri (Uber)",
       "name": "The Vertex"
     }
   ],
   "Vaal Pyramid Map": [
     "Vaults of Atziri"
   ],
+  "Vaal Rapier": [
+    {
+      "league": "Betrayal",
+      "location": "Safehouse",
+      "name": "Paradoxica"
+    }
+  ],
   "Vaal Regalia": [
-    "The Beast Fur Shawl"
+    "The Beast Fur Shawl",
+    {
+      "league": "Betrayal",
+      "boss": "Catarina",
+      "name": "The Queen's Hunger"
+    }
   ],
   "Vaal Sceptre": [
     "Doon Cuebiyari"
@@ -2165,12 +2216,10 @@
     "Mon'tregul's Grasp",
     {
       "boss": "Atziri",
-      "location": "The Apex of Sacrifice",
       "name": "Doryani's Catalyst"
     },
     {
-      "boss": "The Elder",
-      "location": "Absence of Value and Meaning",
+      "boss": "Elder Guardian",
       "name": "Augyre"
     }
   ],
@@ -2223,7 +2272,7 @@
   "Zealot Gloves": [
     {
       "league": "Prophecy",
-      "location": "The Pale Court",
+      "location": "The Pale Court (Volkuur)",
       "name": "Volkuur's Guidance"
     }
   ],

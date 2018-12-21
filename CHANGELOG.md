@@ -4,6 +4,11 @@ The history of changes to the extension.
 
 ---
 
+### Version 1.15.2 (December 21st, 2018)
+- Added all of the new uniques added in Betrayal.
+- Added the new `The Mentor` prophecy.
+- Renamed the `Lava Chambers Map` base type to its current name of `Lava Chamber Map`.
+
 ### Version 1.15.1 (December 13th, 2018)
 - Added several new autocompletion helper values, such as `Scarab`.
 - Added the missing `Harbinger Map` item base.
