@@ -1,3 +1,7 @@
+## Deprecation
+
+This extension is no longer under active development, with the code only being made available in the event that someone wishes to continue on with its development independently.
+
 ## Item Filter Support for Visual Studio Code
 
 An extension for Visual Studio Code that provides additional support for writing [Path of Exile](https://www.pathofexile.com/) item filters, making it easier to create item filters for the game.
